@@ -43,7 +43,7 @@
    ============================================================ */
 :root{
   /* --- Sparkling Red + Soft Gold + Vivid Tangerine Palette --- */
-  --color-primary:       #D50000; /* Primary brand: headings, nav, footer, card accents */
+  --color-primary:       #800000; /* Primary brand: headings, nav, footer, card accents */
   --color-secondary:     #E5C16A; /* Secondary accent: highlights, dividers, icons */
   --color-cta:           #FF8000; /* CTA buttons: Apply Now, Enquire, Contact */
   --color-cta-hover:     color-mix(in srgb, #FF8000 80%, #000); /* CTA button hover — auto-darkens */
@@ -11764,99 +11764,494 @@ document.addEventListener('click', function(e) {
     </nav>
   </div>
 </section>
+<style id=”conduct-page-css”>
+/* ── Code of Conduct / School Policies page ── */
+.conduct-page { max-width: 1000px; margin: 0 auto; }
+
+/* Level tabs strip */
+.conduct-level-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+.badge-secondary { background: rgba(var(--color-primary-rgb),.10); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb),.25); }
+.badge-primary   { background: rgba(var(--color-secondary-rgb),.18); color: #7a5a00; border: 1px solid rgba(var(--color-secondary-rgb),.40); }
+.badge-preprimary{ background: #edf4ff; color: #2155a0; border: 1px solid #c4d9f8; }
+
+/* Level panel */
+.conduct-level-panel {
+  border: 1px solid rgba(var(--color-primary-rgb),.10);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 18px rgba(var(--color-primary-rgb),.05);
+}
+.conduct-level-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: linear-gradient(90deg, rgba(var(--color-primary-rgb),.06) 0%, transparent 100%);
+  border-bottom: 2px solid rgba(var(--color-primary-rgb),.10);
+}
+.conduct-level-header .ci {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  background: var(--color-primary); color: #fff;
+  flex-shrink: 0;
+}
+.conduct-level-header h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--color-primary); margin: 0 0 2px;
+}
+.conduct-level-header span {
+  font-family: 'Poppins', sans-serif;
+  font-size: .78rem; color: var(--text-lt);
+}
+.conduct-level-body { padding: 24px 28px; }
+
+/* Subsection heading within a panel */
+.conduct-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--color-primary);
+  border-left: 3px solid var(--color-secondary);
+  padding-left: 10px;
+  margin: 20px 0 10px;
+}
+.conduct-sub:first-child { margin-top: 0; }
+
+/* Lists */
+.conduct-page ul, .conduct-page ol {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem; line-height: 1.8;
+  color: var(--color-text);
+  margin: 0 0 14px; padding-left: 22px;
+}
+.conduct-page li { margin-bottom: 6px; }
+.conduct-page li:last-child { margin-bottom: 0; }
+
+/* Placeholder text (incomplete content) */
+.conduct-placeholder {
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem; color: var(--text-lt);
+  font-style: italic;
+  padding: 6px 0;
+  opacity: .75;
+}
+
+/* Note tag */
+.conduct-note {
+  display: inline-block; margin-left: 6px;
+  font-size: .75rem; font-weight: 700;
+  color: #7a5a00; background: rgba(var(--color-secondary-rgb),.20);
+  border-radius: 4px; padding: 1px 7px; vertical-align: middle;
+}
+
+/* Policy note / callout */
+.conduct-policy-note {
+  margin: 16px 0;
+  padding: 14px 18px;
+  background: rgba(var(--color-primary-rgb),.05);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 0 8px 8px 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: .93rem; line-height: 1.75;
+  color: var(--color-text);
+}
+
+/* Absence section */
+.conduct-absence-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.conduct-absence-header h3 {
+  font-family: Georgia, serif;
+  font-size: 1.15rem; color: var(--color-primary); margin: 0;
+}
+.conduct-absences-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.conduct-absence-card {
+  border-radius: 10px;
+  padding: 18px 20px;
+  border: 1px solid;
+}
+.conduct-absence-card.excused {
+  background: #f0faf0; border-color: #aedcae;
+}
+.conduct-absence-card.excused h4 {
+  color: #2a6e2a;
+}
+.conduct-absence-card.unexcused {
+  background: #fff5f5; border-color: #f7b4b4;
+}
+.conduct-absence-card.unexcused h4 {
+  color: #b03030;
+}
+.conduct-absence-card h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+/* Responsive */
+@media (max-width: 680px) {
+  .conduct-absences-grid { grid-template-columns: 1fr; }
+  .conduct-level-body { padding: 18px 16px; }
+}
+</style>
 <main>
-<div class="page-content">
-  <div class="section-tag"><i class="fas fa-gavel"></i> School Policy</div>
-  <h2 class="section-title">Code of Conduct</h2>
-  <p class="section-subtitle">Our code of conduct reflects the values, traditions and expectations that shape every student's journey at Dr. Mar Theophilus School.</p>
+<div class=”page-content”>
+<div class=”conduct-page”>
+
+  <div class=”section-tag”><i class=”fas fa-clipboard-list”></i> School Policies &amp; General Information</div>
+  <h2 class=”section-title” style=”font-family:Georgia,'Times New Roman',serif;”>School Policies &amp; General Information</h2>
+  <div class=”gold-rule”></div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1: SCHOOL UNIFORM CODE
+  ════════════════════════════════════════ -->
+  <div class=”section-tag” style=”margin-top:48px;”><i class=”fas fa-tshirt”></i> School Uniform Code</div>
+  <h3 style=”font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 24px;”>School Uniform Code</h3>
+
+  <!-- SECONDARY -->
+  <div class=”conduct-level-panel”>
+    <div class=”conduct-level-header”>
+      <div class=”ci”><i class=”fas fa-user-graduate”></i></div>
+      <div>
+        <h3>Secondary</h3>
+        <span>Uniform rules for Secondary school students</span>
+      </div>
+      <span class=”conduct-level-badge badge-secondary” style=”margin-left:auto;”>Secondary</span>
+    </div>
+    <div class=”conduct-level-body”>
+      <p class=”conduct-sub”>School Blazer</p>
+      <ul>
+        <li>School blazer is grey in colour and must have the school emblem embroidered on it.</li>
+        <li>Parents are requested to embroider the child's name and class on the label provided inside the blazer to ensure it can be easily identified if lost.</li>
+        <li>Blazers are to be worn between November to February, only on Mondays and Wednesdays.</li>
+      </ul>
+
+      <p class=”conduct-sub”>Hoodie</p>
+      <ul>
+        <li>Students may wear a grey zip-up hoodie with the school emblem embroidered on it as a part of their school uniform.</li>
+      </ul>
+
+      <p class=”conduct-sub”>Additional Instructions</p>
+      <div class=”conduct-placeholder”>hoodies or shoes ……</div>
+      <div class=”conduct-placeholder”>…….The child may bring chocolates to distribute.</div>
+      <div class=”conduct-placeholder”>…… Summer-cut or Buzz-cut is preferable.</div>
+    </div>
+  </div>
+
+  <!-- PRIMARY -->
+  <div class=”conduct-level-panel”>
+    <div class=”conduct-level-header”>
+      <div class=”ci” style=”background:var(--color-secondary);color:#333;”><i class=”fas fa-child”></i></div>
+      <div>
+        <h3 style=”color:#7a5a00;”>Primary</h3>
+        <span>Uniform rules for Primary school students</span>
+      </div>
+      <span class=”conduct-level-badge badge-primary” style=”margin-left:auto;”>Primary</span>
+    </div>
+    <div class=”conduct-level-body”>
+      <p class=”conduct-sub”>School Blazer</p>
+      <ul>
+        <li>School Blazer is grey in colour and must have the school emblem embroidered on it.</li>
+        <li>Parents are requested to embroider the child's name and class on the label provided inside the blazer to ensure it can be easily identified if lost.</li>
+        <li>Blazers are to be worn during the Second Term, only on Mondays and Wednesdays. <span class=”conduct-note”>[only for V]</span></li>
+      </ul>
+
+      <p class=”conduct-sub”>Hoodie</p>
+      <ul>
+        <li>Students must wear a grey zip-up hoodie with the school emblem embroidered on it as a part of their school uniform.</li>
+      </ul>
+
+      <p class=”conduct-sub”>Additional Instructions</p>
+      <div class=”conduct-placeholder”>hoodies or shoes ……</div>
+      <div class=”conduct-placeholder”>…….The child may bring chocolates to distribute.</div>
+      <div class=”conduct-placeholder”>…… Summer-cut or Buzz-cut is preferable.</div>
+      <div class=”conduct-placeholder”>…..ensure that they change their uniform and socks</div>
+    </div>
+  </div>
+
+  <!-- PRE-PRIMARY -->
+  <div class=”conduct-level-panel”>
+    <div class=”conduct-level-header”>
+      <div class=”ci” style=”background:#2155a0;”><i class=”fas fa-baby”></i></div>
+      <div>
+        <h3 style=”color:#2155a0;”>Pre-Primary</h3>
+        <span>Uniform rules for Pre-Primary students</span>
+      </div>
+      <span class=”conduct-level-badge badge-preprimary” style=”margin-left:auto;”>Pre-Primary</span>
+    </div>
+    <div class=”conduct-level-body”>
+      <ol>
+        <li>
+          The regular school uniform for students consists of a black track pant with red stripes and a red T-shirt bearing the school emblem.<br>
+          This regular uniform must be worn on Monday, Wednesday, and Friday.<br>
+          A white vest is compulsory and must be worn by students every day.<br>
+          Every student should possess at least two sets of the regular school uniform.<br>
+          Students must wear only plain black socks with the regular uniform.<br>
+          Black Bata Velcro shoes are mandatory footwear with the regular uniform.
+        </li>
+        <li>
+          The PT uniform consists of a navy-blue track pant with light blue t-shirt.<br>
+          PT uniform to be worn on Tuesday and Thursday.<br>
+          Students must wear white socks and white shoes with PT uniform.
+        </li>
+        <li>Students must wear a grey zip-up hoodie with the school emblem embroidered on it as a part of their school uniform. Non uniform hoodies or shoes will be confiscated on the day they are worn.</li>
+        <li>On the child's birthday, the child should be in complete school uniform and not in civil dress. The child may bring chocolates to distribute.</li>
+        <li>Girls with hair longer than ear length must plait it. No pony tails or loose hair will be permitted. All girls must wear a black hair band to keep their hair pulled back.</li>
+        <li>The School is particular that the boys have regular Summer-cut or Buzz-cut. Mushroom style haircut is not permitted.</li>
+        <li>Students coming to school for any extra activity should be in school uniform. They should not be on the campus in sandals, slippers/floaters etc.</li>
+        <li>Parents have to pay careful attention to the cleanliness of their children.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2: ABSENCE
+  ════════════════════════════════════════ -->
+  <div class=”section-tag” style=”margin-top:56px;”><i class=”fas fa-calendar-times”></i> Absence Policy</div>
+  <h3 style=”font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 6px;”>Absence</h3>
+  <p style=”font-family:'Poppins',sans-serif;font-size:.9rem;color:var(--text-lt);margin-bottom:24px;”>
+    <span class=”conduct-level-badge badge-secondary”>Secondary</span>
+    <span class=”conduct-level-badge badge-primary”>Primary</span>
+    <span class=”conduct-level-badge badge-preprimary”>Pre-Primary</span>
+  </p>
+  <div class=”gold-rule”></div>
+
+  <!-- Excused / Unexcused side by side -->
+  <div class=”conduct-absences-grid”>
+    <div class=”conduct-absence-card excused”>
+      <h4><i class=”fas fa-check-circle” style=”margin-right:6px;”></i>Excused Absenteeism</h4>
+      <ul style=”margin:0;padding-left:18px;font-family:'Poppins',sans-serif;font-size:.93rem;line-height:1.75;color:#2a3d2a;”>
+        <li>Illness of student supported by medical certificate.</li>
+        <li>Death in immediate family.</li>
+        <li>Quarantine.</li>
+      </ul>
+    </div>
+    <div class=”conduct-absence-card unexcused”>
+      <h4><i class=”fas fa-times-circle” style=”margin-right:6px;”></i>Unexcused Absenteeism</h4>
+      <ul style=”margin:0;padding-left:18px;font-family:'Poppins',sans-serif;font-size:.93rem;line-height:1.75;color:#5a1a1a;”>
+        <li>Traffic trouble</li>
+        <li>Missing the Bus</li>
+        <li>Over Sleeping</li>
+        <li>No written excuse</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Leave policy note -->
+  <div class=”conduct-policy-note”>
+    Request for leave can be in the affirmative for genuine reason only like attending competitions outside Pune. Leave cannot be granted for marriages other than very close relatives and not for religious obligations that can be done by elders after school.
+  </div>
+
+  <!-- In the event of absence -->
+  <p class=”conduct-sub” style=”margin-top:28px;”>In the Event of Absence</p>
+  <ul>
+    <li>Bring leave note signed by a parent stating the reason for the absence, the date(s) of the absence(s) and any other pertinent information.</li>
+    <li>It is the student's responsibility to make up any work missed during the absence.</li>
+    <li>Punctuality and regularity of attendance is imperative. Late comers will be sent back home.</li>
+    <li>The school will not be held responsible in the matter of security of this second category of late comers.</li>
+    <li>Excuse for abstaining from any school activity/programme whatsoever will not be considered unless there is a good &amp; sufficient reason for the same.</li>
+    <li>Commuters by authorised bus, if required to stay in school after dispersal time, will have to make prior arrangements for going back home.</li>
+    <li>Attendance is mandatory on Republic Day, Independence Day, Patron's Day and all the Bagless Days. Any absence will invite disciplinary action unless supported by a written explanation submitted in person by the parent before the function.</li>
+    <li>Pupils must be present on the first working day after vacations and also on the last working day before vacations.</li>
+  </ul>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3: LIBRARY RULES
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-book"></i> Library Rules and Regulations</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">Library Rules and Regulations</h3>
   <div class="gold-rule"></div>
-  <p>At Dr. Mar Theophilus School, we believe that a strong moral framework is as important as academic achievement. Our Code of Conduct has been developed to ensure that every student, teacher and parent contributes to a safe, inclusive and inspiring school community.</p>
-  <p>These guidelines apply to all students from Nursery to Grade 10 and cover behaviour within school premises, during school events, on school transport and in any context where a student represents the school.</p>
-
-  <div class="info-card" style="margin-top:40px;">
-    <h3><i class="fas fa-user-check" style="color:var(--gold);margin-right:8px;"></i> General Behaviour Expectations</h3>
-    <ul>
-      <li>Students must be respectful, polite and courteous to all staff, peers and visitors at all times.</li>
-      <li>Use of abusive, offensive or discriminatory language is strictly prohibited.</li>
-      <li>Students must not engage in any form of bullying, physical altercation or harassment.</li>
-      <li>Mobile phones and electronic devices must not be used during school hours without teacher permission.</li>
-      <li>Students are expected to maintain decorum in classrooms, corridors, the library and all school spaces.</li>
-    </ul>
+  <p style="font-family:'Poppins',sans-serif;font-size:.97rem;line-height:1.8;color:var(--color-text);margin-bottom:14px;">Our library is a space for reading, learning and exploration. Students are expected to:</p>
+  <ul>
+    <li>Maintain silence and discipline at all times.</li>
+    <li>Handle books and reading materials with care.</li>
+    <li>Return borrowed books within the stipulated time.</li>
+    <li>Avoid marking, folding or damaging library materials.</li>
+    <li>Keep the library clean and follow the librarian's instructions.</li>
+  </ul>
+  <div style="margin-top:18px;padding:14px 20px;background:rgba(var(--color-secondary-rgb),.15);border-left:4px solid var(--color-secondary);border-radius:0 8px 8px 0;">
+    <p style="font-family:'Poppins',sans-serif;font-size:.97rem;font-weight:700;color:#7a5a00;margin:0;">Let us respect our books, value knowledge and nurture the joy of reading!</p>
   </div>
 
-  <div class="info-card">
-    <h3><i class="fas fa-tshirt" style="color:var(--gold);margin-right:8px;"></i> Dress Code &amp; Uniform</h3>
-    <ul>
-      <li>The prescribed school uniform must be worn on all school days and at all official events.</li>
-      <li>Uniforms must be clean, well-pressed and properly worn at all times.</li>
-      <li>Hair must be neatly kept; boys should have short, tidy hair; girls may tie long hair with a black or navy band.</li>
-      <li>Jewellery (other than small stud earrings for girls) is not permitted during school hours.</li>
-      <li>Footwear must conform to the school's prescribed style â€” black closed shoes with black socks.</li>
-    </ul>
-  </div>
-
-  <div class="info-card">
-    <h3><i class="fas fa-book-open" style="color:var(--gold);margin-right:8px;"></i> Academic Integrity</h3>
-    <ul>
-      <li>Plagiarism, copying or any form of academic dishonesty during tests or assignments is a serious offence.</li>
-      <li>Students must submit their own original work for all assessments and projects.</li>
-      <li>Tampering with school records, marks or official documents will result in strict disciplinary action.</li>
-      <li>All home assignments and classwork must be completed on time and submitted as instructed.</li>
-    </ul>
-  </div>
-
-  <div class="info-card">
-    <h3><i class="fas fa-building" style="color:var(--gold);margin-right:8px;"></i> Care of School Property</h3>
-    <ul>
-      <li>Students are responsible for the care and maintenance of all school property, furniture and equipment.</li>
-      <li>Any damage caused must be reported immediately; the cost of repairs may be borne by the student concerned.</li>
-      <li>Writing on walls, desks, chairs or library books is strictly forbidden.</li>
-      <li>Littering is not permitted anywhere on school premises â€” use designated bins at all times.</li>
-    </ul>
-  </div>
-
-  <div class="info-card">
-    <h3><i class="fas fa-ban" style="color:var(--gold);margin-right:8px;"></i> Prohibited Items &amp; Activities</h3>
-    <ul>
-      <li>Tobacco, alcohol, drugs or any banned substances are strictly prohibited on school premises.</li>
-      <li>Weapons, sharp objects or any item that could cause harm to others must not be brought to school.</li>
-      <li>Gambling, betting or any unlawful activity on school premises is a serious disciplinary offence.</li>
-      <li>Unauthorised collection of money from students or parents is not allowed.</li>
-    </ul>
-  </div>
-
-  <div class="quote-block">
-    <p>"Discipline is not a punishment â€” it is the bridge between who you are and who you want to become. At Dr. Mar Theophilus School, we nurture the habits that build exceptional human beings."</p>
-    <cite>â€” School Administration</cite>
-  </div>
-
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-exclamation-triangle"></i> Consequences</div>
-  <h2 class="section-title">Violations &amp; Consequences</h2>
+  <!-- ═══════════════════════════════════════
+       SECTION 4: ADMISSION & WITHDRAWAL
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-clipboard-check"></i> Admission &amp; Withdrawal</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">Admission &amp; Withdrawal</h3>
   <div class="gold-rule"></div>
-  <p>Violations of the Code of Conduct are addressed in a fair, consistent and age-appropriate manner. The school follows a graduated response framework:</p>
+  <ul>
+    <li>Parents/guardians must understand that they cannot influence or dictate school policies, and that all decisions regarding admission and retention rest solely with the School Management.</li>
+    <li>Admissions are granted only against available vacancies, and no correspondence regarding admission requests will be entertained.</li>
+    <li>The minimum age for admission to Nursery is three years and Standard I is six years, as on 30th June of the current academic year.</li>
+    <li>At the time of admission, the admission fee, three months' fees, term fee, and caution deposit must be paid in advance.</li>
+    <li>The parent/guardian is responsible for completing all admission formalities and for the payment of fees and the conduct of the child.</li>
+    <li>Admission is considered incomplete until submission of the Transfer (Leaving) Certificate, along with copies of the Birth Certificate, Aadhaar Card, and Caste Certificate (if applicable).</li>
+    <li>The pupil may be assessed and placed in the class immediately below the one for which admission is sought; the decision of the school authorities shall be final.</li>
+    <li>One month's prior application through an email must be send for the withdrawal. The original caution deposit receipt must be submitted in person to the admin department. Pupils leaving in April are required to pay fees for May.</li>
+    <li>A Leaving Certificate will be issued ten days after the receipt of the withdrawal application, subject to clearance of all dues.</li>
+    <li>A pupil who fails twice in Standard IX will be required to leave the school.</li>
+  </ul>
 
-  <div class="highlight-grid">
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-comment-alt"></i></div>
-      <h4>Verbal Warning</h4>
-      <p>First-time minor infractions are addressed through a private conversation with the class teacher, allowing the student to understand and correct their behaviour.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-pen"></i></div>
-      <h4>Written Notice</h4>
-      <p>Repeated minor infractions or a single moderate offence may result in a written notice that must be acknowledged and countersigned by the parent or guardian.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-user-tie"></i></div>
-      <h4>Principal's Office</h4>
-      <p>Serious misconduct is referred to the Principal's office for a formal counselling session and a discussion with parents regarding corrective action.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-door-open"></i></div>
-      <h4>Suspension / Expulsion</h4>
-      <p>Severe or repeated violations may result in temporary suspension or, in extreme cases, expulsion from the school â€” a decision taken by the management after due process.</p>
-    </div>
+  <!-- ═══════════════════════════════════════
+       SECTION 5: GENERAL INSTRUCTIONS FOR PARENTS
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-users"></i> General Instructions for the Parents</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">General Instructions for the Parents</h3>
+  <div class="gold-rule"></div>
+  <ul>
+    <li>Parents/Guardians are requested to ensure that their child carries healthy breakfast and lunch for school. Bringing junk food is strictly discouraged.</li>
+    <li>Parents/guardians are requested to be very particular in ensuring that their wards return home after school hours, except on days when the child stays back for approved curricular/co-curricular activities. Kindly note that the responsibility of the school authorities ends once school hours are over.</li>
+    <li>Parents should regularly supervise their child's academic work. Any remarks or instructions given by the Principal or teachers should be promptly attended to and corrected.</li>
+  </ul>
+
+  <p class="conduct-sub" style="margin-top:28px;">Parent Entry Pass</p>
+  <ul>
+    <li>Guardians must carry and display the School Parent I-Card/Escort Card at the school entrance while collecting their child from the school premises or designated pick-up and drop-off points.</li>
+    <li>Without the escort card, the child will not be handed over.</li>
+    <li>Parents must carry the Parent I-Card/Escort Card during every interaction with school staff.</li>
+    <li>Parents will not be entertained without the escort pass.</li>
+    <li>Parents are expected to follow the prescribed formal dress code while visiting the school for any purpose.</li>
+    <li>The school should be informed about the identity of the person who will be bringing and taking the child from the school every day.</li>
+    <li>Carrying the Parent I-Card/Escort Card is compulsory. Entry will not be allowed without it.</li>
+    <li>Parents/guardians are strictly forbidden to enter the classrooms. All enquiries should be made at the reception. However, parents are not allowed to wait at the reception, corridors, or on the school premises during school hours.</li>
+    <li>In the interest of the safety and security of students, the school gates will remain locked during school hours.</li>
+  </ul>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 6: PAYMENT OF FEES
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-rupee-sign"></i> Regarding Payment of Fees</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">Regarding Payment of Fees</h3>
+  <div class="gold-rule"></div>
+  <ul>
+    <li>The academic fee for the year is divided into four quarterly instalments.</li>
+    <li>All fee payments must be made strictly through the School ERP portal only.</li>
+    <li>No cash, cheque, or direct bank transfer will be accepted.</li>
+    <li>The schedule for payment of fees through ERP is as follows:</li>
+  </ul>
+
+  <!-- Fee schedule table -->
+  <div style="overflow-x:auto;margin:16px 0 20px;">
+    <table style="width:100%;border-collapse:collapse;font-family:'Poppins',sans-serif;font-size:.93rem;min-width:360px;">
+      <thead>
+        <tr style="background:var(--color-primary);color:#fff;">
+          <th style="padding:12px 18px;text-align:left;font-weight:700;">Instalment</th>
+          <th style="padding:12px 18px;text-align:left;font-weight:700;">Payment Schedule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:var(--color-bg-main);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">First Quarter</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">1st June to 15th June</td>
+        </tr>
+        <tr style="background:var(--color-bg-section);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">Second Quarter</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">1st September to 15th September</td>
+        </tr>
+        <tr style="background:var(--color-bg-main);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">Third Quarter</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">1st December to 15th December</td>
+        </tr>
+        <tr style="background:var(--color-bg-section);">
+          <td style="padding:11px 18px;">Fourth Quarter</td>
+          <td style="padding:11px 18px;">1st February to 10th February</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
+  <ul>
+    <li>Parents are requested to make the payment within the stipulated dates to avoid additional late charges.</li>
+  </ul>
+  <!-- Late fee policy — visually emphasised -->
+  <div class="conduct-policy-note" style="margin:10px 0;">A late fee of &#8377;10 per day will be levied in case of delayed payment.</div>
+  <ul>
+    <li>Fees may be paid quarterly or annually (one-time payment) through ERP. No other mode or break-up is permitted.</li>
+  </ul>
+  <!-- Non-refundable policy — visually emphasised -->
+  <div class="conduct-policy-note" style="margin:10px 0 20px;">Fees once paid are non-refundable.</div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 7: APPOINTMENTS
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-clock"></i> Appointments</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">Appointments</h3>
+  <div class="gold-rule"></div>
+  <div style="margin-bottom:20px;padding:13px 18px;background:rgba(var(--color-primary-rgb),.06);border:1px solid rgba(var(--color-primary-rgb),.18);border-radius:8px;">
+    <p style="font-family:'Poppins',sans-serif;font-size:.97rem;font-weight:700;color:var(--color-primary);margin:0;">Please note: Parents who wish to see the Principal need to fix an appointment.</p>
+  </div>
+
+  <!-- Appointment timings table -->
+  <div style="overflow-x:auto;margin-bottom:20px;">
+    <table style="width:100%;border-collapse:collapse;font-family:'Poppins',sans-serif;font-size:.93rem;min-width:360px;">
+      <thead>
+        <tr style="background:var(--color-primary);color:#fff;">
+          <th style="padding:12px 18px;text-align:left;font-weight:700;">Designation</th>
+          <th style="padding:12px 18px;text-align:left;font-weight:700;">Timings / Conditions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:var(--color-bg-main);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);font-weight:600;">Principal</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">11.00 a.m&ndash; 12.00 noon (only if the Supervisors recommend)</td>
+        </tr>
+        <tr style="background:var(--color-bg-section);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);font-weight:600;">Coordinators</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">8.00 a.m &ndash; 8.30 a.m (with prior appointment)</td>
+        </tr>
+        <tr style="background:var(--color-bg-main);">
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);font-weight:600;">Teachers</td>
+          <td style="padding:11px 18px;border-bottom:1px solid rgba(var(--color-primary-rgb),.08);">2.00 p.m &ndash; 2.20 p.m</td>
+        </tr>
+        <tr style="background:var(--color-bg-section);">
+          <td style="padding:11px 18px;font-weight:600;">Office hours</td>
+          <td style="padding:11px 18px;">9.00 a.m. to 11.00 a.m. (Monday to Friday)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ul>
+    <li>Office will remain closed on Saturdays and official holidays.</li>
+    <li>Applications submitted for the Bonafide Certificate or Fee Receipts will take three working days for processing once the application is received.</li>
+  </ul>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 8: YOUR CO-OPERATION
+  ════════════════════════════════════════ -->
+  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-handshake"></i> Your Co-operation</div>
+  <h3 style="font-family:Georgia,serif;font-size:1.4rem;color:var(--color-primary);margin:4px 0 16px;">Your Co-operation Is Very Essential To</h3>
+  <div class="gold-rule"></div>
+  <ul>
+    <li>Ensure that your child is regular and punctual in attendance and studies.</li>
+    <li>See that your child is neatly dressed and carries necessary books and required stationeries only.</li>
+    <li>Parents should supervise and ensure that their child completes homework and lessons regularly and diligently.</li>
+    <li>Parents are advised to closely monitor their child's behaviour at home and inform the Principal or the concerned class teacher immediately if any issue is noticed.</li>
+    <li>Regularly read school notices and Almanac regarding holidays, events, and activities and plan vacations or any other programmes accordingly.</li>
+    <li>Fill in the names of students and parents as they appear on the Aadhaar Card.</li>
+  </ul>
+
+</div><!-- /.conduct-page -->
 </div>
 </main>
 </section>
@@ -14014,36 +14409,235 @@ document.addEventListener('click', function(e) {
     </nav>
   </div>
 </section>
+<style id="principal-msg-css">
+/* ── Principal's Message page ── */
+.pmsg-page { max-width: 1080px; margin: 0 auto; }
+
+/* Opening quote */
+.pmsg-quote-wrap {
+  position: relative;
+  margin: 32px 0 48px;
+  padding: 36px 44px 36px 72px;
+  background: linear-gradient(135deg, var(--color-bg-section) 0%, #fff 100%);
+  border-left: 5px solid var(--color-secondary);
+  border-radius: 0 12px 12px 0;
+  box-shadow: 0 4px 24px rgba(var(--color-primary-rgb), .07);
+}
+.pmsg-quote-wrap::before {
+  content: '\201C';
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  font-family: Georgia, serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--color-secondary);
+  opacity: .6;
+}
+.pmsg-quote-wrap blockquote {
+  margin: 0 0 14px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.05rem, 1.6vw, 1.22rem);
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--color-primary);
+}
+.pmsg-quote-wrap cite {
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--text-lt);
+  letter-spacing: .04em;
+}
+
+/* Two-column layout: photo | body */
+.pmsg-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 52px;
+  align-items: flex-start;
+  margin-bottom: 48px;
+}
+
+/* Photo column */
+.pmsg-photo-col {
+  position: sticky;
+  top: 180px; /* sits below fixed header+nav */
+  text-align: center;
+}
+.pmsg-photo-wrap {
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 4px solid var(--color-secondary);
+  box-shadow: 0 12px 40px rgba(var(--color-primary-rgb), .14),
+              8px 8px 0 var(--color-secondary);
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(160deg, var(--color-primary) 0%, var(--maroon2) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.pmsg-monogram-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  color: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.08);
+}
+.pmsg-photo-wrap span {
+  font-family: 'Poppins', sans-serif;
+  font-size: .78rem;
+  color: rgba(255,255,255,.55);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.pmsg-photo-name {
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 4px;
+}
+.pmsg-photo-school {
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem;
+  color: var(--text-lt);
+  line-height: 1.5;
+}
+
+/* Message body */
+.pmsg-body p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--color-text);
+  margin-bottom: 22px;
+}
+.pmsg-body p:last-child { margin-bottom: 0; }
+
+/* Closing signature */
+.pmsg-sig {
+  border-top: 2px solid var(--color-secondary);
+  padding-top: 28px;
+  margin-top: 12px;
+  text-align: right;
+}
+.pmsg-sig p {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+.pmsg-sig strong {
+  display: block;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+.pmsg-sig span {
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  color: var(--text-lt);
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .pmsg-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .pmsg-photo-col {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    text-align: left;
+  }
+  .pmsg-photo-wrap {
+    max-width: 130px;
+    flex-shrink: 0;
+    margin: 0;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), .14),
+                4px 4px 0 var(--color-secondary);
+  }
+  .pmsg-monogram-icon { width: 56px; height: 56px; font-size: 1.6rem; }
+  .pmsg-photo-wrap span { display: none; }
+}
+@media (max-width: 540px) {
+  .pmsg-quote-wrap { padding: 28px 22px 28px 44px; }
+  .pmsg-quote-wrap::before { font-size: 3.5rem; left: 10px; }
+  .pmsg-sig { text-align: left; }
+  .pmsg-photo-col { flex-direction: column; align-items: flex-start; }
+}
+</style>
 <main>
 <div class="page-content">
-  <div class="section-tag"><i class="fas fa-quote-left"></i> A Message From the Principal</div>
-  <h2 class="section-title">Dear Students, Parents &amp; Well-Wishers</h2>
-  <div class="gold-rule"></div>
+  <div class="pmsg-page">
 
-  <div class="highlight-card" style="display:flex;gap:28px;align-items:flex-start;margin-bottom:40px;">
-    <div style="flex-shrink:0;text-align:center;min-width:140px;">
-      <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--maroon),var(--maroon2));display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:rgba(255,255,255,.3);margin:0 auto 12px;"><i class="fas fa-user-tie"></i></div>
-      <strong style="display:block;font-size:.88rem;color:var(--maroon);">The Principal</strong>
-      <span style="font-size:.75rem;color:var(--text-lt);">M.A., B.Ed.</span>
+    <div class="section-tag"><i class="fas fa-user-tie"></i> A Message From Our Principal</div>
+    <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">Principal's Message</h2>
+    <div class="gold-rule"></div>
+
+    <!-- Opening quote -->
+    <div class="pmsg-quote-wrap">
+      <blockquote>"Knowledge is power. Information is liberating. Education is the premise of progress, in every society, in every family."</blockquote>
+      <cite>&#8212; Kofi Annan</cite>
     </div>
-    <div>
-      <p>It is my honour and privilege to welcome you to Dr. Mar Theophilus School, a place where we do not merely impart knowledge, but strive to ignite a lifelong love of learning in every child who walks through our gates.</p>
-      <p>Education, at its finest, is a partnership, between the school and the home, between the teacher and the student, between tradition and innovation. At Dr. Mar Theophilus School, we cherish this partnership deeply. Our teachers are not just educators; they are mentors, guides and champions for every child in their care.</p>
-    </div>
-  </div>
 
-  <p>We believe that every child carries within them an extraordinary potential. Our responsibility as educators is to create the conditions in which that potential can flourish, through a rigorous academic programme, a rich co-curricular life and an unwavering commitment to the values of honesty, compassion and hard work.</p>
-  <p>The world our students will inherit is complex, fast-changing and full of both challenge and opportunity. Our curriculum, aligned with CBSE's best practices, prepares them not just for examinations, but for life. We teach them to think critically, to collaborate effectively, to communicate with confidence and to approach every setback as a stepping stone to growth.</p>
-  <p>To our students: you are the reason this school exists. Every resource, every lesson, every activity is designed with you in mind. Come to school with curiosity, with energy and with respect for your teachers and peers. The investment you make in your education today will pay dividends for the rest of your life.</p>
-  <p>To our parents: thank you for the trust you place in us. Your partnership and involvement make our school community richer and stronger. Please know that every member of our team is committed to your child's success and wellbeing, academically, emotionally and morally.</p>
-  <p>To all well-wishers of the school: we are grateful for your continued support and encouragement. Dr. Mar Theophilus School is more than a building, it is a community, a family and a legacy. Together, we will ensure that it continues to grow, inspire and serve for generations to come.</p>
+    <!-- Two-column: photo placeholder + message -->
+    <div class="pmsg-layout">
 
-  <div class="quote-block">
-    <p>"The goal of education is not to fill a bucket but to light a fire, a fire of curiosity, of creativity and of a deep desire to contribute to a better world."</p>
-    <cite>&#8212; Principal, Dr. Mar Theophilus School</cite>
-  </div>
+      <!-- Photo column -->
+      <div class="pmsg-photo-col">
+        <div class="pmsg-photo-wrap" role="img" aria-label="Principal photograph placeholder">
+          <div class="pmsg-monogram-icon"><i class="fas fa-user-tie"></i></div>
+          <span>Photograph</span>
+        </div>
+        <div>
+          <p class="pmsg-photo-name">The Principal</p>
+          <p class="pmsg-photo-school">Dr. Mar Theophilus School<br>Dhanori, Pune</p>
+        </div>
+      </div>
 
-  <p style="text-align:right;font-weight:600;color:var(--maroon);font-size:.95rem;margin-top:32px;">With warm regards and best wishes,<br><strong style="font-size:1.05rem;">The Principal</strong><br><span style="font-size:.82rem;color:var(--text-lt);">Dr. Mar Theophilus School, Pune</span></p>
+      <!-- Message body -->
+      <div class="pmsg-body">
+        <p>At Dr. Mar Theophilus School, we believe that education is not merely the acquisition of knowledge but the art of nurturing minds, shaping character, and empowering young individuals to become responsible citizens and compassionate human beings.</p>
+
+        <p>Guided by our vision, <em>"Empowering excellence, nurturing lifelong learners. Shaping confident, responsible, and complete individuals for a brighter tomorrow,"</em> we strive to create an educational environment where every child is encouraged to discover their potential, embrace challenges, and pursue excellence with confidence and purpose.</p>
+
+        <p>Our mission is rooted in providing a safe, inclusive, and intellectually stimulating atmosphere where curiosity flourishes and learning becomes a lifelong journey. Through innovative teaching methodologies, meaningful experiences, and holistic activities, we endeavour to develop critical thinking, creativity, collaboration, communication, and other essential 21st-century skills. We are equally committed to nurturing strong moral values, secular outlook, cultural appreciation, environmental consciousness, and respect for human rights, preparing our students to contribute meaningfully to national progress and global well-being.</p>
+
+        <p>We recognise that every child is unique, with individual talents, aspirations, and possibilities. Our dedicated teachers work tirelessly to ensure that academic excellence goes hand in hand with emotional, social, physical, and ethical development.</p>
+
+        <p>We also believe that education is a shared responsibility. The partnership between the school, parents, and students forms the foundation of a supportive and enriching learning community. Together, we can inspire our children to dream boldly, act responsibly, and persevere through every challenge.</p>
+
+        <p>As we continue our journey of excellence, we remain committed to empowering every learner to rise above limitations, shine through their abilities, and make a positive difference in the world.</p>
+
+        <p>Let us work together to shape not just successful students, but enlightened minds, compassionate hearts, and responsible citizens of tomorrow.</p>
+
+        <div class="pmsg-sig">
+          <p>Warm regards,</p>
+          <strong>The Principal</strong>
+          <span>Dr. Mar Theophilus School, Dhanori, Pune</span>
+        </div>
+      </div>
+
+    </div><!-- /.pmsg-layout -->
+  </div><!-- /.pmsg-page -->
 </div>
 </main>
 </section>
@@ -14060,93 +14654,349 @@ document.addEventListener('click', function(e) {
     </nav>
   </div>
 </section>
+<style id="campus-page-css">
+/* ── Campus & Infrastructure page ── */
+.camp-page { max-width: 1080px; margin: 0 auto; }
+
+/* Stats strip */
+.camp-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 36px 0 56px;
+}
+.camp-stat {
+  background: var(--color-bg-main);
+  border: 1px solid rgba(var(--color-primary-rgb), .12);
+  border-top: 4px solid var(--color-primary);
+  border-radius: 10px;
+  padding: 22px 16px 18px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(var(--color-primary-rgb), .06);
+}
+.camp-stat .num {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.camp-stat .lbl {
+  font-family: 'Poppins', sans-serif;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-lt);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* Alternating image-text panels */
+.camp-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin: 48px 0;
+}
+.camp-panel.reverse { direction: rtl; }
+.camp-panel.reverse > * { direction: ltr; }
+.camp-panel-img {
+  border-radius: 18px;
+  overflow: hidden;
+  height: 360px;
+  box-shadow: 0 16px 48px rgba(var(--color-primary-rgb), .12),
+              6px 6px 0 var(--color-secondary);
+}
+.camp-panel-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s ease;
+}
+.camp-panel-img:hover img { transform: scale(1.04); }
+
+/* Icon card grid for facilities */
+.camp-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 28px 0 48px;
+}
+.camp-feature-card {
+  background: var(--color-bg-main);
+  border-radius: 12px;
+  border-left: 4px solid var(--color-secondary);
+  padding: 22px 20px;
+  box-shadow: 0 4px 18px rgba(var(--color-primary-rgb), .06);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.camp-feature-card .ci {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(var(--color-primary-rgb), .08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+}
+.camp-feature-card h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 5px;
+}
+.camp-feature-card p {
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  line-height: 1.65;
+  color: var(--text-lt);
+  margin: 0;
+}
+
+/* Closing callout */
+.camp-closing {
+  margin-top: 56px;
+  padding: 44px 48px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--maroon2) 100%);
+  border-radius: 18px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 20px 56px rgba(var(--color-primary-rgb), .22);
+}
+.camp-closing-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--color-secondary);
+  margin: 0 auto 20px;
+}
+.camp-closing p {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+  line-height: 1.85;
+  color: rgba(255,255,255,.92);
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* Section dividers */
+.camp-section-sep {
+  margin-top: 64px;
+  padding-top: 56px;
+  border-top: 1px solid rgba(var(--color-primary-rgb), .10);
+}
+
+/* Body paragraphs in camp page */
+.camp-body p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+.camp-body p:last-child { margin-bottom: 0; }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .camp-stats { grid-template-columns: repeat(2, 1fr); }
+  .camp-panel, .camp-panel.reverse {
+    grid-template-columns: 1fr;
+    direction: ltr;
+    gap: 28px;
+  }
+  .camp-panel-img { height: 240px; }
+  .camp-feature-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .camp-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .camp-feature-grid { grid-template-columns: 1fr; }
+  .camp-closing { padding: 32px 22px; }
+}
+</style>
 <main>
 <div class="page-content">
-  <div class="section-tag"><i class="fas fa-building"></i> Our Facilities</div>
-  <h2 class="section-title">A Campus Built for Learning</h2>
-  <p class="section-subtitle">Every corner of our campus has been thoughtfully designed to support academic excellence, creative exploration and physical development.</p>
-  <div class="gold-rule"></div>
-  <p>The campus of Dr. Mar Theophilus School occupies a well-maintained site in the heart of Dhanori, Pune. Over the years, the school has continually invested in upgrading its facilities to meet the evolving needs of modern education, while retaining the warm, welcoming atmosphere that has always been at the heart of the school community.</p>
+<div class="camp-page">
 
-  <div class="stats-row">
-    <div class="stat-card"><div class="num">30+</div><div class="lbl">Classrooms</div></div>
-    <div class="stat-card"><div class="num">3</div><div class="lbl">Science Labs</div></div>
-    <div class="stat-card"><div class="num">5000+</div><div class="lbl">Library Books</div></div>
-    <div class="stat-card"><div class="num">Smart</div><div class="lbl">Classrooms</div></div>
+  <!-- ── Section 1: Introduction ── -->
+  <div class="section-tag"><i class="fas fa-building"></i> Our Campus &amp; Infrastructure</div>
+  <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">Our Campus &amp; Infrastructure</h2>
+  <div class="gold-rule"></div>
+
+  <!-- Campus stats -->
+  <div class="camp-stats">
+    <div class="camp-stat"><div class="num">7</div><div class="lbl">Acres Campus</div></div>
+    <div class="camp-stat"><div class="num">5</div><div class="lbl">Storey Building</div></div>
+    <div class="camp-stat"><div class="num">2</div><div class="lbl">Acres Playground</div></div>
+    <div class="camp-stat"><div class="num">~350</div><div class="lbl">Hall Capacity</div></div>
   </div>
 
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-school"></i> Academic Facilities</div>
-  <h2 class="section-title">Learning Spaces</h2>
-  <div class="gold-rule"></div>
-  <div class="highlight-grid">
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-chalkboard-teacher"></i></div>
-      <h4>Smart Classrooms</h4>
-      <p>All classrooms are equipped with projectors, interactive whiteboards and digital resources to enable engaging, technology-enhanced learning across all grades.</p>
+  <!-- Intro alternating panel -->
+  <div class="camp-panel">
+    <div class="camp-panel-img">
+      <img src="images/campus-learning-background.png" alt="Dr. Mar Theophilus School campus and academic building" loading="lazy">
     </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-flask"></i></div>
-      <h4>Science Laboratories</h4>
-      <p>Separate, well-equipped labs for Physics, Chemistry and Biology with all apparatus required for CBSE practical examinations and hands-on experimentation.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-desktop"></i></div>
-      <h4>Computer Centre</h4>
-      <p>A modern computer lab with high-speed internet connectivity, individual workstations and licensed educational software for all grades from I to X.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-book"></i></div>
-      <h4>School Library</h4>
-      <p>A well-stocked library with over 5,000 titles including fiction, non-fiction, reference books, periodicals and digital resources. Open every school day.</p>
+    <div class="camp-body">
+      <p>Spread across a sprawling seven-acre campus, Dr. Mar Theophilus School offers a spacious, green and stimulating environment that provides an ideal setting for learning, recreation and the holistic development of every child. The campus features a magnificent five-storey academic building with well-ventilated classrooms, thoughtfully designed learning spaces and modern educational facilities.</p>
+      <p>The school building is designed to accommodate the diverse academic, administrative, recreational and developmental needs of its students. Each floor houses dedicated facilities that support effective teaching, practical learning and the overall well-being of the school community.</p>
     </div>
   </div>
 
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-running"></i> Sports Facilities</div>
-  <h2 class="section-title">Sports &amp; Recreation</h2>
-  <div class="gold-rule"></div>
-  <div class="highlight-grid">
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-futbol"></i></div>
-      <h4>Sports Ground</h4>
-      <p>A spacious outdoor ground accommodating football, cricket and athletics. Used for daily PE classes, practice sessions and annual Sports Day events.</p>
+  <!-- ── Section 2: Learning & Growth ── -->
+  <div class="camp-section-sep">
+    <div class="section-tag"><i class="fas fa-chalkboard-teacher"></i> A Campus That Encourages Learning and Growth</div>
+    <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">A Campus That Encourages Learning and Growth</h2>
+    <div class="gold-rule"></div>
+    <div class="camp-body" style="margin-bottom:32px;">
+      <p>The school is equipped with separate toilet facilities for boys and girls on every floor, along with purified drinking water facilities. Every classroom is supported by electronic learning resources provided by Next Education, enriching classroom instruction through technology-enabled teaching and learning.</p>
     </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-table-tennis"></i></div>
-      <h4>Indoor Sports Hall</h4>
-      <p>An indoor space dedicated to table tennis, chess, indoor games and yoga. Ensures physical activity is available regardless of weather conditions.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-basketball-ball"></i></div>
-      <h4>Multi-Purpose Court</h4>
-      <p>A hard-surface court used for basketball and throw ball. Floodlit for after-school use during sports practice sessions throughout the academic year.</p>
+    <div class="camp-feature-grid">
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-restroom"></i></div>
+        <div>
+          <h4>Separate Toilet Facilities</h4>
+          <p>Dedicated facilities for boys and girls maintained on every floor of the building.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-tint"></i></div>
+        <div>
+          <h4>Purified Drinking Water</h4>
+          <p>Clean, purified drinking water facilities available throughout the campus for all students and staff.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-chalkboard"></i></div>
+        <div>
+          <h4>Electronic Learning Resources</h4>
+          <p>All classrooms are supported by Next Education's technology-enabled teaching and learning resources.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-layer-group"></i></div>
+        <div>
+          <h4>Five-Storey Academic Building</h4>
+          <p>Each floor houses dedicated spaces supporting teaching, practical learning and student well-being.</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-shield-alt"></i> Safety &amp; Support</div>
-  <h2 class="section-title">A Safe &amp; Supportive Environment</h2>
-  <div class="gold-rule"></div>
-  <div class="highlight-grid">
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-camera"></i></div>
-      <h4>CCTV Surveillance</h4>
-      <p>The entire campus is covered by a CCTV surveillance system monitored by the school administration, ensuring the safety of every student, staff and visitor.</p>
+  <!-- ── Section 3: Sports & Outdoor ── -->
+  <div class="camp-section-sep">
+    <div class="section-tag"><i class="fas fa-running"></i> Sports and Outdoor Activities</div>
+    <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">Sports and Outdoor Activities</h2>
+    <div class="gold-rule"></div>
+
+    <div class="camp-panel reverse">
+      <div class="camp-panel-img">
+        <img src="images/events-school-campus-bg.png" alt="School playground and sports facilities" loading="lazy">
+      </div>
+      <div class="camp-body">
+        <p>A significant highlight of the campus is its expansive two-acre playground, which provides ample space for outdoor sports and physical activities. The playground features a basketball court and facilities for games such as football, cricket and badminton. Dedicated play areas for younger children further ensure age-appropriate opportunities for physical activity and recreation.</p>
+        <p>The school also features an open auditorium and a multipurpose hall with seating capacity for approximately 350 people, providing excellent venues for assemblies, cultural programmes, celebrations, seminars and other school events. A spacious lobby adds to the campus's multipurpose facilities.</p>
+      </div>
     </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-first-aid"></i></div>
-      <h4>Medical Room</h4>
-      <p>A dedicated medical room with a qualified first-aider on duty during school hours. Basic medical supplies and emergency protocols are in place at all times.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-bus"></i></div>
-      <h4>Transport</h4>
-      <p>School transport is available for students in select areas. All vehicles are GPS-tracked and driven by experienced, verified drivers for maximum safety.</p>
-    </div>
-    <div class="highlight-card">
-      <div class="icon"><i class="fas fa-utensils"></i></div>
-      <h4>Canteen</h4>
-      <p>A hygienic canteen serving nutritious, freshly prepared meals and snacks during school breaks. The menu is reviewed periodically for health standards.</p>
+
+    <div class="camp-feature-grid">
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-basketball-ball"></i></div>
+        <div>
+          <h4>Basketball Court</h4>
+          <p>A dedicated basketball court within the two-acre playground for sports practice and competitions.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-futbol"></i></div>
+        <div>
+          <h4>Football, Cricket &amp; Badminton</h4>
+          <p>Facilities for a range of outdoor sports including football, cricket and badminton within the expansive playground.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-child"></i></div>
+        <div>
+          <h4>Children's Play Areas</h4>
+          <p>Dedicated age-appropriate play areas for younger children, ensuring safe and enjoyable recreation.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-theater-masks"></i></div>
+        <div>
+          <h4>Open Auditorium &amp; Multipurpose Hall</h4>
+          <p>Seating approximately 350 people — ideal for assemblies, cultural programmes, seminars and school events, with a spacious lobby.</p>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- ── Section 4: Green & Sustainable ── -->
+  <div class="camp-section-sep">
+    <div class="section-tag"><i class="fas fa-leaf"></i> A Green and Sustainable Environment</div>
+    <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">A Green and Sustainable Environment</h2>
+    <div class="gold-rule"></div>
+
+    <div class="camp-panel">
+      <div class="camp-panel-img">
+        <img src="images/events-maroon-campus-balanced-bg.png" alt="Lush green campus surroundings" loading="lazy">
+      </div>
+      <div class="camp-body">
+        <p>Surrounded by lush greenery, fruit-bearing trees, flowering plants and scenic views of the hills, the campus provides a refreshing natural setting for young minds to learn and flourish. The landscaped surroundings create an atmosphere of calmness and offer students an opportunity to appreciate and connect with nature.</p>
+        <p>The school also has essential infrastructure to support uninterrupted campus operations, including generator backup, borewell water facilities and solar power generation. These provisions contribute towards maintaining a comfortable, reliable and sustainable learning environment.</p>
+      </div>
+    </div>
+
+    <div class="camp-feature-grid">
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-tree"></i></div>
+        <div>
+          <h4>Greenery &amp; Natural Surroundings</h4>
+          <p>Lush greenery, fruit-bearing trees, flowering plants and scenic hill views create a calming natural environment.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-bolt"></i></div>
+        <div>
+          <h4>Generator Backup</h4>
+          <p>Generator backup ensures uninterrupted campus operations, keeping classrooms and facilities running at all times.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-water"></i></div>
+        <div>
+          <h4>Borewell Water Facilities</h4>
+          <p>Borewell water facilities ensure a reliable water supply to support the entire campus community.</p>
+        </div>
+      </div>
+      <div class="camp-feature-card">
+        <div class="ci"><i class="fas fa-solar-panel"></i></div>
+        <div>
+          <h4>Solar Power Generation</h4>
+          <p>Solar power generation reflects the school's commitment to sustainability and a greener learning environment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section 5: Closing Statement ── -->
+  <div class="camp-closing">
+    <div class="camp-closing-icon"><i class="fas fa-graduation-cap"></i></div>
+    <p>At Dr. Mar Theophilus School, our campus is more than just a collection of buildings and facilities. It is a vibrant learning space where knowledge is nurtured, talents are discovered, friendships are built and young minds are inspired to reach their fullest potential.</p>
+  </div>
+
+</div><!-- /.camp-page -->
 </div>
 </main>
 </section>
