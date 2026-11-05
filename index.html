@@ -524,7 +524,7 @@ body{
 .nav-links{
     list-style:none;
     display:flex;
-    gap:34px;
+    gap:22px;
     margin:0;
     padding:0;
     align-items:center;
@@ -534,8 +534,9 @@ body{
     padding:14px 0;
     color:var(--color-primary);
     text-decoration:none;
-    font-size:20px;
-    font-weight:200;
+    font-size:18px; /* <-- adjust nav text size here (min 15px recommended) */
+    font-weight:400;
+    white-space:nowrap;
     position:relative;
     transition:color 0.3s ease;
 }
@@ -1055,6 +1056,72 @@ body{
 .slide-full.active {
   opacity: 1;
 }
+
+/* ── Hero dot indicators ──────────────────────────────────── */
+.hero-dots-wrap {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.hero-dot {
+  background: none;
+  border: 2px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  /* visible dot drawn with ::before so the touch target can be larger */
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s;
+}
+.hero-dot::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.5);
+  display: block;
+  transition: background .2s, transform .2s;
+}
+.hero-dot.active::before {
+  background: #fff;
+  transform: scale(1.15);
+}
+.hero-dot:hover::before,
+.hero-dot:focus-visible::before {
+  background: rgba(255,255,255,.85);
+}
+.hero-dot:focus-visible {
+  outline: 2px solid rgba(255,255,255,.8);
+  outline-offset: 2px;
+}
+/* ── Slow ken-burns zoom on active slide ──────────────────── */
+@keyframes hero-zoom-in {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+.slide-full.active.hero-zoom-active {
+  animation: hero-zoom-in var(--hero-zoom-dur, 6s) linear forwards;
+}
+/* Zoom off when reduced motion is requested */
+@media (prefers-reduced-motion: reduce) {
+  .slide-full.active.hero-zoom-active {
+    animation: none;
+    transform: none;
+  }
+}
+/* Ensure the img fills its container even during zoom */
+.slide-full {
+  transform-origin: center center;
+}
 /* Hero Overlay for Better Text Visibility */
 .hero-full::before {
   content: "";
@@ -1063,7 +1130,10 @@ body{
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent;
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,.35) 0%,
+    rgba(0,0,0,.55) 55%,
+    rgba(0,0,0,.42) 100%);
   z-index: 2;
 }
 
@@ -5070,6 +5140,44 @@ body.admission-popup-open{overflow:hidden;}
     display:none !important;
   }
 
+  /* ===== TRUE-CENTRE NAV: 3-column grid ===== */
+  .nav-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .sticky-logo { grid-column: 1; }
+  .mobile-nav-contact { grid-column: 1; display: none !important; }
+  .nav-container ul.nav-links {
+    grid-column: 2;
+    padding: 0 !important;
+    flex: none !important;
+    margin: 0 !important;
+  }
+  .nav-container .nav-actions {
+    grid-column: 3;
+    position: static !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  /* Scrolled state: logo visible in col 1; links stay centred in col 2 */
+  .nav-container.scrolled ul.nav-links {
+    padding: 0 !important;
+    flex: none !important;
+    margin: 0 !important;
+  }
+
+  /* ===== GEORGIA FONT for nav and dropdown items ===== */
+  .nav-links li > a,
+  .nav-container .dropdown-menu li a {
+    font-family: Georgia, "Times New Roman", serif !important;
+  }
+
 }
 
 /* =============================================================
@@ -8700,7 +8808,7 @@ font-size:1.8rem;
 .header-top { background-color:var(--color-primary) !important; }
 .notice-marquee-bar { background:linear-gradient(90deg,var(--color-primary),var(--color-primary)) !important; }
 #mobileMenu { background:var(--color-primary) !important; }
-.hero-full::before { background:transparent !important; }
+.hero-full::before { background:linear-gradient(to bottom,rgba(0,0,0,.35) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.42) 100%) !important; }
 .khopoli-tablet-menu { display:none; }
 .nav-container > .nav-links { gap:24px; }
 /* ============================================================
@@ -10132,18 +10240,40 @@ font-size:1.8rem;
 </nav></div><main id="main"><section class="hero-full">
 
   <!-- Background Image Slider -->
-  <div class="slider-container-full">
-    <div class="slides-full">
-      <img src="images/OIP (3).webp" class="slide-full active" alt="School campus">
-      <img src="images/OIP (1).webp" class="slide-full" alt="School community gathering">
-      <img src="images/OIP (2).webp" class="slide-full" alt="School activities">
-      
-    </div>
-
-    <!-- Arrows -->
-    <span role="button" tabindex="0" aria-label="Previous slide" class="arrow-full left" onclick="prevSlide()">&#10094;</span>
-    <span role="button" tabindex="0" aria-label="Next slide" class="arrow-full right" onclick="nextSlide()">&#10095;</span>
+  <!-- ============================================
+     HERO SLIDESHOW PHOTOS - HOW TO EDIT
+     TO ADD A PHOTO:
+     1. Copy the photo into the "images" folder
+        (JPG, about 1920 px wide, under 400 KB, no spaces in the name).
+     2. Copy one <img> line below, paste it on the next line,
+        and change only the file name and object-position if needed.
+     TO REMOVE A PHOTO: delete its whole <img> line. Nothing else needs to change.
+     TO CHANGE THE ORDER: move the <img> lines up or down.
+     The slide-count, dots, arrows and autoplay all adapt automatically.
+     The slider still works with 1 photo (arrows and dots are hidden)
+     and with up to 10 photos without any other code change.
+     File names must match exactly (lowercase letters, .jpg).
+     Save and press Ctrl+F5 to check.
+     ============================================ -->
+<div class="slider-container-full" id="hero-slider">
+  <div class="slides-full">
+    <!-- Slide 1 — object-position moves the focal point up or down: "center 30%" keeps faces in frame for group shots -->
+    <img src="images/hero01.jpg" class="slide-full active" alt="Students of Dr. Mar Theophilus School" style="object-position:center 30%">
+    <!-- Slide 2 — alt text: change the alt="..." value to update what screen readers announce for this slide -->
+    <img src="images/hero02.jpg" class="slide-full" alt="Students of Dr. Mar Theophilus School" style="object-position:center 30%" loading="lazy">
+    <!-- Slide 3 -->
+    <img src="images/hero03.jpg" class="slide-full" alt="Students of Dr. Mar Theophilus School" style="object-position:center 30%" loading="lazy">
+    <!-- Slide 4 -->
+    <img src="images/hero04.jpg" class="slide-full" alt="Students of Dr. Mar Theophilus School" style="object-position:center 30%" loading="lazy">
   </div>
+
+  <!-- Dot indicators — built automatically from the slide count; do not add dots manually here -->
+  <div id="hero-dots" class="hero-dots-wrap" role="group" aria-label="Slideshow navigation"></div>
+
+  <!-- Arrows -->
+  <span role="button" tabindex="0" aria-label="Previous slide" class="arrow-full left" onclick="prevSlide()">&#10094;</span>
+  <span role="button" tabindex="0" aria-label="Next slide" class="arrow-full right" onclick="nextSlide()">&#10095;</span>
+</div>
 
   <!-- Centered Text Content -->
   <!-- HERO CONTENT -->
@@ -11091,21 +11221,118 @@ function initMobileMenu() {
 /* =========================================================
    HERO SLIDER
 ========================================================= */
-let currentSlide = 0;
-let slidesFull   = [];
+/* ── Hero Slideshow ─────────────────────────────────────────────
+   Photos live in the HTML above (the <img> tags inside .slides-full).
+   Edit ONLY those img lines to add, remove or reorder slides.
+   This JS reads whatever is there and adapts automatically.
+   ─────────────────────────────────────────────────────────────── */
+let currentSlide  = 0;
+let slidesFull    = [];
 let slideInterval;
+// Change 6000 to a different number of milliseconds to make the slides faster or slower.
+const HERO_SLIDE_DURATION = 6000;
+const heroReducedMotion   = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 document.addEventListener("DOMContentLoaded", () => {
-  slidesFull = document.querySelectorAll(".slide-full");
-  if (slidesFull.length > 0) {
-    showSlide(currentSlide);
-    slideInterval = setInterval(nextSlide, 4000);
+  slidesFull = Array.from(document.querySelectorAll(".slide-full"));
+  if (slidesFull.length === 0) return;
+
+  // ── Build dot buttons from slide count ──
+  const dotsWrap = document.getElementById("hero-dots");
+  if (dotsWrap) {
+    slidesFull.forEach(function(_, i) {
+      const btn = document.createElement("button");
+      btn.type        = "button";
+      btn.className   = "hero-dot" + (i === 0 ? " active" : "");
+      btn.setAttribute("aria-label",   "Go to slide " + (i + 1));
+      btn.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+      btn.addEventListener("click", function() { goToSlide(i); resetHeroInterval(); });
+      dotsWrap.appendChild(btn);
+    });
+  }
+
+  // ── Hide arrows and dots when only 1 slide ──
+  if (slidesFull.length <= 1) {
+    document.querySelectorAll(".arrow-full").forEach(function(a) { a.style.display = "none"; });
+    if (dotsWrap) dotsWrap.style.display = "none";
+  }
+
+  showSlide(currentSlide);
+
+  // ── Autoplay (paused when prefers-reduced-motion is on) ──
+  if (!heroReducedMotion) {
+    slideInterval = setInterval(nextSlide, HERO_SLIDE_DURATION);
+  }
+
+  // ── Pause on mouse hover ──
+  const container = document.getElementById("hero-slider");
+  if (container) {
+    container.addEventListener("mouseenter", pauseHeroAutoplay);
+    container.addEventListener("mouseleave", function() {
+      if (!heroReducedMotion) slideInterval = setInterval(nextSlide, HERO_SLIDE_DURATION);
+    });
+    // ── Pause when any control inside hero has keyboard focus ──
+    container.addEventListener("focusin",  pauseHeroAutoplay);
+    container.addEventListener("focusout", function(e) {
+      if (!container.contains(e.relatedTarget)) {
+        if (!heroReducedMotion) slideInterval = setInterval(nextSlide, HERO_SLIDE_DURATION);
+      }
+    });
+  }
+
+  // ── Touch swipe ──
+  var heroTouchX = 0;
+  var heroEl = document.querySelector(".hero-full");
+  if (heroEl) {
+    heroEl.addEventListener("touchstart", function(e) {
+      heroTouchX = e.touches[0].clientX;
+    }, { passive: true });
+    heroEl.addEventListener("touchend", function(e) {
+      var dx = e.changedTouches[0].clientX - heroTouchX;
+      if (Math.abs(dx) > 40) {
+        if (dx < 0) { nextSlide(); } else { prevSlide(); }
+        resetHeroInterval();
+      }
+    }, { passive: true });
   }
 });
 
+function pauseHeroAutoplay() {
+  clearInterval(slideInterval);
+}
+
+function resetHeroInterval() {
+  clearInterval(slideInterval);
+  if (!heroReducedMotion) {
+    slideInterval = setInterval(nextSlide, HERO_SLIDE_DURATION);
+  }
+}
+
 function showSlide(index) {
-  slidesFull.forEach(slide => slide.classList.remove("active"));
+  // Remove active + zoom from all slides
+  slidesFull.forEach(function(slide) {
+    slide.classList.remove("active");
+    slide.classList.remove("hero-zoom-active");
+  });
+  // Activate the chosen slide
   slidesFull[index].classList.add("active");
+  // Restart slow zoom on new active slide (skipped when reduced motion)
+  if (!heroReducedMotion) {
+    requestAnimationFrame(function() {
+      if (slidesFull[index]) slidesFull[index].classList.add("hero-zoom-active");
+    });
+  }
+  // Update dot indicators
+  document.querySelectorAll(".hero-dot").forEach(function(dot, i) {
+    var isActive = (i === index);
+    dot.classList.toggle("active", isActive);
+    dot.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
+function goToSlide(i) {
+  currentSlide = i;
+  showSlide(currentSlide);
 }
 
 function nextSlide() {
@@ -11117,6 +11344,9 @@ function prevSlide() {
   currentSlide = (currentSlide - 1 + slidesFull.length) % slidesFull.length;
   showSlide(currentSlide);
 }
+
+
+
 
 
 
@@ -15189,108 +15419,497 @@ document.addEventListener('click', function(e) {
     </nav>
   </div>
 </section>
+<style id="careers-page-css">
+/* ── Careers page ─────────────────────────────────────────────────────────── */
+/* Uses site's --color-primary (#D50000), --color-secondary, --color-bg-main,
+   --color-text, --text-lt, --shadow, --radius, Poppins + Georgia already loaded */
+
+.car-page { font-family: 'Poppins', sans-serif; }
+.car-page p, .car-page li {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem; line-height: 1.75; color: var(--color-text);
+  max-width: 68ch;
+}
+
+/* ── Shared divider ── */
+.car-divider {
+  border: none; border-top: 1px solid rgba(0,0,0,.08);
+  margin: 44px 0;
+}
+
+/* ── Section label ── */
+.car-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--color-primary); margin: 0 0 8px;
+}
+
+/* ── Section heading ── */
+.car-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.35rem; font-weight: 700; color: var(--color-text);
+  margin: 0 0 20px; line-height: 1.3;
+}
+
+/* ── Hero band ── */
+.car-hero {
+  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9a0000 100%);
+  padding: 48px 40px 44px;
+  border-radius: 12px; margin-bottom: 48px; color: #fff;
+}
+.car-hero .car-label { color: rgba(255,255,255,.75); margin-bottom: 12px; }
+.car-hero h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.75rem; font-weight: 700; color: #fff;
+  margin: 0 0 8px; line-height: 1.25; max-width: 20ch;
+}
+.car-hero .car-hero-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: .9rem; color: rgba(255,255,255,.8);
+  margin: 0 0 24px; max-width: none;
+}
+.car-hero-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.car-btn-solid {
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem; font-weight: 600;
+  background: #fff; color: var(--color-primary);
+  padding: 10px 22px; border-radius: 6px;
+  border: 2px solid #fff; text-decoration: none;
+  transition: background .15s, color .15s;
+  cursor: pointer; display: inline-block;
+}
+.car-btn-solid:hover { background: rgba(255,255,255,.88); }
+.car-btn-solid:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 2px; }
+.car-btn-outline {
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem; font-weight: 600;
+  background: transparent; color: #fff;
+  padding: 10px 22px; border-radius: 6px;
+  border: 2px solid rgba(255,255,255,.65); text-decoration: none;
+  transition: border-color .15s, background .15s;
+  cursor: pointer; display: inline-block;
+}
+.car-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+.car-btn-outline:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 2px; }
+
+/* ── Intro two-col ── */
+.car-intro { display: grid; grid-template-columns: 1fr 320px; gap: 32px; align-items: start; margin-bottom: 0; }
+.car-intro-text p { max-width: 68ch; }
+.car-intro-text p + p { margin-top: 14px; }
+.car-quote {
+  border-left: 3px solid var(--color-primary);
+  padding: 20px 20px 20px 22px;
+  background: rgba(var(--color-primary-rgb),.04);
+  border-radius: 0 10px 10px 0;
+}
+.car-quote p {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.05rem; font-weight: 400; font-style: italic;
+  color: var(--color-text); line-height: 1.65; max-width: none;
+}
+
+/* ── Why join us — card grid ── */
+.car-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 20px; }
+.car-card {
+  background: #fff;
+  border: 1px solid #e2e2e5;
+  border-radius: 10px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  transition: box-shadow .18s, transform .18s;
+}
+.car-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); transform: translateY(-2px); }
+.car-card-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(var(--color-primary-rgb),.08);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.car-card-icon svg { width: 22px; height: 22px; stroke: var(--color-primary); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.car-card-num {
+  font-family: 'Poppins', sans-serif;
+  font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+  color: #bbb; margin-bottom: 6px;
+}
+.car-card h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: .92rem; font-weight: 700;
+  color: var(--color-text); margin: 0 0 6px;
+}
+.car-card p { font-size: .86rem; color: #666; line-height: 1.65; margin: 0; max-width: none; }
+
+/* Notice banner */
+.car-notice {
+  background: #f7f7f8;
+  border: 1px solid #e2e2e5;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 8px 8px 0;
+  padding: 13px 18px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .86rem; color: #555;
+}
+
+/* ── Stepper ── */
+.car-stepper {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 0; position: relative; margin-bottom: 32px;
+}
+/* connector line */
+.car-stepper::before {
+  content: '';
+  position: absolute; top: 20px; left: calc(50% / 3 + 2px); right: calc(50% / 3 + 2px);
+  height: 2px; background: #e2e2e5; z-index: 0;
+}
+.car-step { text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+.car-step-num {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--color-primary); color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px; border: 3px solid #fff;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+.car-step h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem; font-weight: 700;
+  color: var(--color-text); margin: 0 0 6px;
+}
+.car-step p { font-size: .84rem; color: #666; line-height: 1.65; margin: 0; max-width: none; }
+
+/* Contact card */
+.car-contact-card {
+  background: #fff;
+  border: 1px solid #e2e2e5;
+  border-radius: 10px; padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  margin-bottom: 0;
+}
+.car-contact-card .cc-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.car-contact-card .cc-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: #999; min-width: 80px;
+}
+.car-contact-card a {
+  font-family: 'Poppins', sans-serif;
+  font-size: .92rem; font-weight: 600;
+  color: var(--color-primary); text-decoration: none;
+}
+.car-contact-card a:hover { text-decoration: underline; }
+.car-copy-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: .75rem; font-weight: 600;
+  background: rgba(var(--color-primary-rgb),.07);
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb),.2);
+  border-radius: 20px; padding: 3px 12px;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s;
+}
+.car-copy-btn:hover { background: rgba(var(--color-primary-rgb),.14); }
+.car-copy-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.car-subject-box {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: .84rem; color: var(--color-text);
+  background: #f4f4f6; border: 1px solid #e2e2e5;
+  border-radius: 6px; padding: 9px 14px; margin-top: 4px;
+  word-break: break-all;
+}
+
+/* ── Closing CTA band ── */
+.car-cta {
+  background: linear-gradient(135deg, #e5c16a 0%, #c9a240 100%);
+  border-radius: 12px; padding: 36px 40px;
+  color: #2a1a00; margin-top: 48px;
+}
+.car-cta .car-label { color: rgba(42,26,0,.55); }
+.car-cta h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem; font-weight: 700; color: #1a1000;
+  margin: 0 0 14px; line-height: 1.35;
+}
+.car-cta p { font-size: .92rem; color: #3a2600; line-height: 1.75; max-width: 68ch; margin: 0 0 22px; }
+.car-cta-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem; font-weight: 600;
+  background: var(--color-primary); color: #fff;
+  padding: 11px 26px; border-radius: 6px;
+  border: none; text-decoration: none; display: inline-block;
+  transition: background .15s;
+}
+.car-cta-btn:hover { background: #9a0000; }
+.car-cta-btn:focus-visible { outline: 3px solid rgba(42,26,0,.5); outline-offset: 2px; }
+
+/* ── Fade-in (reuses sc-visible pattern) ── */
+.car-fade { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .car-fade { opacity: 0; transform: translateY(16px); transition: opacity .45s ease, transform .45s ease; }
+  .car-fade.sc-visible { opacity: 1; transform: none; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1023px) and (min-width: 640px) {
+  .car-intro { grid-template-columns: 1fr; }
+  .car-cards { grid-template-columns: repeat(2,1fr); }
+  .car-stepper { grid-template-columns: 1fr; gap: 20px; }
+  .car-stepper::before { display: none; }
+  .car-step { text-align: left; display: flex; gap: 16px; align-items: flex-start; padding: 0; }
+  .car-step-num { flex-shrink: 0; margin: 0; }
+}
+@media (max-width: 639px) {
+  .car-hero { padding: 32px 20px 28px; border-radius: 8px; }
+  .car-hero h2 { font-size: 1.35rem; max-width: none; }
+  .car-intro { grid-template-columns: 1fr; }
+  .car-cards { grid-template-columns: 1fr; }
+  .car-stepper { grid-template-columns: 1fr; gap: 20px; }
+  .car-stepper::before { display: none; }
+  .car-step { text-align: left; display: flex; gap: 16px; align-items: flex-start; padding: 0; }
+  .car-step-num { flex-shrink: 0; margin: 0; }
+  .car-cta { padding: 28px 20px; border-radius: 8px; }
+}
+
+/* ── Print ── */
+@media print {
+  .car-hero { background: none !important; color: #000 !important; border: 2px solid #000; border-radius: 0; padding: 16px; }
+  .car-hero h2, .car-hero .car-hero-sub, .car-hero .car-label { color: #000 !important; }
+  .car-hero-btns, .car-cta-btn, .car-copy-btn { display: none !important; }
+  .car-cta { background: none !important; color: #000 !important; border: 1px solid #ccc; }
+  .car-cta h3, .car-cta p { color: #000 !important; }
+  .car-card { box-shadow: none; break-inside: avoid; }
+  .car-stepper::before { display: none; }
+}
+</style>
 <main>
 <div class="page-content">
-  <div class="section-tag"><i class="fas fa-briefcase"></i> Join Our Team</div>
-  <h2 class="section-title">Work With Us</h2>
-  <p class="section-subtitle">We are looking for passionate educators and dedicated professionals who believe in the power of quality education to transform lives.</p>
-  <div class="gold-rule"></div>
-  <p>At Dr. Mar Theophilus School, we know that exceptional students are shaped by exceptional teachers. We are committed to building a team that is not only professionally qualified but genuinely enthusiastic about nurturing young minds. If you share our values of excellence, compassion and integrity, we would love to hear from you.</p>
-  <p>We offer a collaborative, supportive work environment, regular professional development opportunities, and the satisfaction of contributing to a school community that truly makes a difference.</p>
+<div class="car-page">
 
-  <div class="stats-row">
-    <div class="stat-card"><div class="num">50+</div><div class="lbl">Staff Members</div></div>
-    <div class="stat-card"><div class="num">30+</div><div class="lbl">Years of Education</div></div>
-    <div class="stat-card"><div class="num">CBSE</div><div class="lbl">Affiliated</div></div>
-    <div class="stat-card"><div class="num">Pune</div><div class="lbl">Location</div></div>
-  </div>
-
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-chalkboard-teacher"></i> Teaching Positions</div>
-  <h2 class="section-title">Current Openings â€” Teaching</h2>
-  <div class="gold-rule"></div>
-
-  <div class="job-card">
-    <div>
-      <h3>Primary School Teacher â€” English &amp; EVS</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">Primary Section</span>
-        <span class="badge badge-type">Full Time</span>
-      </div>
-      <p>We seek an enthusiastic, child-centred teacher for Grades Iâ€“V with a B.Ed. qualification and at least 2 years of CBSE school experience. Strong English communication skills essential.</p>
+  <!-- Hero -->
+  <div class="car-hero">
+    <div class="car-label">CAREERS</div>
+    <h2>Build a Meaningful Career with Us</h2>
+    <p class="car-hero-sub">Dr. Mar Theophilus School, Dhanori, Pune</p>
+    <div class="car-hero-btns">
+      <a href="mailto:dmtsquery@gmail.com?subject=Application%20for%20the%20Post%20of%20%5BPosition%20Name%5D" class="car-btn-solid">Apply by Email</a>
+      <a href="#car-how-to-apply" class="car-btn-outline" id="car-scroll-btn">How to Apply</a>
     </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
   </div>
 
-  <div class="job-card">
-    <div>
-      <h3>Secondary School Teacher â€” Mathematics</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">Secondary Section</span>
-        <span class="badge badge-type">Full Time</span>
+  <!-- Intro -->
+  <section class="car-fade">
+    <div class="car-intro">
+      <div class="car-intro-text">
+        <p>At Dr. Mar Theophilus School, Dhanori, Pune, we believe that every great school is built by dedicated educators and committed professionals. Our team plays an important role in creating a positive, supportive and stimulating learning environment where every child is encouraged to learn, grow and excel.</p>
+        <p>We welcome passionate, enthusiastic and qualified individuals who share our commitment to quality education, holistic development and the overall well-being of students.</p>
       </div>
-      <p>Experienced Mathematics teacher for Grades VIâ€“X. B.Ed. with Mathematics specialisation required. CBSE Board teaching experience preferred. Ability to coach Olympiad students is an advantage.</p>
-    </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
-  </div>
-
-  <div class="job-card">
-    <div>
-      <h3>Science Teacher â€” Physics &amp; Chemistry</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">Middle &amp; Secondary</span>
-        <span class="badge badge-type">Full Time</span>
+      <div class="car-quote">
+        <p>Every great school is built by dedicated educators and committed professionals.</p>
       </div>
-      <p>Science teacher for Grades VIâ€“X with strong subject knowledge in Physics and Chemistry. Lab supervision experience is required. B.Ed. / M.Sc. B.Ed. preferred.</p>
     </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
-  </div>
+  </section>
 
-  <div class="job-card">
-    <div>
-      <h3>Computer Science Teacher</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">All Sections</span>
-        <span class="badge badge-type">Full Time</span>
+  <hr class="car-divider">
+
+  <!-- Why Join Us -->
+  <section class="car-fade" id="car-why-join">
+    <div class="car-label">WHY JOIN US</div>
+    <h3 class="car-heading">Why Join Us?</h3>
+    <div class="car-cards">
+      <!-- 01 -->
+      <div class="car-card">
+        <div class="car-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="car-card-num">01</div>
+        <h4>A Purposeful Workplace</h4>
+        <p>Be part of an institution committed to nurturing young minds and shaping responsible individuals.</p>
       </div>
-      <p>Computer Science teacher with proficiency in Python, web development fundamentals and digital literacy instruction. Experience with CBSE CS curriculum for Grades VIâ€“X required.</p>
-    </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
-  </div>
-
-  <div class="section-tag" style="margin-top:56px;"><i class="fas fa-cogs"></i> Non-Teaching Positions</div>
-  <h2 class="section-title">Current Openings â€” Non-Teaching</h2>
-  <div class="gold-rule"></div>
-
-  <div class="job-card">
-    <div>
-      <h3>Administrative Assistant</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">Administration</span>
-        <span class="badge badge-type">Full Time</span>
+      <!-- 02 -->
+      <div class="car-card">
+        <div class="car-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="car-card-num">02</div>
+        <h4>Professional Growth</h4>
+        <p>Opportunities to enhance your knowledge, skills and teaching practices.</p>
       </div>
-      <p>Manage front-desk operations, admissions correspondence, student records and parent communications. Proficiency in MS Office and good communication skills required.</p>
-    </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
-  </div>
-
-  <div class="job-card">
-    <div>
-      <h3>Library Assistant</h3>
-      <div class="job-meta">
-        <span class="badge badge-dept">Library</span>
-        <span class="badge badge-type">Part Time</span>
+      <!-- 03 -->
+      <div class="car-card">
+        <div class="car-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="car-card-num">03</div>
+        <h4>Collaborative Environment</h4>
+        <p>Work alongside a team of dedicated educators and professionals.</p>
       </div>
-      <p>Assist the librarian in cataloguing, issuing and maintaining library resources. Familiarity with library management systems and a genuine love for books preferred.</p>
+      <!-- 04 -->
+      <div class="car-card">
+        <div class="car-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <div class="car-card-num">04</div>
+        <h4>Meaningful Contribution</h4>
+        <p>Make a positive difference in the academic, social and personal development of students.</p>
+      </div>
+      <!-- 05 -->
+      <div class="car-card">
+        <div class="car-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="car-card-num">05</div>
+        <h4>Continuous Learning</h4>
+        <p>Participate in professional development programmes, workshops and training initiatives.</p>
+      </div>
     </div>
-    <button class="apply-btn" onclick="document.location='contact.html'">Apply Now</button>
+    <div class="car-notice">Appointments are subject to vacancies and the school's recruitment requirements.</div>
+  </section>
+
+  <hr class="car-divider">
+
+  <!-- How to Apply -->
+  <section class="car-fade" id="car-how-to-apply">
+    <div class="car-label">HOW TO APPLY</div>
+    <h3 class="car-heading">How to Apply</h3>
+    <div class="car-stepper">
+      <div class="car-step">
+        <div class="car-step-num">1</div>
+        <div>
+          <h4>Share your updated r&eacute;sum&eacute;</h4>
+          <p>Interested candidates may share their updated r&eacute;sum&eacute; along with relevant educational qualifications and experience details through the contact information provided below.</p>
+        </div>
+      </div>
+      <div class="car-step">
+        <div class="car-step-num">2</div>
+        <div>
+          <h4>Email us</h4>
+          <p>Send your application to our admissions and enquiry address.</p>
+        </div>
+      </div>
+      <div class="car-step">
+        <div class="car-step-num">3</div>
+        <div>
+          <h4>Wait to hear from us</h4>
+          <p>Shortlisted candidates will be contacted for the further stages of the selection process.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact card -->
+    <div class="car-contact-card" role="region" aria-label="Contact details">
+      <div class="cc-row">
+        <span class="cc-label">Email</span>
+        <a href="mailto:dmtsquery@gmail.com?subject=Application%20for%20the%20Post%20of%20%5BPosition%20Name%5D">dmtsquery@gmail.com</a>
+        <button class="car-copy-btn" id="car-copy-email" aria-label="Copy email address">Copy email</button>
+      </div>
+      <div class="cc-row" style="align-items:flex-start;">
+        <span class="cc-label" style="padding-top:9px;">Subject</span>
+        <div>
+          <div class="car-subject-box">Application for the Post of [Position Name]</div>
+          <p style="font-size:.8rem;color:#999;margin:6px 0 0;max-width:none;">Replace <em>[Position Name]</em> with the role you are applying for.</p>
+        </div>
+      </div>
+    </div>
+    <!-- aria-live region for copy confirmation -->
+    <div aria-live="polite" aria-atomic="true" id="car-copy-status" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+  </section>
+
+  <!-- Closing CTA -->
+  <div class="car-cta car-fade">
+    <div class="car-label">BE A PART OF OUR JOURNEY</div>
+    <h3>Be a Part of Our Journey</h3>
+    <p>If you are passionate about education, believe in the potential of every child and wish to contribute to a vibrant learning community, we would be happy to hear from you. Join us in inspiring young minds and shaping brighter futures!</p>
+    <a href="mailto:dmtsquery@gmail.com?subject=Application%20for%20the%20Post%20of%20%5BPosition%20Name%5D" class="car-cta-btn">Apply by Email</a>
   </div>
 
-  <div class="info-card" style="margin-top:48px;">
-    <h3><i class="fas fa-paper-plane" style="color:var(--gold);margin-right:8px;"></i> How to Apply</h3>
-    <p>Send your updated CV, a cover letter specifying the position applied for, and copies of educational certificates to <a href="mailto:dr.mar.theophilus@gmail.com" style="color:var(--maroon);">dr.mar.theophilus@gmail.com</a> with the subject line: <strong>"Application â€“ [Position Name]"</strong>. Shortlisted candidates will be contacted for a demo lesson and interview. No agencies please.</p>
-  </div>
+</div><!-- /.car-page -->
 </div>
 </main>
+<script>
+(function () {
+  /* Smooth scroll for "How to Apply" button */
+  var scrollBtn = document.getElementById('car-scroll-btn');
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', function (e) {
+      var target = document.getElementById('car-how-to-apply');
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
+  /* Copy email button */
+  var copyBtn = document.getElementById('car-copy-email');
+  var statusEl = document.getElementById('car-copy-status');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      var email = 'dmtsquery@gmail.com';
+      function confirm() {
+        copyBtn.textContent = 'Copied!';
+        if (statusEl) statusEl.textContent = 'Email address copied.';
+        setTimeout(function () {
+          copyBtn.textContent = 'Copy email';
+          if (statusEl) statusEl.textContent = '';
+        }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(confirm).catch(function () {
+          /* fallback: select a temporary input */
+          var inp = document.createElement('input');
+          inp.value = email;
+          document.body.appendChild(inp);
+          inp.select();
+          document.execCommand('copy');
+          document.body.removeChild(inp);
+          confirm();
+        });
+      } else {
+        var inp = document.createElement('input');
+        inp.value = email;
+        document.body.appendChild(inp);
+        inp.select();
+        document.execCommand('copy');
+        document.body.removeChild(inp);
+        confirm();
+      }
+    });
+  }
+
+  /* Fade-in via IntersectionObserver */
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced && 'IntersectionObserver' in window) {
+    var fades = document.querySelectorAll('#spg-careers .car-fade');
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('sc-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    fades.forEach(function (el) { obs.observe(el); });
+  }
+})();
+</script>
 </section>
 
 <section id="spg-contact" class="sub-page-section" hidden>
@@ -15303,396 +15922,540 @@ document.addEventListener('click', function(e) {
     </nav>
   </div>
 </section>
+<style id="contact-page-css">
+/* ── Contact page ─────────────────────────────────────────────────────────── */
+/* Sibling of careers page. Uses --color-primary, --color-bg-main, Poppins+Georgia */
+
+.con-page { font-family: 'Poppins', sans-serif; }
+.con-page p, .con-page li {
+  font-family: 'Poppins', sans-serif;
+  font-size: .95rem; line-height: 1.75; color: var(--color-text); max-width: 68ch;
+}
+
+/* ── Divider ── */
+.con-divider { border: none; border-top: 1px solid rgba(0,0,0,.08); margin: 44px 0; }
+
+/* ── Section label ── */
+.con-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--color-primary); margin: 0 0 8px;
+}
+
+/* ── Section heading ── */
+.con-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem; font-weight: 700; color: var(--color-text);
+  margin: 0 0 20px; line-height: 1.3;
+}
+
+/* ── Hero band ── */
+.con-hero {
+  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9a0000 100%);
+  padding: 44px 40px 40px; border-radius: 12px; margin-bottom: 40px; color: #fff;
+}
+.con-hero .con-label { color: rgba(255,255,255,.7); margin-bottom: 12px; }
+.con-hero h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.75rem; font-weight: 700; color: #fff;
+  margin: 0 0 6px; line-height: 1.25;
+}
+.con-hero .con-hero-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: .9rem; color: rgba(255,255,255,.8);
+  margin: 0 0 22px; max-width: none;
+}
+.con-hero-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.con-btn-solid {
+  font-family: 'Poppins', sans-serif; font-size: .85rem; font-weight: 600;
+  background: #fff; color: var(--color-primary);
+  padding: 10px 22px; border-radius: 6px; border: 2px solid #fff;
+  text-decoration: none; transition: background .15s; display: inline-block;
+}
+.con-btn-solid:hover { background: rgba(255,255,255,.88); }
+.con-btn-solid:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 2px; }
+.con-btn-outline {
+  font-family: 'Poppins', sans-serif; font-size: .85rem; font-weight: 600;
+  background: transparent; color: #fff;
+  padding: 10px 22px; border-radius: 6px; border: 2px solid rgba(255,255,255,.65);
+  text-decoration: none; transition: border-color .15s, background .15s; display: inline-block;
+}
+.con-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+.con-btn-outline:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 2px; }
+
+/* ── Contact cards row ── */
+.con-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 0; }
+.con-card {
+  background: #fff; border: 1px solid #e2e2e5; border-radius: 10px;
+  padding: 20px 18px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  transition: box-shadow .18s, transform .18s;
+}
+.con-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); transform: translateY(-2px); }
+.con-card-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: rgba(var(--color-primary-rgb),.08);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+}
+.con-card-icon svg {
+  width: 22px; height: 22px; stroke: var(--color-primary);
+  stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round;
+}
+.con-card-label {
+  font-family: 'Poppins', sans-serif; font-size: .68rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: #999; margin-bottom: 6px;
+}
+.con-card-value {
+  font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 500;
+  color: var(--color-text); line-height: 1.55;
+}
+.con-card-value a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+.con-card-value a:hover { text-decoration: underline; }
+.con-copy-btn {
+  font-family: 'Poppins', sans-serif; font-size: .72rem; font-weight: 600;
+  background: rgba(var(--color-primary-rgb),.07);
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb),.2);
+  border-radius: 20px; padding: 3px 10px; margin-top: 7px;
+  cursor: pointer; display: inline-block;
+  transition: background .15s;
+}
+.con-copy-btn:hover { background: rgba(var(--color-primary-rgb),.14); }
+.con-copy-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* ── Two-col section ── */
+.con-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+/* Info card wrapper */
+.con-info-card {
+  background: #fff; border: 1px solid #e2e2e5; border-radius: 10px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.con-info-card h4 {
+  font-family: 'Poppins', sans-serif; font-size: .82rem; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--color-primary); margin: 0 0 14px;
+}
+
+/* Table inside card */
+.con-table-wrap { overflow-x: auto; }
+.con-table { width: 100%; border-collapse: collapse; min-width: 320px; }
+.con-table td {
+  font-family: 'Poppins', sans-serif; font-size: .86rem;
+  padding: 9px 12px; border-bottom: 1px solid #eee; color: var(--color-text);
+  vertical-align: top; line-height: 1.6;
+}
+.con-table tr:last-child td { border-bottom: none; }
+.con-table td:first-child {
+  font-weight: 600; white-space: nowrap; color: var(--color-text);
+  padding-right: 20px; width: 55%;
+}
+.con-table tr:nth-child(even) td { background: #f9f9fa; }
+
+/* Directions button */
+.con-dir-btn {
+  font-family: 'Poppins', sans-serif; font-size: .84rem; font-weight: 600;
+  background: var(--color-primary); color: #fff;
+  padding: 10px 20px; border-radius: 6px;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 16px; transition: background .15s;
+}
+.con-dir-btn:hover { background: #9a0000; }
+.con-dir-btn:focus-visible { outline: 3px solid rgba(var(--color-primary-rgb),.4); outline-offset: 2px; }
+.con-dir-btn svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* Address block */
+.con-address { font-family: 'Poppins', sans-serif; font-size: .9rem; color: var(--color-text); line-height: 1.75; max-width: none; }
+
+/* ── Quick links strip ── */
+.con-quick-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.con-quick-card {
+  background: #fff; border: 1px solid #e2e2e5; border-radius: 10px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  text-decoration: none; display: flex; align-items: center; gap: 14px;
+  transition: box-shadow .18s, transform .18s;
+}
+.con-quick-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); transform: translateY(-2px); }
+.con-quick-card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+.con-quick-icon {
+  width: 40px; height: 40px; border-radius: 9px; flex-shrink: 0;
+  background: rgba(var(--color-primary-rgb),.08);
+  display: flex; align-items: center; justify-content: center;
+}
+.con-quick-icon svg { width: 20px; height: 20px; stroke: var(--color-primary); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.con-quick-label {
+  font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 600;
+  color: var(--color-text); line-height: 1.4;
+}
+.con-quick-arr { margin-left: auto; flex-shrink: 0; }
+.con-quick-arr svg { width: 16px; height: 16px; stroke: #bbb; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── Notice banner ── */
+.con-notice {
+  background: #f7f7f8; border: 1px solid #e2e2e5;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 8px 8px 0; padding: 13px 18px;
+  font-family: 'Poppins', sans-serif; font-size: .86rem; color: #555;
+}
+
+/* ── Closing band ── */
+.con-closing {
+  background: rgba(var(--color-primary-rgb),.04);
+  border: 1px solid rgba(var(--color-primary-rgb),.10);
+  border-radius: 10px; padding: 22px 28px; margin-top: 44px; text-align: center;
+}
+.con-closing p {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: .95rem; font-style: italic; color: var(--color-text);
+  margin: 0; max-width: none;
+}
+
+/* ── Fade-in ── */
+.con-fade { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .con-fade { opacity: 0; transform: translateY(16px); transition: opacity .45s ease, transform .45s ease; }
+  .con-fade.sc-visible { opacity: 1; transform: none; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1023px) and (min-width: 640px) {
+  .con-cards { grid-template-columns: repeat(2,1fr); }
+  .con-two-col { grid-template-columns: 1fr; }
+  .con-quick-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 639px) {
+  .con-hero { padding: 28px 18px 24px; border-radius: 8px; }
+  .con-hero h2 { font-size: 1.35rem; }
+  .con-cards { grid-template-columns: 1fr; }
+  .con-two-col { grid-template-columns: 1fr; }
+  .con-quick-grid { grid-template-columns: 1fr; }
+  .con-closing { padding: 18px; }
+}
+
+/* ── Print ── */
+@media print {
+  .con-hero { background: none !important; color: #000 !important; border: 2px solid #000; border-radius: 0; padding: 14px; }
+  .con-hero h2, .con-hero .con-hero-sub, .con-hero .con-label { color: #000 !important; }
+  .con-hero-btns, .con-copy-btn, .con-dir-btn { display: none !important; }
+  .con-card, .con-info-card, .con-quick-card { box-shadow: none; break-inside: avoid; }
+}
+</style>
 <main>
 <div class="page-content">
-  <div class="section-tag"><i class="fas fa-envelope"></i> Get in Touch</div>
-  <h2 class="section-title">We Would Love to Hear from You</h2>
-  <p class="section-subtitle">Whether you have a question about admissions, need to speak with a teacher or simply want to know more about us â€” we are here for you.</p>
-  <div class="gold-rule"></div>
+<div class="con-page">
 
-  <style id=”contact-tables-css”>
-    /* ── Shared wrapper ── */
-    .cdt-block {
-      margin-bottom: 44px;
-    }
-    .cdt-block-heading {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #131375;
-      letter-spacing: 0.5px;
-      margin: 0 0 10px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #131375;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .cdt-block-heading i {
-      font-size: 1rem;
-      color: var(--color-secondary);
-    }
-
-    /* ── Both tables base ── */
-    .cdt-table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 16px rgba(19,19,117,.10);
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.88rem;
-    }
-    .cdt-table tr {
-      border-bottom: 1px solid #d4d8ea;
-    }
-    .cdt-table tr:last-child {
-      border-bottom: none;
-    }
-
-    /* ── General contact table: label column ── */
-    .cdt-label {
-      background: #131375;
-      color: #f5c842;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1.1px;
-      text-transform: uppercase;
-      padding: 16px 18px;
-      width: 165px;
-      min-width: 130px;
-      vertical-align: middle;
-      border-right: 2px solid #0b0b55;
-      line-height: 1.4;
-    }
-    .cdt-label i {
-      display: block;
-      font-size: 1rem;
-      margin-bottom: 5px;
-      color: rgba(245,200,66,.55);
-    }
-
-    /* ── General contact table: value column ── */
-    .cdt-value {
-      background: #fff;
-      color: #1a1a4a;
-      font-size: 0.9rem;
-      font-weight: 500;
-      padding: 16px 22px;
-      vertical-align: middle;
-      line-height: 1.65;
-    }
-    .cdt-value a {
-      color: #131375;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .cdt-value a:hover {
-      text-decoration: underline;
-      color: var(--color-primary);
-    }
-    .cdt-table tr:nth-child(even) .cdt-value {
-      background: #f4f5fc;
-    }
-
-    /* ── Timings table: header row ── */
-    .cdt-thead th {
-      background: #131375;
-      color: #f5c842;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 13px 20px;
-      text-align: left;
-      border-right: 2px solid #0b0b55;
-    }
-    .cdt-thead th:last-child {
-      border-right: none;
-    }
-
-    /* ── Timings table: cells ── */
-    .cdt-who {
-      background: #f0f1fa;
-      color: #131375;
-      font-weight: 700;
-      font-size: 0.88rem;
-      padding: 15px 20px;
-      vertical-align: middle;
-      border-right: 1px solid #d4d8ea;
-      width: 165px;
-      min-width: 130px;
-    }
-    .cdt-timing {
-      background: #fff;
-      color: #1a1a4a;
-      font-size: 0.88rem;
-      font-weight: 400;
-      padding: 15px 22px;
-      vertical-align: middle;
-      line-height: 1.6;
-    }
-    .cdt-table tr:nth-child(even) .cdt-who {
-      background: #e8eaf8;
-    }
-    .cdt-table tr:nth-child(even) .cdt-timing {
-      background: #f4f5fc;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 540px) {
-      .cdt-label, .cdt-value,
-      .cdt-who, .cdt-timing {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      .cdt-table tr {
-        display: block;
-        border-bottom: 2px solid #d4d8ea;
-      }
-      .cdt-table tr:last-child { border-bottom: none; }
-      .cdt-table thead { display: none; }
-      .cdt-label {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-right: none;
-        border-bottom: 1px solid #0b0b55;
-        white-space: normal;
-      }
-      .cdt-label i { display: inline; margin: 0; font-size: 0.85rem; }
-      .cdt-label br { display: none; }
-      .cdt-value { padding: 12px 14px; }
-      .cdt-who {
-        padding: 10px 14px;
-        border-right: none;
-        border-bottom: 1px solid #c8ccdf;
-        font-size: 0.82rem;
-      }
-      .cdt-who::before { content: attr(data-label); }
-      .cdt-timing { padding: 10px 14px; font-size: 0.85rem; }
-    }
-  </style>
-
-  <!-- ── Table 1: General Contact Information ── -->
-  <div class=”cdt-block”>
-    <h3 class=”cdt-block-heading”><i class=”fas fa-address-card”></i>General Contact Information</h3>
-    <table class=”cdt-table” aria-label=”General contact information”>
-      <tbody>
-        <tr>
-          <td class=”cdt-label”><i class=”fas fa-school” aria-hidden=”true”></i>SCHOOL</td>
-          <td class=”cdt-value”>Dr. Mar Theophilus School, Porwal Road, Dhanori, Pune &mdash; 411015</td>
-        </tr>
-        <tr>
-          <td class=”cdt-label”><i class=”fas fa-phone-alt” aria-hidden=”true”></i>PHONE</td>
-          <td class=”cdt-value”><a href=”tel:+917720043214”>+91 772 004 3214</a></td>
-        </tr>
-        <tr>
-          <td class=”cdt-label”><i class=”fas fa-envelope” aria-hidden=”true”></i>EMAIL</td>
-          <td class=”cdt-value”><a href=”mailto:dmtsquery@gmail.com”>dmtsquery@gmail.com</a></td>
-        </tr>
-        <tr>
-          <td class=”cdt-label”><i class=”fas fa-globe” aria-hidden=”true”></i>WEBSITE</td>
-          <td class=”cdt-value”><a href=”https://martheophilusschool.org/” target=”_blank” rel=”noopener”>martheophilusschool.org</a></td>
-        </tr>
-        <tr>
-          <td class=”cdt-label”><i class=”fas fa-file-alt” aria-hidden=”true”></i>ADMISSION<br>FORM HELP</td>
-          <td class=”cdt-value”>Office, 10:00 a.m. to 12:00 noon</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Hero -->
+  <div class="con-hero">
+    <div class="con-label">CONTACT</div>
+    <h2>Contact Us</h2>
+    <p class="con-hero-sub">Dr. Mar Theophilus School, Dhanori, Pune</p>
+    <div class="con-hero-btns">
+      <a href="tel:+917720043214" class="con-btn-solid">Call the Office</a>
+      <a href="mailto:dmtsquery@gmail.com" class="con-btn-outline">Send an Email</a>
+    </div>
   </div>
 
-  <!-- ── Table 2: Visitor & Meeting Timings ── -->
-  <div class=”cdt-block”>
-    <h3 class=”cdt-block-heading”><i class=”fas fa-clock”></i>Visitor &amp; Meeting Timings</h3>
-    <table class=”cdt-table” aria-label=”Visitor and meeting timings”>
-      <thead class=”cdt-thead”>
-        <tr>
-          <th scope=”col”>WHO</th>
-          <th scope=”col”>TIMING</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class=”cdt-who” data-label=”WHO”>Principal</td>
-          <td class=”cdt-timing”>11:00 a.m. &ndash; 12:00 noon <span style=”font-size:0.8em;color:#555;”>(only if the Supervisors recommend)</span></td>
-        </tr>
-        <tr>
-          <td class=”cdt-who” data-label=”WHO”>Coordinators</td>
-          <td class=”cdt-timing”>8:00 a.m. &ndash; 8:30 a.m. <span style=”font-size:0.8em;color:#555;”>(prior appointment)</span></td>
-        </tr>
-        <tr>
-          <td class=”cdt-who” data-label=”WHO”>Teachers</td>
-          <td class=”cdt-timing”>2:00 p.m. &ndash; 2:20 p.m.</td>
-        </tr>
-        <tr>
-          <td class=”cdt-who” data-label=”WHO”>Office hours</td>
-          <td class=”cdt-timing”>9:00 a.m. &ndash; 11:00 a.m., Monday to Friday</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px;" class="contact-grid-two">
-    <div>
-      <div class="section-tag"><i class="fas fa-paper-plane"></i> Enquiry Form</div>
-      <h2 class="section-title">Send Us a Message</h2>
-      <div class="gold-rule"></div>
-      <div class="contact-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="fname">First Name *</label>
-            <input type="text" id="fname" name="fname" placeholder="Your first name" required>
-          </div>
-          <div class="form-group">
-            <label for="lname">Last Name *</label>
-            <input type="text" id="lname" name="lname" placeholder="Your last name" required>
-          </div>
+  <!-- Contact cards -->
+  <section class="con-fade">
+    <div class="con-cards">
+      <!-- Address -->
+      <div class="con-card">
+        <div class="con-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
         </div>
-        <div class="form-group">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        <div class="con-card-label">Address</div>
+        <div class="con-card-value">Dr. Mar Theophilus School, Porwal Road, Dhanori, Pune &ndash; 411015</div>
+      </div>
+      <!-- Phone -->
+      <div class="con-card">
+        <div class="con-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.37 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.92 5.92l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
         </div>
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="+91 00000 00000">
+        <div class="con-card-label">Phone</div>
+        <div class="con-card-value">
+          <a href="tel:+917720043214">+91 772 004 3214</a><br>
+          <button class="con-copy-btn" data-copy="+917720043214" aria-label="Copy phone number">Copy</button>
         </div>
-        <div class="form-group">
-          <label for="subject">Subject *</label>
-          <select id="subject" name="subject" required>
-            <option value="" disabled selected>Select a subject</option>
-            <option value="admissions">Admissions Enquiry</option>
-            <option value="academics">Academics / Curriculum</option>
-            <option value="fees">Fee Structure</option>
-            <option value="transport">Transport</option>
-            <option value="careers">Careers / Jobs</option>
-            <option value="general">General Enquiry</option>
-          </select>
+      </div>
+      <!-- Email -->
+      <div class="con-card">
+        <div class="con-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
         </div>
-        <div class="form-group">
-          <label for="message">Message *</label>
-          <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+        <div class="con-card-label">Email</div>
+        <div class="con-card-value">
+          <a href="mailto:dmtsquery@gmail.com">dmtsquery@gmail.com</a><br>
+          <button class="con-copy-btn" data-copy="dmtsquery@gmail.com" aria-label="Copy email address">Copy</button>
         </div>
-        <button type="submit" class="submit-btn">Send Message <i class="fas fa-paper-plane" style="margin-left:8px;"></i></button>
+      </div>
+      <!-- Website -->
+      <div class="con-card">
+        <div class="con-card-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </div>
+        <div class="con-card-label">Website</div>
+        <div class="con-card-value">
+          <a href="https://martheophilusschool.org/" target="_blank" rel="noopener">martheophilusschool.org</a>
+        </div>
       </div>
     </div>
-    <div>
-      <div class="section-tag"><i class="fas fa-clock"></i> Office Hours</div>
-      <h2 class="section-title">When to Reach Us</h2>
-      <div class="gold-rule"></div>
-      <table class="page-table">
-        <thead><tr><th>Day</th><th>Hours</th></tr></thead>
-        <tbody>
-          <tr><td>Monday â€“ Friday</td><td>9:00 AM â€“ 4:00 PM</td></tr>
-          <tr><td>Saturday</td><td>9:00 AM â€“ 1:00 PM</td></tr>
-          <tr><td>Sunday &amp; Holidays</td><td>Closed</td></tr>
-        </tbody>
-      </table>
+    <!-- aria-live for copy confirmations -->
+    <div aria-live="polite" aria-atomic="true" id="con-copy-status" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"></div>
+  </section>
 
-      <div class="info-card" style="margin-top:32px;">
-        <h3><i class="fas fa-map" style="color:var(--gold);margin-right:8px;"></i> How to Find Us</h3>
-        <p>We are located at Dhanori, Pune. The school is easily accessible by auto, bus (routes serving Dhanori) and private vehicle. Parking is available on campus.</p>
-        <a href="https://maps.google.com/?q=Dr+Mar+Theophilus+School+Pune" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:0.84rem;color:var(--maroon);font-weight:600;text-decoration:underline;">
-          <i class="fas fa-directions"></i> Open in Google Maps
+  <hr class="con-divider">
+
+  <!-- Office hours + Find Us -->
+  <section class="con-fade">
+    <div class="con-two-col">
+      <!-- Left: Office hours -->
+      <div class="con-info-card">
+        <h4>Office Hours and Meetings</h4>
+        <div class="con-table-wrap">
+          <table class="con-table">
+            <tbody>
+              <tr><td>Office hours</td><td>9:00 a.m.&ndash;11:00 a.m., Monday to Friday</td></tr>
+              <tr><td>Admission form help</td><td>10:00 a.m.&ndash;12:00 noon</td></tr>
+              <tr><td>Principal</td><td>11:00 a.m.&ndash;12:00 noon (only if the Supervisors recommend)</td></tr>
+              <tr><td>Coordinators</td><td>8:00 a.m.&ndash;8:30 a.m. (prior appointment)</td></tr>
+              <tr><td>Teachers</td><td>2:00 p.m.&ndash;2:20 p.m.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:14px;font-size:.86rem;color:#666;line-height:1.7;max-width:none;">The office is closed on Saturdays and official holidays. Parents who wish to see the Principal need to fix an appointment. Applications for a Bonafide Certificate or Fee Receipts take three working days to process.</p>
+      </div>
+      <!-- Right: Find Us -->
+      <div class="con-info-card">
+        <h4>Find Us</h4>
+        <p class="con-address">
+          Dr. Mar Theophilus School<br>
+          Porwal Road, Dhanori<br>
+          Pune &ndash; 411015<br>
+          Maharashtra, India
+        </p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Dr.+Mar+Theophilus+School+Porwal+Road+Dhanori+Pune+411015"
+           target="_blank" rel="noopener" class="con-dir-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Get Directions
         </a>
       </div>
-
-      <div class="info-card">
-        <h3><i class="fas fa-graduation-cap" style="color:var(--gold);margin-right:8px;"></i> Admissions Enquiries</h3>
-        <p>For admissions-specific queries, please visit the school office Monday through Saturday during office hours. Our admissions team will be happy to guide you through the process, check seat availability and answer all your questions in person.</p>
-      </div>
     </div>
+  </section>
+
+  <hr class="con-divider">
+
+  <!-- Quick links -->
+  <section class="con-fade">
+    <div class="con-label">QUICK LINKS</div>
+    <h3 class="con-heading" style="font-size:1.1rem;margin-bottom:16px;">You May Also Need</h3>
+    <div class="con-quick-grid">
+      <a href="#spg-admissions" class="con-quick-card">
+        <div class="con-quick-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        </div>
+        <span class="con-quick-label">Admissions</span>
+        <span class="con-quick-arr"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </a>
+      <a href="#spg-prospectus" class="con-quick-card">
+        <div class="con-quick-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <span class="con-quick-label">Download the Prospectus</span>
+        <span class="con-quick-arr"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </a>
+      <a href="#spg-careers" class="con-quick-card">
+        <div class="con-quick-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <span class="con-quick-label">Careers</span>
+        <span class="con-quick-arr"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="con-divider">
+
+  <!-- Notice banner -->
+  <div class="con-notice con-fade">
+    Submitting an application does not guarantee admission. Admission is confirmed only through official communication from the school.
   </div>
+
+  <!-- Closing band -->
+  <div class="con-closing con-fade">
+    <p>Knowledge is Wealth &nbsp;|&nbsp; Aspiring, Learning and Growing Together</p>
+  </div>
+
+</div><!-- /.con-page -->
 </div>
 </main>
+<script>
+(function () {
+  /* Copy buttons */
+  var statusEl = document.getElementById('con-copy-status');
+  document.querySelectorAll('#spg-contact .con-copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.dataset.copy;
+      function confirm() {
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        if (statusEl) statusEl.textContent = text + ' copied.';
+        setTimeout(function () { btn.textContent = orig; if (statusEl) statusEl.textContent = ''; }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(confirm).catch(function () {
+          var inp = document.createElement('input'); inp.value = text;
+          document.body.appendChild(inp); inp.select(); document.execCommand('copy'); document.body.removeChild(inp); confirm();
+        });
+      } else {
+        var inp = document.createElement('input'); inp.value = text;
+        document.body.appendChild(inp); inp.select(); document.execCommand('copy'); document.body.removeChild(inp); confirm();
+      }
+    });
+  });
+
+  /* Fade-in */
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced && 'IntersectionObserver' in window) {
+    var fades = document.querySelectorAll('#spg-contact .con-fade');
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('sc-visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    fades.forEach(function (el) { obs.observe(el); });
+  }
+})();
+</script>
 </section>
 
 <section id="our-school" class="sub-page-section" hidden>
-<section class="page-banner">
-  <div class="banner-inner">
-    <h1>Our <span>School</span></h1>
-    <nav class="breadcrumbs" aria-label="breadcrumb">
-      <a href="index.html">Home</a><span class="sep">&#8250;</span>
-      <span>About Us</span><span class="sep">&#8250;</span>
-      <span class="current">Our School</span>
-    </nav>
-  </div>
-</section>
-
-<style>
-  .our-school-intro { max-width: 760px; margin: 0 auto 56px; text-align: center; }
-  .our-school-intro p { font-size: 1.05rem; line-height: 1.8; color: var(--text); }
-  .leadership-cards { display: grid; grid-template-columns: 1fr; gap: 36px; margin-top: 8px; }
-  .leader-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; display: grid; grid-template-columns: 6px 1fr; }
-  .leader-card-accent { background: linear-gradient(180deg, var(--gold), #b8862a); }
-  .leader-card-body { padding: 32px 36px; }
-  .leader-role { display: inline-flex; align-items: center; gap: 8px; background: rgba(var(--color-primary-rgb),.07); color: var(--maroon); padding: 4px 14px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 14px; }
-  .leader-name { font-size: clamp(1.15rem, 2.5vw, 1.4rem); font-weight: 700; color: var(--maroon); font-family: Georgia,'Times New Roman',serif; margin-bottom: 16px; line-height: 1.3; }
-  .leader-desc { font-size: 0.92rem; line-height: 1.8; color: var(--text); margin: 0; }
-  .our-school-closing { background: linear-gradient(135deg, var(--color-primary), var(--color-primary)); border-radius: var(--radius); padding: 40px 48px; margin-top: 56px; position: relative; overflow: hidden; }
-  .our-school-closing::before { content: '✦'; position: absolute; top: -10px; right: 24px; font-size: 7rem; color: rgba(var(--color-secondary-rgb),.1); line-height: 1; }
-  .our-school-closing p { color: rgba(255,255,255,.92); font-size: 1rem; line-height: 1.8; margin: 0; position: relative; }
-  @media (max-width: 600px) {
-    .leader-card-body { padding: 24px 20px; }
-    .our-school-closing { padding: 28px 24px; }
-  }
+<style id="ourschool-css">
+#our-school { background: #FFF8F0; font-family: 'Poppins', sans-serif; }
+.ours-hero {
+  background: var(--color-primary);
+  padding: 56px 24px 48px;
+  text-align: center;
+}
+.ours-hero-tag {
+  display: inline-block;
+  font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  background: rgba(255,255,255,.18); color: #fff;
+  padding: 5px 16px; border-radius: 20px; margin-bottom: 16px;
+}
+.ours-hero h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2rem; font-weight: 700; color: #fff; margin: 0 0 12px; line-height: 1.3;
+}
+.ours-hero p {
+  font-size: .95rem; color: rgba(255,255,255,.85); margin: 0 auto; max-width: 58ch; line-height: 1.75;
+}
+.ours-grid-wrap { max-width: 960px; margin: 0 auto; padding: 52px 24px 60px; }
+.ours-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.ours-card {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 18px;
+  padding: 28px 22px 22px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  text-decoration: none;
+  display: flex; flex-direction: column;
+  transition: transform .18s, box-shadow .18s;
+}
+.ours-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 28px rgba(0,0,0,.12); }
+.ours-card-icon {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: rgba(213,0,0,.08);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px; flex-shrink: 0;
+}
+.ours-card-icon svg { width: 26px; height: 26px; fill: none; stroke: var(--color-primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ours-card h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; font-weight: 700; color: var(--color-primary); margin: 0 0 8px; line-height: 1.35; }
+.ours-card p  { font-size: .84rem; line-height: 1.65; color: #5C3D1E; margin: 0 0 16px; flex: 1; }
+.ours-card-arrow { font-size: .82rem; font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 6px; }
+.ours-card-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ours-grid .ours-card:nth-child(4) { grid-column: 1; }
+.ours-grid .ours-card:nth-child(5) { grid-column: 2; }
+@media (max-width: 767px) {
+  .ours-grid { grid-template-columns: 1fr; }
+  .ours-grid .ours-card:nth-child(4),
+  .ours-grid .ours-card:nth-child(5) { grid-column: auto; }
+  .ours-hero h1 { font-size: 1.5rem; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ours-grid { grid-template-columns: repeat(2, 1fr); }
+  .ours-grid .ours-card:nth-child(4),
+  .ours-grid .ours-card:nth-child(5) { grid-column: auto; }
+}
 </style>
 
-<main>
-<div class="page-content">
-
-  <div class="section-tag"><i class="fas fa-school"></i> About Us</div>
-  <h2 class="section-title">Dr. Mar Theophilus School</h2>
-  <div class="gold-rule"></div>
-
-  <div class="our-school-intro">
-    <p>The journey of Dr. Mar Theophilus School has been shaped by the vision, dedication and leadership of people who believed in the transformative power of education.</p>
-  </div>
-
-  <div class="section-tag"><i class="fas fa-users"></i> Our Leadership</div>
-  <h2 class="section-title">The Visionaries Behind Our School</h2>
-  <div class="gold-rule"></div>
-
-  <div class="leadership-cards">
-
-    <div class="leader-card">
-      <div class="leader-card-accent"></div>
-      <div class="leader-card-body">
-        <div class="leader-role"><i class="fas fa-cross"></i> Our Patron</div>
-        <h3 class="leader-name">Late H.G. Dr. Philipose Mar Theophilus</h3>
-        <p class="leader-desc">His vision of promoting quality education and nurturing young minds through knowledge, discipline and strong moral values laid the foundation for the institution. His belief in education as a means of empowerment continues to inspire the school's philosophy and its commitment to holistic development.</p>
-      </div>
-    </div>
-
-    <div class="leader-card">
-      <div class="leader-card-accent"></div>
-      <div class="leader-card-body">
-        <div class="leader-role"><i class="fas fa-star"></i> Our Founder Director</div>
-        <h3 class="leader-name">Late Dr. C. J. Samuel</h3>
-        <p class="leader-desc">Dr. Samuel played a significant role in turning the vision of the institution into reality. His leadership during the formative years, and his commitment to academic excellence, systematic administration and the overall development of students, built a strong foundation for the school.</p>
-      </div>
-    </div>
-
-    <div class="leader-card">
-      <div class="leader-card-accent"></div>
-      <div class="leader-card-body">
-        <div class="leader-role"><i class="fas fa-church"></i> Our President</div>
-        <h3 class="leader-name">H.G. Geevarghese Mar Coorilos</h3>
-        <p class="leader-desc">Metropolitan of the Diocese of Bombay, His Grace serves as President of the school. His guidance and encouragement strengthen the school's pursuit of academic excellence, value-based education and holistic development.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="our-school-closing">
-    <p>Today, the school continues to move forward with the ideals of its founders, committed to academic excellence, holistic development and value-based education, so that every learner can discover their potential, pursue their aspirations and contribute meaningfully to society.</p>
-  </div>
-
+<div class="ours-hero">
+  <div class="ours-hero-tag">Our School</div>
+  <h1>Dr. Mar Theophilus School, Dhanori</h1>
+  <p>Learn about our history, values, leadership and the spaces where our students learn and grow.</p>
 </div>
-</main>
+
+<div class="ours-grid-wrap">
+  <div class="ours-grid">
+    <a href="#spg-history" class="ours-card">
+      <div class="ours-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <h2>History</h2>
+      <p>Trace the journey of our school &mdash; from its founding to where we stand today.</p>
+      <span class="ours-card-arrow">Explore <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </a>
+    <a href="#spg-vision" class="ours-card">
+      <div class="ours-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <h2>Vision, Mission &amp; Motto</h2>
+      <p>The guiding principles and values that shape every aspect of school life.</p>
+      <span class="ours-card-arrow">Explore <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </a>
+    <a href="#spg-management" class="ours-card">
+      <div class="ours-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h2>Management</h2>
+      <p>Meet the dedicated team that guides and supports the school's vision and direction.</p>
+      <span class="ours-card-arrow">Explore <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </a>
+    <a href="#spg-principal" class="ours-card">
+      <div class="ours-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h2>Principal's Message</h2>
+      <p>A word from our Principal on our goals, values and the journey ahead.</p>
+      <span class="ours-card-arrow">Explore <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </a>
+    <a href="#spg-campus" class="ours-card">
+      <div class="ours-card-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <h2>Campus &amp; Infrastructure</h2>
+      <p>Explore the spaces, facilities and environment that support learning every day.</p>
+      <span class="ours-card-arrow">Explore <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </a>
+  </div>
+</div>
 </section>
 
 <section id="spg-history" class="sub-page-section" hidden>
@@ -17368,480 +18131,874 @@ document.addEventListener('click', function(e) {
 </style>
 
 <section id="spg-preprimary" class="sub-page-section" hidden>
-
-  <!-- Back bar -->
-  <div class="pp-back-bar">
-    <a href="#" class="pp-back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
-  </div>
-
-  <!-- Hero -->
-  <div class="pp-hero">
-    <div class="pp-hero-text">
-      <div class="pp-eyebrow"><i class="fas fa-star"></i> Early Years Programme</div>
-      <h1>Pre-<span>Primary</span><br>Education</h1>
-      <p class="pp-hero-sub">Nursery, LKG &amp; UKG — where every child's journey begins with curiosity, warmth and joyful discovery.</p>
-      <div class="pp-hero-badges">
-        <span class="pp-badge"><i class="fas fa-child"></i> Ages 3 – 6</span>
-        <span class="pp-badge"><i class="fas fa-paint-brush"></i> Play-based Learning</span>
-        <span class="pp-badge"><i class="fas fa-heart"></i> Nurturing Environment</span>
-      </div>
-    </div>
-    <div class="pp-hero-stats">
-      <div class="pp-stat"><div class="pp-stat-num">3</div><div class="pp-stat-lbl">Classes (Nursery · LKG · UKG)</div></div>
-      <div class="pp-stat"><div class="pp-stat-num">20+</div><div class="pp-stat-lbl">Activity zones</div></div>
-      <div class="pp-stat"><div class="pp-stat-num">4:1</div><div class="pp-stat-lbl">Teacher-student ratio</div></div>
-      <div class="pp-stat"><div class="pp-stat-num">100%</div><div class="pp-stat-lbl">Safe, caring classrooms</div></div>
-    </div>
-  </div>
-
-  <!-- Classes overview -->
-  <div class="pp-section">
-    <div class="pp-section-inner">
-      <div class="pp-section-tag"><i class="fas fa-graduation-cap"></i> Our Classes</div>
-      <h2>Three Stages, One Journey</h2>
-      <p class="pp-section-sub">Each class is thoughtfully designed to meet children exactly where they are developmentally.</p>
-      <div class="pp-class-grid">
-        <div class="pp-class-card">
-          <div class="pp-class-icon"><i class="fas fa-seedling"></i></div>
-          <h3>Nursery</h3>
-          <div class="pp-class-age">Age 3 – 4 years</div>
-          <p>A gentle introduction to school life through songs, stories, colouring, and structured play. Children develop vocabulary, basic motor skills and a love for learning.</p>
-        </div>
-        <div class="pp-class-card">
-          <div class="pp-class-icon"><i class="fas fa-pencil-alt"></i></div>
-          <h3>LKG</h3>
-          <div class="pp-class-age">Age 4 – 5 years</div>
-          <p>Children begin letter recognition, number concepts and phonics. Creative activities, puzzles and role-play nurture imagination and social confidence.</p>
-        </div>
-        <div class="pp-class-card">
-          <div class="pp-class-icon"><i class="fas fa-book-open"></i></div>
-          <h3>UKG</h3>
-          <div class="pp-class-age">Age 5 – 6 years</div>
-          <p>Building readiness for Std I — reading, writing, basic arithmetic and science observation. Children grow in independence, curiosity and classroom skills.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Curriculum highlights -->
-  <div class="pp-section pp-bg-cream">
-    <div class="pp-section-inner">
-      <div class="pp-section-tag"><i class="fas fa-scroll"></i> Curriculum</div>
-      <h2>Play-Based Learning Highlights</h2>
-      <p class="pp-section-sub">Our curriculum balances structured learning with free exploration, ensuring holistic development.</p>
-      <div class="pp-curriculum-grid">
-        <div class="pp-curr-item"><i class="fas fa-language pp-curr-icon"></i><div><h4>Language &amp; Literacy</h4><p>Phonics, storytelling, rhymes and early reading in English and Marathi.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-calculator pp-curr-icon"></i><div><h4>Numeracy</h4><p>Counting, patterns, shapes and number sense through hands-on activities.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-palette pp-curr-icon"></i><div><h4>Arts &amp; Crafts</h4><p>Drawing, clay modelling, collage and finger painting to spark creativity.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-music pp-curr-icon"></i><div><h4>Music &amp; Movement</h4><p>Action songs, rhythm activities and dance to build coordination and joy.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-flask pp-curr-icon"></i><div><h4>Early Science</h4><p>Nature walks, simple experiments and observation of the world around them.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-users pp-curr-icon"></i><div><h4>Social Skills</h4><p>Sharing, turn-taking, empathy and classroom etiquette through group play.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-tablet-alt pp-curr-icon"></i><div><h4>Digital Literacy</h4><p>Age-appropriate introduction to technology, educational games and tools.</p></div></div>
-        <div class="pp-curr-item"><i class="fas fa-running pp-curr-icon"></i><div><h4>Physical Education</h4><p>Outdoor play, yoga, balance exercises and gross motor skill activities.</p></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Skill development -->
-  <div class="pp-section">
-    <div class="pp-section-inner">
-      <div class="pp-section-tag"><i class="fas fa-brain"></i> Development</div>
-      <h2>Skills We Nurture</h2>
-      <p class="pp-section-sub">Every activity is purposefully designed to develop the whole child.</p>
-      <div class="pp-skills-grid">
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-brain"></i></div><h4>Cognitive</h4><p>Problem-solving, memory, attention and early critical thinking.</p></div>
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-heart"></i></div><h4>Emotional</h4><p>Self-expression, confidence, resilience and emotional awareness.</p></div>
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-users"></i></div><h4>Social</h4><p>Cooperation, communication, empathy and friendship-building.</p></div>
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-hand-paper"></i></div><h4>Fine Motor</h4><p>Pencil grip, cutting, threading and finger strength activities.</p></div>
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-child"></i></div><h4>Gross Motor</h4><p>Running, jumping, balancing and outdoor physical exploration.</p></div>
-        <div class="pp-skill"><div class="pp-skill-ring"><i class="fas fa-comments"></i></div><h4>Language</h4><p>Vocabulary building, listening skills and early reading readiness.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admission Process -->
-  <div class="pp-section pp-bg-cream">
-    <div class="pp-section-inner">
-      <div class="pp-section-tag"><i class="fas fa-clipboard-list"></i> Admissions</div>
-      <h2>How to Apply</h2>
-      <p class="pp-section-sub">Four simple steps to secure your child's place at Dr. Mar Theophilus School.</p>
-      <div class="pp-steps">
-        <div class="pp-step">
-          <div class="pp-step-num">1</div>
-          <h4>Application Submission</h4>
-          <p>Fill in and submit the online application form below with all required details and documents.</p>
-        </div>
-        <div class="pp-step">
-          <div class="pp-step-num">2</div>
-          <h4>Interactive Session</h4>
-          <p>Your child will attend a friendly, play-based interaction session with our Pre-Primary educators.</p>
-        </div>
-        <div class="pp-step">
-          <div class="pp-step-num">3</div>
-          <h4>Document Verification &amp; Fee Payment</h4>
-          <p>Submit original documents for verification and complete the admission fee payment.</p>
-        </div>
-        <div class="pp-step">
-          <div class="pp-step-num">4</div>
-          <h4>Final Admission Confirmation</h4>
-          <p>Receive your admission confirmation letter and welcome kit for the new academic year.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admission Form -->
-  <div class="pp-section">
-    <div class="pp-section-inner">
-      <div class="pp-section-tag"><i class="fas fa-file-alt"></i> Apply Now</div>
-      <h2>Apply for Admission</h2>
-      <p class="pp-section-sub">Complete the form below to begin your child's journey with us. Fields marked <span style="color:var(--color-primary)">*</span> are required.</p>
-      <div class="pp-form-wrap">
-        <form id="pp-admission-form" novalidate>
-          <div class="pp-form-grid">
-            <!-- Student Name -->
-            <div class="pp-field pp-form-full">
-              <label>Student's Full Name <span class="req">*</span></label>
-              <input type="text" name="student_name" placeholder="As per birth certificate" required>
-            </div>
-            <!-- DOB & Gender -->
-            <div class="pp-field">
-              <label>Date of Birth <span class="req">*</span></label>
-              <input type="date" name="dob" required>
-            </div>
-            <div class="pp-field">
-              <label>Gender <span class="req">*</span></label>
-              <select name="gender" required>
-                <option value="">Select gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Prefer not to say</option>
-              </select>
-            </div>
-            <!-- Class -->
-            <div class="pp-field pp-form-full">
-              <label>Applying for <span class="req">*</span></label>
-              <select name="applying_for" required>
-                <option value="">Select class</option>
-                <option>Nursery</option>
-                <option>LKG (Lower Kindergarten)</option>
-                <option>UKG (Upper Kindergarten)</option>
-              </select>
-            </div>
-            <!-- Parent name -->
-            <div class="pp-field pp-form-full">
-              <label>Parent / Guardian Name <span class="req">*</span></label>
-              <input type="text" name="parent_name" placeholder="Full name" required>
-            </div>
-            <!-- Mobile & Email -->
-            <div class="pp-field">
-              <label>Mobile Number <span class="req">*</span></label>
-              <input type="tel" name="mobile" placeholder="+91 XXXXX XXXXX" pattern="[6-9][0-9]{9}" required>
-              <span class="pp-field-hint">10-digit Indian mobile number</span>
-            </div>
-            <div class="pp-field">
-              <label>Email Address <span class="req">*</span></label>
-              <input type="email" name="email" placeholder="parent@example.com" required>
-            </div>
-            <!-- Address -->
-            <div class="pp-field pp-form-full">
-              <label>Residential Address <span class="req">*</span></label>
-              <textarea name="address" rows="3" placeholder="Full address including city and PIN code" required></textarea>
-            </div>
-            <!-- Previous school -->
-            <div class="pp-field pp-form-full">
-              <label>Previous School <span style="color:#a08878;font-weight:400">(optional)</span></label>
-              <input type="text" name="prev_school" placeholder="Name of previous school, if any">
-            </div>
-            <!-- Photo upload -->
-            <div class="pp-field">
-              <label>Student's Photo <span class="req">*</span></label>
-              <label class="pp-upload-label">
-                <i class="fas fa-camera"></i> Choose photo
-                <input type="file" name="student_photo" accept="image/*" required>
-              </label>
-              <div class="pp-upload-name" id="pp-photo-name"></div>
-              <span class="pp-field-hint">JPG or PNG, max 2 MB</span>
-            </div>
-            <!-- Birth certificate -->
-            <div class="pp-field">
-              <label>Birth Certificate <span class="req">*</span></label>
-              <label class="pp-upload-label">
-                <i class="fas fa-file-pdf"></i> Choose file
-                <input type="file" name="birth_cert" accept="image/*,.pdf" required>
-              </label>
-              <div class="pp-upload-name" id="pp-cert-name"></div>
-              <span class="pp-field-hint">JPG, PNG or PDF, max 5 MB</span>
-            </div>
-          </div>
-          <div id="pp-form-errors" style="margin:16px 0;color:var(--color-primary);font-size:0.85rem;display:none;"></div>
-          <div style="margin-top:28px;text-align:center;">
-            <button type="submit" class="pp-submit-btn">
-              <i class="fas fa-paper-plane"></i> Submit Application
-            </button>
-          </div>
-        </form>
-        <!-- Success message -->
-        <div class="pp-success" id="pp-success">
-          <div class="pp-success-icon"><i class="fas fa-check"></i></div>
-          <h3>Application Submitted!</h3>
-          <p>Thank you for applying to Dr. Mar Theophilus School. Our admissions team will contact you within 2–3 working days to schedule the interactive session.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<script>
-(function(){
-  /* File upload display names */
-  function fileLabel(inputEl, displayId){
-    inputEl.addEventListener('change', function(){
-      var d = document.getElementById(displayId);
-      if(d) d.textContent = this.files[0] ? this.files[0].name : '';
-    });
-  }
-  var photoIn = document.querySelector('#pp-admission-form [name="student_photo"]');
-  var certIn  = document.querySelector('#pp-admission-form [name="birth_cert"]');
-  if(photoIn) fileLabel(photoIn,'pp-photo-name');
-  if(certIn)  fileLabel(certIn, 'pp-cert-name');
-
-  /* Form validation & submission */
-  var form = document.getElementById('pp-admission-form');
-  if(!form) return;
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var errors = [];
-    var fields = form.querySelectorAll('[required]');
-    fields.forEach(function(f){ f.classList.remove('pp-error'); });
-
-    fields.forEach(function(f){
-      var val = f.value.trim();
-      if(!val){ f.classList.add('pp-error'); errors.push(f.closest('.pp-field').querySelector('label').textContent.replace('*','').trim() + ' is required.'); return; }
-      if(f.type==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){ f.classList.add('pp-error'); errors.push('Please enter a valid email address.'); }
-      if(f.name==='mobile' && !/^[6-9][0-9]{9}$/.test(val.replace(/\s/g,''))){ f.classList.add('pp-error'); errors.push('Please enter a valid 10-digit mobile number.'); }
-      if(f.type==='file' && !f.files.length){ f.closest('.pp-field').querySelector('.pp-upload-label').style.borderColor='var(--color-primary)'; errors.push(f.closest('.pp-field').querySelector('label').textContent.replace('*','').trim() + ' is required.'); }
-    });
-
-    var dob = form.querySelector('[name="dob"]');
-    if(dob && dob.value){
-      var age = (new Date() - new Date(dob.value)) / 31557600000;
-      if(age < 2.5 || age > 7){ dob.classList.add('pp-error'); errors.push('Child age must be between 3 and 6 years for Pre-Primary admission.'); }
-    }
-
-    var errDiv = document.getElementById('pp-form-errors');
-    if(errors.length){
-      errDiv.innerHTML = errors.map(function(m){ return '<div>• '+m+'</div>'; }).join('');
-      errDiv.style.display='block';
-      errDiv.scrollIntoView({behavior:'smooth',block:'center'});
-      return;
-    }
-    errDiv.style.display='none';
-    form.style.display='none';
-    document.getElementById('pp-success').classList.add('show');
-    document.getElementById('pp-success').scrollIntoView({behavior:'smooth',block:'center'});
-  });
-}());
-</script>
-
-<!-- ══════════════════════════════
-     PRIMARY DETAIL PAGE
-══════════════════════════════ -->
-<style>
-#spg-primary { font-family:'Poppins',sans-serif; color:var(--color-primary); }
-
-/* Hero */
-.pri-hero {
-  background: linear-gradient(135deg,var(--color-primary) 0%,var(--maroon2) 55%,var(--color-primary) 100%);
-  padding: clamp(48px,7vw,90px) clamp(20px,5vw,80px);
-  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
-  position: relative; overflow: hidden;
+<style id="preprimary-page-css">
+/* ── Pre-Primary page ─────────────────────────────────────── */
+/* All classes prefixed ppr- to avoid collisions */
+#spg-preprimary {
+  --ppr-maroon:  var(--color-primary);
+  --ppr-cream:   #FFF8F0;
+  --ppr-yellow:  #FFF3B0;
+  --ppr-coral:   #FFE0D0;
+  --ppr-blue:    #D0EDFB;
+  --ppr-mint:    #C8F0DF;
+  --ppr-text:    #2D1A00;
+  --ppr-mid:     #5C3D1E;
+  --ppr-shadow:  0 4px 24px rgba(0,0,0,.08);
+  font-family: 'Poppins', sans-serif;
+  background: var(--ppr-cream);
 }
-.pri-hero::before {
-  content:''; position:absolute; inset:0;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect x='10' y='15' width='12' height='2' fill='%23ffffff' opacity='.04'/%3E%3Crect x='15' y='10' width='2' height='12' fill='%23ffffff' opacity='.04'/%3E%3C/svg%3E") repeat;
-}
-.pri-hero-text { position:relative; }
-.pri-eyebrow {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(var(--color-secondary-rgb),.18); border:1px solid rgba(var(--color-secondary-rgb),.4);
-  color:var(--color-secondary); padding:5px 14px; border-radius:99px;
-  font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
-  margin-bottom:20px;
-}
-.pri-hero h1 {
-  font-family:Georgia,'Times New Roman',serif;
-  font-size:clamp(2.2rem,4.5vw,3.4rem); font-weight:700; line-height:1.1;
-  color:#fff; margin:0 0 16px;
-}
-.pri-hero h1 span { color:var(--color-secondary); }
-.pri-hero-sub { color:rgba(255,255,255,.75); font-size:1.05rem; line-height:1.65; margin:0 0 28px; }
-.pri-hero-badges { display:flex; flex-wrap:wrap; gap:10px; }
-.pri-badge {
-  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
-  color:#fff; padding:6px 16px; border-radius:99px; font-size:0.8rem; font-weight:600;
-}
-.pri-hero-stats {
-  position:relative; display:grid; grid-template-columns:1fr 1fr; gap:16px;
-}
-.pri-stat {
-  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
-  border-radius:16px; padding:22px 20px; text-align:center; backdrop-filter:blur(8px);
-}
-.pri-stat-num { font-family:Georgia,'Times New Roman',serif; font-size:2.2rem; font-weight:700; color:var(--color-secondary); line-height:1; }
-.pri-stat-lbl { color:rgba(255,255,255,.7); font-size:0.78rem; margin-top:4px; }
 
-/* Section wrapper */
-.pri-section { padding: clamp(48px,6vw,80px) clamp(20px,5vw,80px); }
-.pri-section-inner { max-width:1200px; margin:0 auto; }
-.pri-section-tag {
-  display:inline-flex; align-items:center; gap:8px;
-  background:rgba(var(--color-primary-rgb),.08); color:var(--color-primary);
-  padding:5px 14px; border-radius:99px;
-  font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
-  margin-bottom:16px;
+/* ── Hero ── */
+.ppr-hero {
+  background: var(--ppr-maroon);
+  position: relative;
+  overflow: visible;
+  padding: 56px 40px 0;
 }
-.pri-section-tag i { color:var(--color-secondary); }
-.pri-section h2 {
-  font-family:Georgia,'Times New Roman',serif;
-  font-size:clamp(1.8rem,3vw,2.5rem); font-weight:700; color:var(--color-primary);
-  margin:0 0 8px;
+.ppr-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  padding-bottom: 60px;
 }
-.pri-section-sub { color:var(--text-lt); font-size:1rem; line-height:1.6; margin:0 0 36px; }
-.pri-bg-light { background:var(--color-bg-main); }
+.ppr-tag-pill {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  background: var(--ppr-cream); color: var(--ppr-maroon);
+  padding: 5px 16px; border-radius: 20px;
+  margin-bottom: 16px;
+}
+.ppr-hero-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.2rem; font-weight: 700; color: #fff;
+  line-height: 1.25; margin: 0 0 14px;
+}
+.ppr-hero-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem; color: rgba(255,255,255,.85);
+  margin: 0 0 28px; font-style: italic;
+}
+.ppr-hero-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.ppr-btn-solid {
+  font-family: 'Poppins', sans-serif;
+  font-size: .9rem; font-weight: 700;
+  background: var(--ppr-cream); color: var(--ppr-maroon);
+  padding: 12px 28px; border-radius: 50px;
+  text-decoration: none; border: 2px solid var(--ppr-cream);
+  transition: background .18s, transform .15s;
+  display: inline-block;
+}
+.ppr-btn-solid:hover { background: #ffe8d4; transform: translateY(-2px); }
+.ppr-btn-solid:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 3px; }
+.ppr-btn-outline {
+  font-family: 'Poppins', sans-serif;
+  font-size: .9rem; font-weight: 700;
+  background: transparent; color: #fff;
+  padding: 12px 28px; border-radius: 50px;
+  text-decoration: none; border: 2px solid rgba(255,255,255,.65);
+  transition: border-color .18s, background .18s, transform .15s;
+  display: inline-block;
+}
+.ppr-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.1); transform: translateY(-2px); }
+.ppr-btn-outline:focus-visible { outline: 3px solid rgba(255,255,255,.8); outline-offset: 3px; }
+.ppr-hero-art { text-align: center; }
+.ppr-hero-img { max-width: 100%; height: auto; }
+/* cloud bottom edge */
+.ppr-hero-edge { display: block; width: 100%; margin-top: -2px; }
 
-/* Class cards */
-.pri-class-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px; }
-.pri-class-card {
-  background:#fff; border:1.5px solid var(--color-bg-section); border-radius:20px;
-  padding:28px 22px; transition:transform .25s,box-shadow .25s,border-color .25s;
+/* ── At-a-glance ── */
+.ppr-glance {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+  max-width: 900px; margin: -20px auto 0; padding: 0 20px;
+  position: relative; z-index: 2;
 }
-.pri-class-card:hover { transform:translateY(-4px); box-shadow:0 16px 36px rgba(var(--color-primary-rgb),.13); border-color:var(--maroon2); }
-.pri-class-icon {
-  width:48px; height:48px; border-radius:14px;
-  background:linear-gradient(135deg,var(--color-primary),var(--maroon2));
-  display:flex; align-items:center; justify-content:center;
-  color:var(--color-secondary); font-size:1.1rem; margin-bottom:16px;
+.ppr-glance-chip {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(var(--color-primary-rgb),.08);
+  padding: 12px 22px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
 }
-.pri-class-card h3 { font-family:Georgia,'Times New Roman',serif; font-size:1.2rem; color:var(--color-primary); margin:0 0 6px; }
-.pri-class-card .pri-class-age { font-size:0.78rem; color:var(--color-secondary); font-weight:700; margin-bottom:10px; }
-.pri-class-card p { font-size:0.88rem; color:var(--text-lt); line-height:1.6; margin:0; }
+.ppr-chip-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(var(--color-primary-rgb),.09);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ppr-chip-icon svg { width: 18px; height: 18px; stroke: var(--ppr-maroon); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ppr-chip-label { font-family: 'Poppins', sans-serif; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #999; display: block; line-height: 1; }
+.ppr-chip-val   { font-family: 'Poppins', sans-serif; font-size: .88rem; font-weight: 600; color: var(--ppr-text); display: block; line-height: 1.4; }
 
-/* Subjects grid */
-.pri-subjects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:18px; }
-.pri-subject {
-  display:flex; gap:14px; align-items:flex-start;
-  background:#fff; border-radius:14px; padding:18px 16px; border:1px solid var(--color-bg-section);
+/* ── Generic section ── */
+.ppr-section { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+.ppr-section-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ppr-maroon); margin: 0 0 8px;
 }
-.pri-subject-icon { color:var(--color-secondary); font-size:1.1rem; margin-top:2px; flex-shrink:0; }
-.pri-subject h4 { font-size:0.92rem; font-weight:700; color:var(--color-primary); margin:0 0 4px; }
-.pri-subject p { font-size:0.82rem; color:var(--text-lt); line-height:1.5; margin:0; }
+.ppr-section-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--ppr-maroon);
+  margin: 0 0 6px; line-height: 1.3;
+}
+.ppr-squiggle { margin: 0 0 20px; }
+.ppr-squiggle svg { width: 80px; height: 12px; }
 
-/* Teaching approach */
-.pri-approach-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
-.pri-approach {
-  text-align:center; background:#fff; border-radius:16px;
-  padding:28px 20px; border:1.5px solid var(--color-bg-section);
-  transition:transform .25s,box-shadow .25s;
-}
-.pri-approach:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(var(--color-primary-rgb),.1); }
-.pri-approach-ring {
-  width:64px; height:64px; border-radius:50%;
-  background:linear-gradient(135deg,rgba(var(--color-primary-rgb),.1),rgba(var(--color-primary-rgb),.08));
-  border:2px solid rgba(var(--color-secondary-rgb),.35);
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.4rem; color:var(--color-primary); margin:0 auto 16px;
-}
-.pri-approach h4 { font-size:0.9rem; font-weight:700; color:var(--color-primary); margin:0 0 6px; }
-.pri-approach p { font-size:0.8rem; color:var(--text-lt); line-height:1.5; margin:0; }
+/* ── Wave divider ── */
+.ppr-wave { width: 100%; overflow: hidden; line-height: 0; display: block; }
+.ppr-wave svg { display: block; width: 100%; height: 60px; }
+.ppr-wave.flip { transform: scaleX(-1); }
 
-/* Skills */
-.pri-skills-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
-.pri-skill {
-  display:flex; gap:14px; align-items:flex-start;
-  background:#fff; border-radius:14px; padding:18px 16px; border:1px solid var(--color-bg-section);
-}
-.pri-skill i { color:var(--color-secondary); font-size:1rem; margin-top:3px; flex-shrink:0; }
-.pri-skill div h4 { font-size:0.9rem; font-weight:700; color:var(--color-primary); margin:0 0 4px; }
-.pri-skill div p { font-size:0.82rem; color:var(--text-lt); line-height:1.5; margin:0; }
+/* ── Intro two-col ── */
+.ppr-intro-grid { display: grid; grid-template-columns: 1fr 320px; gap: 40px; align-items: start; }
+.ppr-intro-text p { font-family: 'Poppins', sans-serif; font-size: .95rem; line-height: 1.8; color: var(--ppr-text); margin: 0 0 14px; max-width: 60ch; }
+.ppr-intro-character { text-align: center; }
+.ppr-intro-character svg { max-width: 100%; height: auto; }
 
-/* Steps */
-.pri-steps { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:0; counter-reset:step; position:relative; }
-.pri-steps::before { content:''; position:absolute; top:36px; left:10%; right:10%; height:2px; background:linear-gradient(90deg,var(--color-primary),var(--color-secondary),var(--color-primary)); opacity:.2; border-radius:2px; }
-.pri-step { text-align:center; padding:20px 16px; }
-.pri-step-num {
-  width:56px; height:56px; border-radius:50%; margin:0 auto 16px;
-  background:linear-gradient(135deg,var(--color-primary),var(--maroon2));
-  display:flex; align-items:center; justify-content:center;
-  color:var(--color-secondary); font-family:Georgia,'Times New Roman',serif; font-size:1.3rem; font-weight:700;
-  box-shadow:0 6px 18px rgba(var(--color-primary-rgb),.3); position:relative; z-index:1;
+/* ── Stage path ── */
+.ppr-stage-row {
+  display: flex; align-items: center; gap: 0;
+  margin: 36px 0 16px; flex-wrap: wrap;
 }
-.pri-step h4 { font-size:0.92rem; font-weight:700; color:var(--color-primary); margin:0 0 6px; }
-.pri-step p { font-size:0.8rem; color:var(--text-lt); line-height:1.5; margin:0; }
+.ppr-stage-card {
+  background: #fff;
+  border: 1.5px solid #e8e0d8;
+  border-radius: 20px;
+  padding: 20px 28px; text-align: center;
+  box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  flex: 1; min-width: 150px;
+  transition: transform .18s, box-shadow .18s;
+}
+.ppr-stage-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 28px rgba(0,0,0,.12); }
+.ppr-stage-num { font-family: 'Poppins', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #aaa; margin-bottom: 4px; }
+.ppr-stage-name { font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; font-weight: 700; color: var(--ppr-maroon); line-height: 1.35; }
+.ppr-stage-arrow { flex-shrink: 0; padding: 0 10px; color: #ccc; }
+.ppr-stage-arrow svg { width: 32px; height: 32px; }
+.ppr-stage-note { font-family: 'Poppins', sans-serif; font-size: .88rem; font-style: italic; color: var(--ppr-mid); text-align: center; }
 
-/* Form */
-.pri-form-wrap {
-  max-width:780px; margin:0 auto;
-  background:#fff; border-radius:24px; padding:clamp(28px,4vw,48px);
-  border:1.5px solid var(--color-bg-section); box-shadow:0 20px 60px rgba(var(--color-primary-rgb),.08);
-}
-.pri-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.pri-form-full { grid-column:1/-1; }
-.pri-field { display:flex; flex-direction:column; gap:6px; }
-.pri-field label { font-size:0.82rem; font-weight:700; color:var(--color-primary); letter-spacing:0.02em; }
-.pri-field label .req { color:var(--color-primary); margin-left:2px; }
-.pri-field input, .pri-field select, .pri-field textarea {
-  padding:11px 14px; border:1.5px solid #e0d0c8; border-radius:10px;
-  font-family:'Poppins',sans-serif; font-size:0.92rem; color:var(--color-primary);
-  background:var(--color-bg-main); outline:none; transition:border-color .2s,box-shadow .2s;
-}
-.pri-field input:focus, .pri-field select:focus, .pri-field textarea:focus {
-  border-color:var(--color-primary); box-shadow:0 0 0 3px rgba(var(--color-primary-rgb),.08);
-}
-.pri-field input.pri-error, .pri-field select.pri-error { border-color:var(--color-primary); }
-.pri-field-hint { font-size:0.73rem; color:#789; margin-top:2px; }
-.pri-upload-label {
-  display:flex; align-items:center; gap:10px; padding:11px 14px;
-  border:1.5px dashed var(--color-secondary); border-radius:10px; background:var(--color-bg-main);
-  cursor:pointer; font-size:0.88rem; color:#7a5030; transition:border-color .2s,background .2s;
-}
-.pri-upload-label:hover { border-color:var(--color-primary); background:#f4f8ff; }
-.pri-upload-label i { color:var(--color-secondary); }
-.pri-upload-label input[type="file"] { display:none; }
-.pri-upload-name { font-size:0.78rem; color:var(--maroon2); margin-top:4px; }
-.pri-submit-btn {
-  display:inline-flex; align-items:center; gap:10px; padding:14px 36px;
-  border:none; border-radius:40px;
-  background:linear-gradient(135deg,var(--color-primary),var(--maroon2));
-  color:#fff; font-family:'Poppins',sans-serif; font-size:1rem; font-weight:700;
-  cursor:pointer; transition:transform .2s,box-shadow .2s;
-  box-shadow:0 6px 20px rgba(var(--color-primary-rgb),.25);
-}
-.pri-submit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(var(--color-primary-rgb),.35); }
-.pri-success { display:none; text-align:center; padding:40px 20px; }
-.pri-success.show { display:block; }
-.pri-success-icon {
-  width:72px; height:72px; border-radius:50%; margin:0 auto 20px;
-  background:linear-gradient(135deg,var(--color-primary),var(--maroon2));
-  display:flex; align-items:center; justify-content:center;
-  color:var(--color-secondary); font-size:1.8rem; box-shadow:0 8px 24px rgba(var(--color-primary-rgb),.3);
-}
-.pri-success h3 { font-family:Georgia,'Times New Roman',serif; font-size:1.6rem; color:var(--color-primary); margin:0 0 10px; }
-.pri-success p { color:var(--text-lt); line-height:1.65; max-width:420px; margin:0 auto; }
+/* ── Approach two-col ── */
+.ppr-approach-grid { display: grid; grid-template-columns: 1fr 280px; gap: 48px; align-items: center; }
+.ppr-approach-text p { font-family: 'Poppins', sans-serif; font-size: .95rem; line-height: 1.8; color: var(--ppr-text); margin: 0 0 14px; max-width: 60ch; }
+.ppr-approach-art svg { max-width: 100%; height: auto; }
 
-@media(max-width:768px){
-  .pri-hero { grid-template-columns:1fr; }
-  .pri-hero-stats { grid-template-columns:1fr 1fr; }
-  .pri-form-grid { grid-template-columns:1fr; }
-  .pri-steps { grid-template-columns:1fr 1fr; }
-  .pri-steps::before { display:none; }
+/* ── Explore cards (Learning Through Exploration) ── */
+.ppr-explore-bg { background: white; }
+.ppr-explore-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px;
 }
-@media(max-width:480px){
-  .pri-steps { grid-template-columns:1fr; }
-  .pri-stat-num { font-size:1.7rem; }
+.ppr-explore-card {
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.07);
+  transition: transform .2s, box-shadow .2s;
+  position: relative;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.ppr-explore-card:nth-child(odd)  { transform: rotate(-1deg); }
+.ppr-explore-card:nth-child(even) { transform: rotate(1deg); }
+.ppr-explore-card:hover { transform: rotate(0) translateY(-4px) scale(1.02) !important; box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+.ppr-explore-card.c1 { background: var(--ppr-blue); }
+.ppr-explore-card.c2 { background: var(--ppr-yellow); }
+.ppr-explore-card.c3 { background: var(--ppr-coral); }
+.ppr-explore-card.c4 { background: var(--ppr-mint); }
+.ppr-explore-card.c5 { background: var(--ppr-blue); }
+.ppr-explore-card.c6 { background: var(--ppr-yellow); }
+.ppr-explore-num {
+  position: absolute; top: 16px; right: 18px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.8rem; font-weight: 700; color: rgba(0,0,0,.08); line-height: 1;
+}
+.ppr-explore-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,.65);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.ppr-explore-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--ppr-maroon); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ppr-explore-card h3 { font-family: Georgia, 'Times New Roman', serif; font-size: 1rem; font-weight: 700; color: var(--ppr-maroon); margin: 0 0 8px; }
+.ppr-explore-card p  { font-family: 'Poppins', sans-serif; font-size: .84rem; line-height: 1.65; color: var(--ppr-text); margin: 0; }
+
+/* ── Toy shelf (Learning Beyond) ── */
+.ppr-shelf-wrap { position: relative; padding-bottom: 12px; }
+.ppr-shelf-track { display: flex; gap: 16px; flex-wrap: wrap; padding-bottom: 24px; }
+.ppr-shelf-track::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 6px; background: linear-gradient(90deg, #e8d8c0, #d4c0a8, #e8d8c0);
+  border-radius: 3px;
+  box-shadow: 0 4px 8px rgba(0,0,0,.12);
+}
+.ppr-shelf-card {
+  background: #fff;
+  border: 1px solid #ece4da;
+  border-radius: 18px;
+  padding: 20px 18px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.07);
+  flex: 1; min-width: 160px;
+  transition: transform .2s, box-shadow .2s;
+}
+.ppr-shelf-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 12px 28px rgba(0,0,0,.12); }
+.ppr-shelf-icon { margin-bottom: 10px; }
+.ppr-shelf-icon svg { width: 32px; height: 32px; fill: none; stroke: var(--ppr-maroon); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ppr-shelf-card h4 { font-family: Georgia, 'Times New Roman', serif; font-size: .95rem; font-weight: 700; color: var(--ppr-maroon); margin: 0 0 6px; }
+.ppr-shelf-card p  { font-family: 'Poppins', sans-serif; font-size: .82rem; line-height: 1.65; color: var(--ppr-text); margin: 0; }
+
+/* Speech bubble closing line */
+.ppr-speech-bubble {
+  position: relative;
+  background: var(--ppr-yellow);
+  border: 1.5px solid #e8d870;
+  border-radius: 20px;
+  padding: 18px 24px;
+  margin-top: 32px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .92rem; font-style: italic; color: var(--ppr-mid);
+  line-height: 1.7; max-width: 70ch;
+}
+.ppr-speech-bubble::before {
+  content: '';
+  position: absolute; top: -14px; left: 32px;
+  border: 7px solid transparent;
+  border-bottom-color: #e8d870;
+}
+.ppr-speech-bubble::after {
+  content: '';
+  position: absolute; top: -11px; left: 33px;
+  border: 6px solid transparent;
+  border-bottom-color: var(--ppr-yellow);
+}
+
+/* ── Care cards ── */
+.ppr-care-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 28px; }
+.ppr-care-card {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  box-shadow: var(--ppr-shadow);
+  transition: transform .2s, box-shadow .2s;
+  text-align: center;
+}
+.ppr-care-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 28px rgba(0,0,0,.1); }
+.ppr-care-icon { margin: 0 auto 14px; width: 56px; height: 56px; border-radius: 50%; background: rgba(var(--color-primary-rgb),.08); display: flex; align-items: center; justify-content: center; }
+.ppr-care-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--ppr-maroon); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ppr-care-card p { font-family: 'Poppins', sans-serif; font-size: .9rem; line-height: 1.75; color: var(--ppr-text); margin: 0; }
+
+/* ── Growth path staircase ── */
+.ppr-stair-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+.ppr-stair-grid { display: grid; grid-template-columns: 1fr 480px; gap: 48px; align-items: center; }
+.ppr-stair-text p { font-family: 'Poppins', sans-serif; font-size: .95rem; line-height: 1.8; color: var(--ppr-text); margin: 0 0 14px; max-width: 58ch; }
+.ppr-stair-art svg { max-width: 100%; height: auto; }
+
+/* ── Closing band ── */
+.ppr-closing {
+  background: var(--ppr-yellow);
+  border-top: 2px solid #e8d870;
+  border-bottom: 2px solid #e8d870;
+  padding: 60px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ppr-closing-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
+.ppr-closing h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 2rem; font-weight: 700; color: var(--ppr-maroon); margin: 0 0 24px; }
+.ppr-closing p { font-family: 'Poppins', sans-serif; font-size: .95rem; line-height: 1.8; color: var(--ppr-mid); margin: 0 0 14px; }
+.ppr-closing .ppr-tagline { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05rem; font-weight: 700; font-style: italic; color: var(--ppr-maroon); margin-top: 20px; }
+/* decorative stars in closing -->*/
+.ppr-closing-deco { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
+
+/* ── Admission notice banner ── */
+.ppr-notice {
+  max-width: 1100px; margin: 0 auto; padding: 0 24px 60px;
+}
+.ppr-notice-inner {
+  background: #fff;
+  border: 1px solid #e2e2e5;
+  border-left: 4px solid var(--ppr-maroon);
+  border-radius: 0 12px 12px 0;
+  padding: 18px 24px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+.ppr-notice-text { font-family: 'Poppins', sans-serif; font-size: .9rem; color: var(--ppr-text); flex: 1; min-width: 200px; line-height: 1.65; }
+.ppr-notice-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: .84rem; font-weight: 700;
+  background: var(--ppr-maroon); color: #fff;
+  padding: 10px 22px; border-radius: 50px;
+  text-decoration: none; white-space: nowrap;
+  transition: background .15s, transform .15s;
+  flex-shrink: 0;
+}
+.ppr-notice-btn:hover { background: #9a0000; transform: translateY(-1px); }
+.ppr-notice-btn:focus-visible { outline: 3px solid rgba(var(--color-primary-rgb),.4); outline-offset: 3px; }
+
+/* ── Bounce fade-in ── */
+.ppr-bounce { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .ppr-bounce { opacity: 0; transform: translateY(20px) scale(.96); transition: opacity .5s ease, transform .5s cubic-bezier(.34,1.56,.64,1); }
+  .ppr-bounce.sc-visible { opacity: 1; transform: none; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1023px) and (min-width: 640px) {
+  .ppr-intro-grid    { grid-template-columns: 1fr; }
+  .ppr-approach-grid { grid-template-columns: 1fr; }
+  .ppr-explore-grid  { grid-template-columns: repeat(2,1fr); }
+  .ppr-care-grid     { grid-template-columns: 1fr; }
+  .ppr-stair-grid    { grid-template-columns: 1fr; }
+  .ppr-stage-row     { justify-content: center; }
+  .ppr-hero-inner    { grid-template-columns: 1fr; }
+  .ppr-hero-art      { order: -1; }
+  .ppr-glance        { gap: 10px; }
+}
+@media (max-width: 639px) {
+  .ppr-hero          { padding: 36px 18px 0; }
+  .ppr-hero-inner    { grid-template-columns: 1fr; gap: 20px; }
+  .ppr-hero-title    { font-size: 1.5rem; }
+  .ppr-hero-art      { order: -1; }
+  .ppr-hero-img      { max-width: 320px; }
+  .ppr-explore-grid  { grid-template-columns: 1fr; }
+  .ppr-explore-card:nth-child(odd),
+  .ppr-explore-card:nth-child(even) { transform: none; }
+  .ppr-care-grid     { grid-template-columns: 1fr; }
+  .ppr-stair-grid    { grid-template-columns: 1fr; }
+  .ppr-glance        { flex-direction: column; align-items: stretch; }
+  .ppr-stage-row     { flex-direction: column; }
+  .ppr-stage-arrow   { transform: rotate(90deg); }
+  .ppr-shelf-track   { flex-direction: column; }
+  .ppr-closing h2    { font-size: 1.4rem; }
+  .ppr-section-heading { font-size: 1.3rem; }
+  .ppr-intro-grid    { grid-template-columns: 1fr; }
+  .ppr-approach-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Print ── */
+@media print {
+  .ppr-hero { background: none !important; color: #000 !important; padding: 20px 0; }
+  .ppr-hero-title, .ppr-hero-sub { color: #000 !important; }
+  .ppr-hero-art, .ppr-hero-edge, .ppr-closing-deco { display: none !important; }
+  .ppr-hero-btns, .ppr-notice-btn, .ppr-btn-solid, .ppr-btn-outline { display: none !important; }
+  .ppr-wave { display: none !important; }
+  .ppr-explore-card:nth-child(odd),
+  .ppr-explore-card:nth-child(even) { transform: none !important; }
+  .ppr-care-card, .ppr-shelf-card, .ppr-stage-card, .ppr-explore-card { box-shadow: none; break-inside: avoid; }
+  .ppr-closing { background: none !important; border: 1px solid #ccc; }
+  #spg-preprimary { background: white !important; }
 }
 </style>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="ppr-hero" role="banner">
+  <div class="ppr-hero-inner">
+    <div class="ppr-hero-text">
+      <div class="ppr-tag-pill">Pre-Primary Section</div>
+      <h1 class="ppr-hero-title">Little Steps, Big Discoveries, Bright Beginnings!</h1>
+      <p class="ppr-hero-sub">Where Learning Begins with Joy</p>
+      <div class="ppr-hero-btns">
+        <a href="#spg-admissions" class="ppr-btn-solid">Admission Procedure</a>
+        <a href="#spg-contact"    class="ppr-btn-outline">Contact Us</a>
+      </div>
+    </div>
+    <div class="ppr-hero-art">
+      <img src="images/preprimary-hero-scene.svg"
+           alt="Three cartoon children learning — a girl reading a book, a boy stacking alphabet blocks, and a child painting at an easel"
+           width="520" height="390" class="ppr-hero-img">
+    </div>
+  </div>
+  <svg class="ppr-hero-edge" viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,70 L0,38 Q80,8 160,32 Q240,56 320,24 Q400,-8 480,22 Q560,52 640,24 Q720,-4 800,22 Q880,48 960,22 Q1040,-4 1120,24 Q1200,52 1280,28 Q1360,4 1440,30 L1440,70 Z" fill="#FFF8F0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ AT A GLANCE ═══════════ -->
+<div class="ppr-glance" role="region" aria-label="Quick facts about the Pre-Primary section">
+  <div class="ppr-glance-chip">
+    <div class="ppr-chip-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <span class="ppr-chip-label">Classes</span>
+      <span class="ppr-chip-val">Nursery, LKG &amp; UKG</span>
+    </div>
+  </div>
+  <div class="ppr-glance-chip">
+    <div class="ppr-chip-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div>
+      <span class="ppr-chip-label">School Hours</span>
+      <span class="ppr-chip-val">Mon–Fri, 8:30 a.m.–12:50 p.m.</span>
+    </div>
+  </div>
+  <div class="ppr-glance-chip">
+    <div class="ppr-chip-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div>
+      <span class="ppr-chip-label">Reporting Time</span>
+      <span class="ppr-chip-val">Report by 8:20 a.m.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 Q180,60 360,30 Q540,0 720,40 Q900,70 1080,30 Q1260,-10 1440,25 L1440,60 L0,60 Z" fill="white" opacity=".6"/>
+  </svg>
+</div>
+
+<!-- ═══════════ INTRO ═══════════ -->
+<div class="ppr-section ppr-bounce">
+  <div class="ppr-intro-grid">
+    <div class="ppr-intro-text">
+      <div class="ppr-section-label">About Our Programme</div>
+      <h2 class="ppr-section-heading">Where Learning Begins with Joy</h2>
+      <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p>The early years of childhood are a precious time of discovery, curiosity and growth. At Dr. Mar Theophilus School, Dhanori, Pune, our Pre-Primary Section provides a warm, welcoming and stimulating environment where young children take their first steps into the world of learning.</p>
+      <p>We believe that every child is unique and learns at their own pace. Through meaningful activities, playful exploration and guided experiences, we encourage children to discover their abilities, express themselves confidently and develop a love for learning.</p>
+      <p>Our Pre-Primary Section comprises Nursery, Lower Kindergarten (LKG) and Upper Kindergarten (UKG), providing a gradual and enjoyable transition from early childhood experiences to formal schooling.</p>
+    </div>
+    <!-- Inline character illustration: child with balloon -->
+    <div class="ppr-intro-character" aria-hidden="true">
+      <svg viewBox="0 0 200 280" width="200" height="280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Balloon string -->
+        <path d="M100 55 Q105 80 100 105" stroke="#E8534A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Balloon -->
+        <ellipse cx="100" cy="38" rx="26" ry="30" fill="#E8534A"/>
+        <ellipse cx="92"  cy="28" rx="8" ry="6" fill="white" opacity=".3"/>
+        <path d="M100 68 Q96 74 100 78" stroke="#E8534A" stroke-width="2" fill="none"/>
+        <!-- Child body: light brown skin, yellow dress -->
+        <rect x="78" y="148" width="44" height="70" rx="14" fill="#F9CF8A"/>
+        <!-- Legs -->
+        <rect x="82" y="204" width="16" height="52" rx="8" fill="#F9CF8A"/>
+        <rect x="102" y="204" width="16" height="52" rx="8" fill="#F9CF8A"/>
+        <ellipse cx="90"  cy="257" rx="12" ry="7" fill="#6B3A00"/>
+        <ellipse cx="110" cy="257" rx="12" ry="7" fill="#6B3A00"/>
+        <!-- Right arm holding balloon string -->
+        <rect x="118" y="155" width="20" height="14" rx="7" fill="#D4956A"/>
+        <line x1="136" y1="162" x2="100" y2="105" stroke="#E8534A" stroke-width="1.5"/>
+        <!-- Left arm -->
+        <rect x="62" y="155" width="18" height="12" rx="6" fill="#D4956A"/>
+        <!-- Head -->
+        <circle cx="100" cy="122" r="34" fill="#D4956A"/>
+        <!-- Hair (curly, dark) -->
+        <ellipse cx="100" cy="92" rx="34" ry="15" fill="#2D1200"/>
+        <circle cx="70"  cy="104" r="12" fill="#2D1200"/>
+        <circle cx="130" cy="104" r="12" fill="#2D1200"/>
+        <circle cx="80"  cy="96"  r="10" fill="#2D1200"/>
+        <circle cx="120" cy="96"  r="10" fill="#2D1200"/>
+        <!-- Eyes -->
+        <circle cx="90"  cy="122" r="5" fill="white"/>
+        <circle cx="110" cy="122" r="5" fill="white"/>
+        <circle cx="91"  cy="123" r="3" fill="#2D1200"/>
+        <circle cx="111" cy="123" r="3" fill="#2D1200"/>
+        <circle cx="92"  cy="122" r="1" fill="white"/>
+        <circle cx="112" cy="122" r="1" fill="white"/>
+        <!-- Smile -->
+        <path d="M91 133 Q100 140 109 133" stroke="#2D1200" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Cheeks -->
+        <ellipse cx="82"  cy="134" rx="7" ry="5" fill="#E8534A" opacity=".2"/>
+        <ellipse cx="118" cy="134" rx="7" ry="5" fill="#E8534A" opacity=".2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Stage path -->
+  <div class="ppr-stage-row" role="list" aria-label="Pre-Primary classes">
+    <div class="ppr-stage-card" role="listitem">
+      <div class="ppr-stage-num">Stage 1</div>
+      <div class="ppr-stage-name">Nursery</div>
+    </div>
+    <div class="ppr-stage-arrow" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 16 Q12 8 20 16 Q28 24 36 16" stroke="#ccc" stroke-width="2" stroke-dasharray="4 3" fill="none" stroke-linecap="round"/>
+        <polyline points="26,12 32,16 26,20" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ppr-stage-card" role="listitem">
+      <div class="ppr-stage-num">Stage 2</div>
+      <div class="ppr-stage-name">Lower Kindergarten (LKG)</div>
+    </div>
+    <div class="ppr-stage-arrow" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 16 Q12 8 20 16 Q28 24 36 16" stroke="#ccc" stroke-width="2" stroke-dasharray="4 3" fill="none" stroke-linecap="round"/>
+        <polyline points="26,12 32,16 26,20" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ppr-stage-card" role="listitem">
+      <div class="ppr-stage-num">Stage 3</div>
+      <div class="ppr-stage-name">Upper Kindergarten (UKG)</div>
+    </div>
+  </div>
+  <p class="ppr-stage-note">A gradual and enjoyable transition from early childhood experiences to formal schooling.</p>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave" aria-hidden="true" style="background:white;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 Q120,0 240,30 Q360,60 480,30 Q600,0 720,30 Q840,60 960,30 Q1080,0 1200,30 Q1320,60 1440,30 L1440,60 L0,60 Z" fill="#FFF8F0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ OUR APPROACH ═══════════ -->
+<div class="ppr-section ppr-bounce" style="background:white; border-radius:0; max-width:100%; padding:0;">
+  <div class="ppr-section" style="padding-top:60px;padding-bottom:60px;">
+    <div class="ppr-approach-grid">
+      <div class="ppr-approach-text">
+        <div class="ppr-section-label">Our Philosophy</div>
+        <h2 class="ppr-section-heading">Our Approach to Early Learning</h2>
+        <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <p>At this foundational stage, learning goes beyond books and worksheets. We focus on making every classroom experience interactive, enjoyable and meaningful.</p>
+        <p>Our activity-based approach encourages children to learn through observation, exploration, participation and hands-on experiences. Through stories, rhymes, phonics, creative activities, conversations and practical tasks, children begin to understand the world around them while developing essential early learning skills.</p>
+        <p>We strive to create a positive learning environment where children feel secure, valued and encouraged to ask questions, try new things and learn through experience.</p>
+      </div>
+      <!-- Inline exploration illustration -->
+      <div class="ppr-approach-art" aria-hidden="true">
+        <svg viewBox="0 0 260 300" width="260" height="300" xmlns="http://www.w3.org/2000/svg">
+          <!-- Magnifying glass -->
+          <circle cx="80" cy="90" r="38" fill="none" stroke="#4A8FD4" stroke-width="6"/>
+          <circle cx="80" cy="90" r="30" fill="#D0EDFB" opacity=".6"/>
+          <line x1="108" y1="118" x2="130" y2="145" stroke="#4A8FD4" stroke-width="6" stroke-linecap="round"/>
+          <!-- small bug/leaf inside glass -->
+          <ellipse cx="80" cy="90" rx="14" ry="10" fill="#5CB85C" opacity=".8"/>
+          <circle  cx="80" cy="85" r="5" fill="#2D6B2D"/>
+          <!-- Plant / sapling -->
+          <line x1="180" y1="260" x2="180" y2="160" stroke="#5CB85C" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="180" cy="175" rx="22" ry="14" fill="#68B85A" transform="rotate(-30 180 175)"/>
+          <ellipse cx="180" cy="195" rx="22" ry="14" fill="#5CB85C" transform="rotate(20 180 195)"/>
+          <ellipse cx="180" cy="215" rx="24" ry="15" fill="#68B85A" transform="rotate(-10 180 215)"/>
+          <!-- Soil mound -->
+          <ellipse cx="180" cy="262" rx="28" ry="10" fill="#8B6914" opacity=".45"/>
+          <!-- Block -->
+          <rect x="130" y="225" width="40" height="40" rx="8" fill="#FFD740"/>
+          <text x="150" y="251" text-anchor="middle" fill="#8B6914" font-size="22" font-family="Georgia,serif" font-weight="700">3</text>
+          <!-- Child figure (simple) -->
+          <circle cx="100" cy="195" r="22" fill="#E8C49A"/><!-- head -->
+          <ellipse cx="100" cy="175" rx="22" ry="10" fill="#3D2000"/><!-- hair -->
+          <rect x="84"  cy="215" width="32" height="45" rx="10" ry="10" fill="#E55B4A" x="84" y="215"/><!-- body -->
+          <rect x="68"  y="225" width="18" height="12" rx="6" fill="#E8C49A"/><!-- arm left -->
+          <rect x="114" y="225" width="18" height="12" rx="6" fill="#E8C49A"/><!-- arm right -->
+          <!-- arm points to magnifier -->
+          <line x1="68" y1="231" x2="40" y2="130" stroke="#E8C49A" stroke-width="8" stroke-linecap="round"/>
+          <!-- eyes / smile simple -->
+          <circle cx="94" cy="194" r="3" fill="#3D2000"/>
+          <circle cx="106" cy="194" r="3" fill="#3D2000"/>
+          <path d="M94 202 Q100 207 106 202" stroke="#3D2000" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave flip" aria-hidden="true" style="background:white;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 Q120,60 240,30 Q360,0 480,30 Q600,60 720,30 Q840,0 960,30 Q1080,60 1200,30 Q1320,0 1440,30 L1440,60 L0,60 Z" fill="#FFF8F0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ LEARNING THROUGH EXPLORATION ═══════════ -->
+<div class="ppr-section ppr-bounce">
+  <div class="ppr-section-label">Six Areas of Growth</div>
+  <h2 class="ppr-section-heading">Learning Through Exploration</h2>
+  <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <p style="font-family:'Poppins',sans-serif;font-size:.95rem;color:var(--ppr-mid);margin-bottom:0;max-width:65ch;">Our activities are thoughtfully designed to support the all-round development of every child.</p>
+
+  <div class="ppr-explore-grid">
+    <!-- 1. Language -->
+    <div class="ppr-explore-card c1 ppr-bounce">
+      <div class="ppr-explore-num">01</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>
+      </div>
+      <h3>Language and Communication</h3>
+      <p>Through storytelling, rhymes, phonics, picture reading and interactive conversations, children develop listening skills, vocabulary, pronunciation and confidence in expressing their thoughts.</p>
+    </div>
+    <!-- 2. Numeracy -->
+    <div class="ppr-explore-card c2 ppr-bounce">
+      <div class="ppr-explore-num">02</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="6" height="6" rx="1"/><rect x="9" y="3" width="6" height="6" rx="1"/><rect x="16" y="3" width="6" height="6" rx="1"/><rect x="2" y="12" width="6" height="6" rx="1"/><rect x="9" y="12" width="6" height="6" rx="1"/><line x1="16" y1="15" x2="22" y2="15"/><line x1="19" y1="12" x2="19" y2="18"/></svg>
+      </div>
+      <h3>Early Numeracy and Thinking Skills</h3>
+      <p>Fun activities involving numbers, shapes, patterns, colours, sorting and matching help children develop early mathematical understanding, observation and logical thinking.</p>
+    </div>
+    <!-- 3. Creative -->
+    <div class="ppr-explore-card c3 ppr-bounce">
+      <div class="ppr-explore-num">03</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      </div>
+      <h3>Creative Expression</h3>
+      <p>Art, craft, colouring, drawing, music and movement provide opportunities for children to express their imagination, explore their creativity and develop fine motor skills.</p>
+    </div>
+    <!-- 4. Physical -->
+    <div class="ppr-explore-card c4 ppr-bounce">
+      <div class="ppr-explore-num">04</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M5.45 5.11L2 12h4l2 8h8l2-8h4l-3.45-6.89"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+      </div>
+      <h3>Physical Development</h3>
+      <p>Indoor and outdoor play, movement activities and age-appropriate physical exercises help strengthen coordination, balance, motor skills and confidence.</p>
+    </div>
+    <!-- 5. Social -->
+    <div class="ppr-explore-card c5 ppr-bounce">
+      <div class="ppr-explore-num">05</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Social and Emotional Development</h3>
+      <p>Group activities, collaborative tasks and classroom interactions encourage children to share, cooperate, communicate and develop friendships. We also nurture values such as kindness, respect, patience and consideration for others.</p>
+    </div>
+    <!-- 6. Environmental -->
+    <div class="ppr-explore-card c6 ppr-bounce">
+      <div class="ppr-explore-num">06</div>
+      <div class="ppr-explore-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <h3>Environmental Awareness and Life Skills</h3>
+      <p>Through theme-based learning and practical experiences, children are encouraged to observe their surroundings, appreciate nature, practise good habits and develop independence in everyday activities.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 Q200,55 400,25 Q600,-5 800,40 Q1000,70 1200,30 Q1350,5 1440,20 L1440,60 L0,60 Z" fill="white" opacity=".7"/>
+  </svg>
+</div>
+
+<!-- ═══════════ LEARNING BEYOND ═══════════ -->
+<div class="ppr-section ppr-bounce ppr-explore-bg" style="max-width:100%;padding:0;background:white;">
+  <div class="ppr-section" style="padding-top:60px;padding-bottom:60px;">
+    <div class="ppr-section-label">Experiences That Inspire</div>
+    <h2 class="ppr-section-heading">Learning Beyond the Classroom</h2>
+    <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <p style="font-family:'Poppins',sans-serif;font-size:.95rem;line-height:1.8;color:var(--ppr-text);max-width:68ch;margin-bottom:32px;">At Dr. Mar Theophilus School, we believe that some of the most memorable lessons come from experiences. Our Pre-Primary students participate in a variety of engaging activities that make learning lively and meaningful. These include:</p>
+    <div class="ppr-shelf-wrap">
+      <div class="ppr-shelf-track">
+        <div class="ppr-shelf-card ppr-bounce">
+          <div class="ppr-shelf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h4>Hands-on Learning Activities</h4>
+          <p>Children explore concepts through practical tasks and creative experiences.</p>
+        </div>
+        <div class="ppr-shelf-card ppr-bounce">
+          <div class="ppr-shelf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+          </div>
+          <h4>Art and Craft</h4>
+          <p>Activities such as colouring, pattern-making and craftwork encourage imagination, concentration and creativity.</p>
+        </div>
+        <div class="ppr-shelf-card ppr-bounce">
+          <div class="ppr-shelf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <h4>Food and Cooking Experiences</h4>
+          <p>Activities such as cold cooking introduce children to food, healthy choices, teamwork and the joy of creating something together.</p>
+        </div>
+        <div class="ppr-shelf-card ppr-bounce">
+          <div class="ppr-shelf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2l2 7h7l-6 4 2 7-5-4-5 4 2-7-6-4h7l2-7z"/></svg>
+          </div>
+          <h4>Celebrations and Special Days</h4>
+          <p>Festivals, important occasions and theme-based celebrations help children appreciate traditions, culture and togetherness.</p>
+        </div>
+        <div class="ppr-shelf-card ppr-bounce">
+          <div class="ppr-shelf-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <h4>Storytelling and Rhymes</h4>
+          <p>Engaging stories, songs and rhymes nurture language development, listening skills and imagination.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ppr-speech-bubble" role="note">
+      These experiences encourage children to participate enthusiastically, learn together and build happy memories of their early school years.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave flip" aria-hidden="true" style="background:white;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 Q200,0 400,35 Q600,65 800,30 Q1000,-5 1200,30 Q1350,55 1440,30 L1440,60 L0,60 Z" fill="#FFF8F0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ CARING ENVIRONMENT ═══════════ -->
+<div class="ppr-section ppr-bounce">
+  <div class="ppr-section-label">Our Commitment</div>
+  <h2 class="ppr-section-heading">A Caring and Supportive Environment</h2>
+  <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="ppr-care-grid">
+    <div class="ppr-care-card ppr-bounce">
+      <div class="ppr-care-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <p>We understand that the transition from home to school is an important milestone in a child's life. Our teachers provide gentle guidance, encouragement and individual attention to help children feel comfortable and confident in their new surroundings.</p>
+    </div>
+    <div class="ppr-care-card ppr-bounce">
+      <div class="ppr-care-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M18 11.5V8.5a2 2 0 0 0-2-2 2 2 0 0 0-2 2V3a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2a2 2 0 0 0-2-2 2 2 0 0 0-2 2v5.5"/><path d="M5 8.5v5A6.5 6.5 0 0 0 11.5 20h1A6.5 6.5 0 0 0 19 13.5v-2"/></svg>
+      </div>
+      <p>We place importance on good habits, personal hygiene, discipline, manners, sharing and respect for others. Regular attention to each child's development helps us recognise individual strengths and areas where further encouragement may be needed.</p>
+    </div>
+    <div class="ppr-care-card ppr-bounce">
+      <div class="ppr-care-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <p>We also value the partnership between parents and teachers, recognising that a supportive home-school relationship plays an important role in a child's early development.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave" aria-hidden="true">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 Q180,0 360,30 Q540,60 720,20 Q900,-10 1080,30 Q1260,65 1440,35 L1440,60 L0,60 Z" fill="white" opacity=".6"/>
+  </svg>
+</div>
+
+<!-- ═══════════ PREPARING FOR THE NEXT STEP ═══════════ -->
+<div class="ppr-stair-wrap ppr-bounce ppr-explore-bg" style="background:white;">
+  <div class="ppr-stair-grid">
+    <div class="ppr-stair-text">
+      <div class="ppr-section-label">Looking Ahead</div>
+      <h2 class="ppr-section-heading">Preparing for the Next Step</h2>
+      <svg class="ppr-squiggle" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p>Our Pre-Primary programme aims to build a strong foundation for the years ahead. As children progress from Nursery to LKG and UKG, they gradually develop the confidence, communication abilities, early literacy and numeracy skills, independence and social readiness needed for primary education.</p>
+      <p>We aim to ensure that every child moves forward with curiosity, confidence and enthusiasm for new learning experiences.</p>
+    </div>
+    <!-- Staircase illustration -->
+    <div class="ppr-stair-art" aria-label="A rising staircase showing progress from Nursery through LKG and UKG to Primary School" role="img">
+      <svg viewBox="0 0 480 280" width="480" height="280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stair steps -->
+        <rect x="10"  y="220" width="90"  height="50" rx="10" fill="#C8F0DF" stroke="#a0dcc0" stroke-width="1.5"/>
+        <rect x="130" y="175" width="90"  height="95" rx="10" fill="#D0EDFB" stroke="#a0cce8" stroke-width="1.5"/>
+        <rect x="250" y="130" width="90"  height="140" rx="10" fill="#FFF3B0" stroke="#e8d870" stroke-width="1.5"/>
+        <rect x="370" y="80"  width="100" height="190" rx="10" fill="#FFE0D0" stroke="#f0c0a8" stroke-width="1.5"/>
+        <!-- Step labels -->
+        <text x="55"  y="252" text-anchor="middle" fill="#2D6B4A" font-size="11" font-family="Poppins,sans-serif" font-weight="700">Nursery</text>
+        <text x="175" y="207" text-anchor="middle" fill="#1A5880" font-size="11" font-family="Poppins,sans-serif" font-weight="700">LKG</text>
+        <text x="295" y="162" text-anchor="middle" fill="#8B6914" font-size="11" font-family="Poppins,sans-serif" font-weight="700">UKG</text>
+        <text x="420" y="112" text-anchor="middle" fill="#8B2500" font-size="11" font-family="Poppins,sans-serif" font-weight="700">Primary</text>
+        <text x="420" y="126" text-anchor="middle" fill="#8B2500" font-size="10" font-family="Poppins,sans-serif">School</text>
+        <!-- Star icons on steps -->
+        <polygon points="55,230 57,236 63,236 58,240 60,246 55,242 50,246 52,240 47,236 53,236" fill="#2D6B4A" opacity=".5"/>
+        <polygon points="175,185 177,191 183,191 178,195 180,201 175,197 170,201 172,195 167,191 173,191" fill="#1A5880" opacity=".5"/>
+        <polygon points="295,140 297,146 303,146 298,150 300,156 295,152 290,156 292,150 287,146 293,146" fill="#8B6914" opacity=".5"/>
+        <polygon points="420,88 422,94 428,94 423,98 425,104 420,100 415,104 417,98 412,94 418,94" fill="#8B2500" opacity=".5"/>
+        <!-- Small character climbing (simple) -->
+        <!-- body at top of UKG step -->
+        <circle cx="362" cy="118" r="12" fill="#E8C49A"/><!-- head -->
+        <ellipse cx="362" cy="107" rx="12" ry="6" fill="#3D2000"/><!-- hair -->
+        <rect x="354" y="128" width="16" height="22" rx="6" fill="#E55B4A"/><!-- body -->
+        <rect x="348" y="133" width="10" height="8" rx="4" fill="#E8C49A"/><!-- left arm raised -->
+        <line x1="348" y1="137" x2="338" y2="124" stroke="#E8C49A" stroke-width="6" stroke-linecap="round"/>
+        <!-- small footprints on the path -->
+        <ellipse cx="92" cy="218" rx="4" ry="6" fill="#a0dcc0" transform="rotate(-20 92 218)"/>
+        <ellipse cx="104" cy="212" rx="4" ry="6" fill="#a0dcc0" transform="rotate(20 104 212)"/>
+        <ellipse cx="208" cy="175" rx="4" ry="6" fill="#a0cce8" transform="rotate(-20 208 175)"/>
+        <ellipse cx="220" cy="168" rx="4" ry="6" fill="#a0cce8" transform="rotate(20 220 168)"/>
+        <ellipse cx="328" cy="130" rx="4" ry="6" fill="#e8d870" transform="rotate(-20 328 130)"/>
+        <ellipse cx="340" cy="124" rx="4" ry="6" fill="#e8d870" transform="rotate(20 340 124)"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave flip" aria-hidden="true" style="background:white;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 Q200,60 400,30 Q600,0 800,40 Q1000,70 1200,25 Q1350,0 1440,30 L1440,60 L0,60 Z" fill="#FFF3B0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ CLOSING BAND ═══════════ -->
+<div class="ppr-closing ppr-bounce">
+  <!-- Decorative elements -->
+  <div class="ppr-closing-deco" aria-hidden="true">
+    <svg viewBox="0 0 1200 240" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Stars scattered -->
+      <polygon points="80,30 83,40 93,40 85,46 88,56 80,50 72,56 75,46 67,40 77,40" fill="#E5C16A" opacity=".4"/>
+      <polygon points="1120,20 1123,30 1133,30 1125,36 1128,46 1120,40 1112,46 1115,36 1107,30 1117,30" fill="#E5C16A" opacity=".35"/>
+      <polygon points="200,180 202,187 209,187 203,191 205,198 200,194 195,198 197,191 191,187 198,187" fill="#E5C16A" opacity=".3"/>
+      <polygon points="1000,160 1002,167 1009,167 1003,171 1005,178 1000,174 995,178 997,171 991,167 998,167" fill="#E5C16A" opacity=".3"/>
+      <!-- Balloons -->
+      <ellipse cx="60"  cy="140" rx="18" ry="22" fill="#E8534A" opacity=".25"/>
+      <ellipse cx="1140" cy="130" rx="18" ry="22" fill="#4A8FD4" opacity=".25"/>
+      <ellipse cx="40"  cy="160" rx="12" ry="15" fill="#5CB85C" opacity=".2"/>
+      <!-- Crayon shapes -->
+      <rect x="130" y="60" width="12" height="40" rx="4" fill="#FFD740" opacity=".3" transform="rotate(-20 136 80)"/>
+      <rect x="1050" y="80" width="12" height="40" rx="4" fill="#E8534A" opacity=".3" transform="rotate(15 1056 100)"/>
+    </svg>
+  </div>
+  <div class="ppr-closing-inner">
+    <h2>Every Little Step Matters!</h2>
+    <p>At Dr. Mar Theophilus School, we celebrate every achievement, every new discovery and every moment of growth.</p>
+    <p>From the first classroom interaction to the joy of completing an activity independently, every experience contributes to a child's journey of learning and development.</p>
+    <p>We nurture little minds today to inspire bright possibilities tomorrow.</p>
+    <p class="ppr-tagline">Dr. Mar Theophilus School &ndash; Knowledge is Wealth.</p>
+  </div>
+</div>
+
+<!-- ═══════════ WAVE DIVIDER ═══════════ -->
+<div class="ppr-wave" aria-hidden="true" style="background:var(--ppr-yellow,#FFF3B0);">
+  <svg viewBox="0 0 1440 50" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,30 Q360,0 720,30 Q1080,55 1440,20 L1440,50 L0,50 Z" fill="#FFF8F0"/>
+  </svg>
+</div>
+
+<!-- ═══════════ ADMISSION NOTICE ═══════════ -->
+<div class="ppr-notice ppr-bounce">
+  <div class="ppr-notice-inner">
+    <p class="ppr-notice-text">Admissions for the academic year 2027&ndash;2028 are open for Nursery, LKG and UKG, subject to the availability of seats.</p>
+    <a href="#spg-admissions" class="ppr-notice-btn">See the Admission Procedure</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* Bounce fade-in via IntersectionObserver */
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced && 'IntersectionObserver' in window) {
+    var els = document.querySelectorAll('#spg-preprimary .ppr-bounce');
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('sc-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(function (el) { obs.observe(el); });
+  }
+})();
+</script>
+</section>
 
 <section id="spg-primary" class="sub-page-section" hidden>
 
@@ -19231,4 +20388,926 @@ document.addEventListener('click', function(e) {
 }());
 </script>
 <!-- THEME TESTER END -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FAQ CHAT ASSISTANT WIDGET — HTML
+     ═══════════════════════════════════════════════════════════ -->
+<button
+  id="faqbot-launcher"
+  aria-label="Open admission FAQ assistant"
+  aria-expanded="false"
+  aria-controls="faqbot-panel"
+  title="Admission FAQs"
+>
+  <!-- Chat icon (shown when panel is closed) -->
+  <svg id="faqbot-icon-chat" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  <!-- Close icon (shown when panel is open) -->
+  <svg id="faqbot-icon-close" aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false" style="display:none">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+  <span class="faqbot-label" aria-hidden="true">Admission FAQs</span>
+</button>
+
+<div
+  id="faqbot-panel"
+  role="dialog"
+  aria-label="Admission FAQ assistant"
+  aria-modal="true"
+  hidden
+>
+  <!-- Panel header -->
+  <div class="faqbot-header">
+    <div class="faqbot-avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M22 10v6M2 10l10-7 10 7-10 7-10-7z"/><path d="M6 12v5c3.33 2 8.67 2 12 0v-5"/>
+      </svg>
+    </div>
+    <div class="faqbot-header-text">
+      <div class="faqbot-header-title">FAQ Assistant</div>
+      <div class="faqbot-header-sub">Dr. Mar Theophilus School</div>
+    </div>
+    <button class="faqbot-hdr-close" id="faqbot-close" aria-label="Close FAQ assistant" type="button">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages area -->
+  <div class="faqbot-messages" id="faqbot-messages" role="log" aria-live="polite" aria-label="Conversation" tabindex="0"></div>
+
+  <!-- Panel footer -->
+  <div class="faqbot-footer">
+    <div class="faqbot-input-row">
+      <input
+        type="text"
+        id="faqbot-input"
+        class="faqbot-input"
+        placeholder="Type a keyword, e.g. age, documents, classes"
+        autocomplete="off"
+        aria-label="Type a keyword to search FAQs"
+        maxlength="120"
+      />
+      <button class="faqbot-send-btn" id="faqbot-send" aria-label="Send" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+    <div class="faqbot-footer-note">
+      Answers are pre-written. For anything else, please contact the school office.
+      <button class="faqbot-restart-link" id="faqbot-restart" type="button">Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FAQ CHAT ASSISTANT WIDGET — CSS
+     ═══════════════════════════════════════════════════════════ -->
+<style id="faqbot-css">
+/* ── Launcher button ───────────────────────────────────────── */
+#faqbot-launcher {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  z-index: 50000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 18px 0 14px;
+  border: none;
+  border-radius: 28px;
+  background: var(--color-primary, #D50000);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(213,0,0,.35);
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  outline-offset: 3px;
+  transition: transform .15s, box-shadow .15s;
+}
+#faqbot-launcher:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 28px rgba(213,0,0,.45);
+}
+#faqbot-launcher:focus-visible {
+  outline: 3px solid rgba(213,0,0,.7);
+  outline-offset: 3px;
+}
+#faqbot-launcher:active {
+  transform: scale(.97);
+}
+/* Label pill visible on desktop, hidden on mobile */
+.faqbot-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: .84rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+@media (max-width: 599px) {
+  #faqbot-launcher {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    bottom: 90px;
+    right: 16px;
+  }
+  .faqbot-label { display: none; }
+}
+
+/* ── Pulse ring (first 6 s) ────────────────────────────────── */
+@keyframes faqbot-pulse-ring {
+  0%   { transform: scale(1);   opacity: .55; }
+  100% { transform: scale(2.1); opacity: 0;   }
+}
+#faqbot-launcher.faqbot-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2.5px solid var(--color-primary, #D50000);
+  animation: faqbot-pulse-ring 1.6s ease-out infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #faqbot-launcher.faqbot-pulse::before { display: none; }
+}
+
+/* ── Chat panel ────────────────────────────────────────────── */
+#faqbot-panel {
+  position: fixed;
+  bottom: 118px; /* 100px launcher-bottom + 56px height + 12px gap */
+  right: 20px;
+  z-index: 50001;
+  width: 380px;
+  max-height: 560px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e0e0e5;
+  border-radius: 16px;
+  box-shadow: 0 8px 48px rgba(0,0,0,.15), 0 2px 8px rgba(0,0,0,.08);
+  overflow: hidden;
+  /* animation */
+  opacity: 0;
+  transform: translateY(14px) scale(.98);
+  transition: opacity .2s ease, transform .2s ease;
+}
+#faqbot-panel.faqbot-panel-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  #faqbot-panel { transition: none; }
+}
+
+/* Mobile: bottom sheet */
+@media (max-width: 599px) {
+  #faqbot-panel {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+  }
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.faqbot-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--color-primary, #D50000);
+  color: #fff;
+  flex-shrink: 0;
+}
+.faqbot-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.faqbot-header-text { flex: 1; min-width: 0; }
+.faqbot-header-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: .92rem; font-weight: 700; line-height: 1.2;
+}
+.faqbot-header-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: .72rem; opacity: .82; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.faqbot-hdr-close {
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,.85);
+  width: 36px; height: 36px; min-height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.faqbot-hdr-close:hover  { background: rgba(255,255,255,.18); color: #fff; }
+.faqbot-hdr-close:focus-visible { outline: 2px solid rgba(255,255,255,.8); outline-offset: 1px; }
+
+/* ── Messages area ─────────────────────────────────────────── */
+.faqbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px 8px;
+  background: #f8f6f3;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+.faqbot-messages:focus { outline: none; }
+
+/* ── Message bubbles ───────────────────────────────────────── */
+.faqbot-msg {
+  display: flex;
+  flex-direction: column;
+}
+.faqbot-msg-bot  { align-items: flex-start; }
+.faqbot-msg-user { align-items: flex-end; }
+
+.faqbot-bubble {
+  max-width: 86%;
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .88rem;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.faqbot-bubble-bot {
+  background: #fff;
+  border: 1px solid #e0ddd8;
+  color: #2D1A00;
+  border-bottom-left-radius: 4px;
+}
+.faqbot-bubble-user {
+  background: var(--color-primary, #D50000);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* Age list inside Q3 answer */
+.faqbot-age-list {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  font-size: .88rem;
+  line-height: 1.7;
+}
+
+/* ── Typing indicator ──────────────────────────────────────── */
+.faqbot-typing-bubble {
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 0;
+}
+@keyframes faqbot-bounce {
+  0%, 80%, 100% { transform: translateY(0);   opacity: .5; }
+  40%            { transform: translateY(-6px); opacity: 1;  }
+}
+.faqbot-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #aaa;
+  margin: 0 2.5px;
+  animation: faqbot-bounce 1.2s infinite ease-in-out;
+}
+.faqbot-dot:nth-child(2) { animation-delay: .2s; }
+.faqbot-dot:nth-child(3) { animation-delay: .4s; }
+@media (prefers-reduced-motion: reduce) {
+  .faqbot-dot { animation: none; }
+}
+
+/* ── Quick-reply chips ─────────────────────────────────────── */
+.faqbot-chips-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+.faqbot-chip {
+  background: #fff;
+  border: 1.5px solid var(--color-primary, #D50000);
+  color: var(--color-primary, #D50000);
+  border-radius: 50px;
+  padding: 9px 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .83rem;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  text-align: left;
+  min-height: 44px;
+  transition: background .15s, color .15s;
+  word-break: break-word;
+  white-space: normal;
+}
+.faqbot-chip:hover,
+.faqbot-chip:focus-visible {
+  background: var(--color-primary, #D50000);
+  color: #fff;
+}
+.faqbot-chip:focus-visible {
+  outline: 3px solid rgba(213,0,0,.35);
+  outline-offset: 2px;
+}
+/* Already-asked chip: dimmed */
+.faqbot-chip-asked {
+  opacity: .55;
+}
+/* Action chips (Ask another / Restart) */
+.faqbot-action-chips {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.faqbot-chip-action {
+  background: rgba(213,0,0,.06);
+  border-color: rgba(213,0,0,.35);
+}
+.faqbot-chip-action:hover,
+.faqbot-chip-action:focus-visible {
+  background: var(--color-primary, #D50000);
+  color: #fff;
+}
+
+/* ── Admissions link button ────────────────────────────────── */
+.faqbot-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary, #D50000);
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.faqbot-link-btn:hover { opacity: .75; }
+.faqbot-link-btn:focus-visible { outline: 3px solid rgba(213,0,0,.35); outline-offset: 2px; border-radius: 3px; }
+
+/* ── Contact action buttons ────────────────────────────────── */
+.faqbot-contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 2px;
+}
+.faqbot-contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1.5px solid #d0ccc8;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--color-primary, #D50000);
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 44px;
+  text-align: center;
+  transition: background .15s, border-color .15s;
+  word-break: break-all;
+}
+.faqbot-contact-btn:hover,
+.faqbot-contact-btn:focus-visible {
+  background: rgba(213,0,0,.05);
+  border-color: var(--color-primary, #D50000);
+}
+.faqbot-contact-btn:focus-visible {
+  outline: 3px solid rgba(213,0,0,.3);
+  outline-offset: 2px;
+}
+.faqbot-contact-note {
+  font-family: 'Poppins', sans-serif;
+  font-size: .76rem;
+  color: #666;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.faqbot-footer {
+  flex-shrink: 0;
+  border-top: 1px solid #eee;
+  padding: 10px 12px 10px;
+  background: #fff;
+}
+.faqbot-input-row {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.faqbot-input {
+  flex: 1;
+  border: 1.5px solid #ddd;
+  border-radius: 50px;
+  padding: 9px 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: .83rem;
+  color: #2D1A00;
+  background: #f8f6f3;
+  min-width: 0;
+  outline: none;
+  transition: border-color .15s;
+  min-height: 40px;
+}
+.faqbot-input:focus {
+  border-color: var(--color-primary, #D50000);
+  background: #fff;
+}
+.faqbot-send-btn {
+  width: 40px; height: 40px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary, #D50000);
+  color: #fff;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s, transform .1s;
+}
+.faqbot-send-btn:hover  { background: #9a0000; transform: scale(1.07); }
+.faqbot-send-btn:focus-visible { outline: 3px solid rgba(213,0,0,.4); outline-offset: 2px; }
+.faqbot-footer-note {
+  font-family: 'Poppins', sans-serif;
+  font-size: .72rem;
+  color: #888;
+  line-height: 1.5;
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.faqbot-restart-link {
+  background: none;
+  border: none;
+  color: var(--color-primary, #D50000);
+  font-family: 'Poppins', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  min-height: 32px;
+}
+.faqbot-restart-link:hover { opacity: .75; }
+.faqbot-restart-link:focus-visible { outline: 2px solid rgba(213,0,0,.4); outline-offset: 2px; border-radius: 2px; }
+
+/* ── Print: hide widget ────────────────────────────────────── */
+@media print {
+  #faqbot-launcher, #faqbot-panel { display: none !important; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FAQ CHAT ASSISTANT WIDGET — JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script id="faqbot-js">
+(function () {
+  'use strict';
+
+  /* ── FAQ DATA ──────────────────────────────────────────────
+     Edit questions, answers and keywords here.
+     showAdmissionsLink: true  → shows "View Admission Procedure" link under answer
+     keywords: case-insensitive substrings matched against typed text
+  ─────────────────────────────────────────────────────────── */
+  var FAQS = [
+    {
+      id: 'q1',
+      question: 'For which classes are admissions open?',
+      answer: 'Admissions are generally open for Nursery, LKG and UKG. Admissions to higher classes are subject to seat availability.',
+      htmlAnswer: null,
+      showAdmissionsLink: true,
+      keywords: ['classes', 'nursery', 'lkg', 'ukg', 'seats', 'class', 'standard', 'grade', 'open', 'available class']
+    },
+    {
+      id: 'q2',
+      question: 'When are admission forms available, and how can I apply?',
+      answer: "Admissions generally open in November. The advertisement, application dates and instructions are published on the school’s official website before admissions commence. Parents can apply online during the specified period.",
+      htmlAnswer: null,
+      showAdmissionsLink: true,
+      keywords: ['form', 'apply', 'application', 'online', 'dates', 'november', 'available', 'how', 'when', 'register', 'registration', 'procedure', 'process', 'start', 'begin']
+    },
+    {
+      id: 'q3',
+      question: 'What is the age eligibility for admission?',
+      answer: null,
+      htmlAnswer: 'The age criteria as on 30th June of the academic year are:<ul class="faqbot-age-list"><li><strong>Nursery:</strong> 3 years</li><li><strong>LKG:</strong> 4 years</li><li><strong>UKG:</strong> 5 years</li></ul>',
+      showAdmissionsLink: false,
+      keywords: ['age', 'eligibility', 'years', 'old', 'eligible', 'year', 'criteria', 'born', 'birthday', 'cut', 'eligible age', 'how old']
+    },
+    {
+      id: 'q4',
+      question: 'What documents are required for admission?',
+      answer: "Parents must submit the child’s birth certificate, Aadhaar card, photographs, residential proof, signed declaration and previous report card, wherever applicable. Additional documents may be required depending on the class.",
+      htmlAnswer: null,
+      showAdmissionsLink: true,
+      keywords: ['documents', 'certificate', 'aadhaar', 'photo', 'proof', 'required', 'submit', 'papers', 'birth', 'report', 'card', 'declaration', 'residential', 'photograph', 'docs', 'document']
+    },
+    {
+      id: 'q5',
+      question: 'Does submitting an application guarantee admission?',
+      answer: 'No. Admission is subject to seat availability and the school’s admission procedure. Selected candidates will be informed through email.',
+      htmlAnswer: null,
+      showAdmissionsLink: false,
+      keywords: ['guarantee', 'selected', 'confirm', 'email', 'result', 'guaranteed', 'sure', 'certain', 'seat', 'confirmed', 'inform', 'notification', 'assured', 'secure']
+    }
+  ];
+
+  /* ── STATE ─────────────────────────────────────────────── */
+  var isOpen    = false;
+  var askedIds  = [];
+
+  /* ── ELEMENTS ──────────────────────────────────────────── */
+  var launcher  = document.getElementById('faqbot-launcher');
+  var panel     = document.getElementById('faqbot-panel');
+  var messages  = document.getElementById('faqbot-messages');
+  var inputEl   = document.getElementById('faqbot-input');
+  var sendBtn   = document.getElementById('faqbot-send');
+  var closeBtnEl= document.getElementById('faqbot-close');
+  var restartBtn= document.getElementById('faqbot-restart');
+  var iconChat  = document.getElementById('faqbot-icon-chat');
+  var iconClose = document.getElementById('faqbot-icon-close');
+
+  var reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  /* ── OPEN / CLOSE PANEL ────────────────────────────────── */
+  function openPanel() {
+    isOpen = true;
+    panel.removeAttribute('hidden');
+    // Trigger animation on next frame
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        panel.classList.add('faqbot-panel-open');
+      });
+    });
+    launcher.setAttribute('aria-expanded', 'true');
+    iconChat.style.display  = 'none';
+    iconClose.style.display = '';
+    // Prevent body scroll on mobile bottom sheet
+    if (window.innerWidth < 600) {
+      document.body.style.overflow = 'hidden';
+    }
+    // Greet on first open
+    if (messages.children.length === 0) {
+      showGreeting();
+    }
+    // Move focus to first chip or input
+    setTimeout(function () {
+      var firstChip = panel.querySelector('.faqbot-chip');
+      if (firstChip) { firstChip.focus(); }
+      else { inputEl.focus(); }
+    }, reducedMotion ? 10 : 230);
+  }
+
+  function closePanel() {
+    isOpen = false;
+    panel.classList.remove('faqbot-panel-open');
+    var delay = reducedMotion ? 0 : 210;
+    setTimeout(function () {
+      if (!isOpen) { panel.setAttribute('hidden', ''); }
+    }, delay);
+    launcher.setAttribute('aria-expanded', 'false');
+    iconChat.style.display  = '';
+    iconClose.style.display = 'none';
+    document.body.style.overflow = '';
+    launcher.focus();
+  }
+
+  launcher.addEventListener('click', function () {
+    if (isOpen) { closePanel(); } else { openPanel(); }
+  });
+  closeBtnEl.addEventListener('click', closePanel);
+
+  /* ── KEYBOARD: Escape closes; Tab trapped on mobile ─────── */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && isOpen) {
+      closePanel();
+      return;
+    }
+    if (isOpen && window.innerWidth < 600 && e.key === 'Tab') {
+      var focusable = Array.prototype.slice.call(
+        panel.querySelectorAll('button:not([disabled]), input:not([disabled])')
+      );
+      if (!focusable.length) { return; }
+      var first = focusable[0];
+      var last  = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+  });
+
+  /* ── GREETING ──────────────────────────────────────────── */
+  function showGreeting() {
+    addBotBubble('Hello! I can answer common questions about admissions at Dr. Mar Theophilus School. Please choose a question below.', false);
+    showChips(FAQS, false);
+  }
+
+  /* ── ADD BOT BUBBLE ────────────────────────────────────── */
+  function addBotBubble(content, isHtml) {
+    var wrap   = document.createElement('div');
+    wrap.className = 'faqbot-msg faqbot-msg-bot';
+    var bubble = document.createElement('div');
+    bubble.className = 'faqbot-bubble faqbot-bubble-bot';
+    if (isHtml) {
+      bubble.innerHTML = content; // only pre-built safe HTML (Q3 age list)
+    } else {
+      bubble.textContent = content;
+    }
+    wrap.appendChild(bubble);
+    messages.appendChild(wrap);
+    scrollBottom();
+    return wrap;
+  }
+
+  /* ── ADD USER BUBBLE ───────────────────────────────────── */
+  function addUserBubble(text) {
+    var wrap   = document.createElement('div');
+    wrap.className = 'faqbot-msg faqbot-msg-user';
+    var bubble = document.createElement('div');
+    bubble.className = 'faqbot-bubble faqbot-bubble-user';
+    bubble.textContent = text; // always textContent — never innerHTML
+    wrap.appendChild(bubble);
+    messages.appendChild(wrap);
+    scrollBottom();
+  }
+
+  /* ── TYPING INDICATOR ──────────────────────────────────── */
+  function addTypingIndicator() {
+    var wrap   = document.createElement('div');
+    wrap.className = 'faqbot-msg faqbot-msg-bot';
+    wrap.id    = 'faqbot-typing';
+    var bubble = document.createElement('div');
+    bubble.className = 'faqbot-bubble faqbot-bubble-bot faqbot-typing-bubble';
+    if (reducedMotion) {
+      bubble.textContent = '…'; // static ellipsis
+    } else {
+      var d1 = document.createElement('span'); d1.className = 'faqbot-dot';
+      var d2 = document.createElement('span'); d2.className = 'faqbot-dot';
+      var d3 = document.createElement('span'); d3.className = 'faqbot-dot';
+      bubble.appendChild(d1); bubble.appendChild(d2); bubble.appendChild(d3);
+    }
+    wrap.appendChild(bubble);
+    messages.appendChild(wrap);
+    scrollBottom();
+  }
+
+  function removeTypingIndicator() {
+    var el = document.getElementById('faqbot-typing');
+    if (el && el.parentNode) { el.parentNode.removeChild(el); }
+  }
+
+  /* ── REMOVE ALL CHIPS ──────────────────────────────────── */
+  function removeChips() {
+    var all = messages.querySelectorAll('.faqbot-chips-wrap');
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].parentNode) { all[i].parentNode.removeChild(all[i]); }
+    }
+  }
+
+  /* ── SHOW QUESTION CHIPS ───────────────────────────────── */
+  function showChips(faqs, isSubset) {
+    removeChips();
+    var wrap = document.createElement('div');
+    wrap.className = 'faqbot-chips-wrap';
+    faqs.forEach(function (faq) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'faqbot-chip' + (askedIds.indexOf(faq.id) >= 0 ? ' faqbot-chip-asked' : '');
+      btn.textContent = faq.question;
+      btn.dataset.faqId = faq.id;
+      btn.addEventListener('click', function () { handleChip(faq); });
+      wrap.appendChild(btn);
+    });
+    messages.appendChild(wrap);
+    scrollBottom();
+    // Focus first chip
+    var first = wrap.querySelector('.faqbot-chip');
+    if (first && isSubset) { first.focus(); }
+  }
+
+  /* ── SHOW ACTION CHIPS ─────────────────────────────────── */
+  function showActionChips() {
+    removeChips();
+    var wrap = document.createElement('div');
+    wrap.className = 'faqbot-chips-wrap faqbot-action-chips';
+
+    var askBtn = document.createElement('button');
+    askBtn.type = 'button';
+    askBtn.className = 'faqbot-chip faqbot-chip-action';
+    askBtn.textContent = 'Ask another question';
+    askBtn.addEventListener('click', function () { removeChips(); showChips(FAQS, true); });
+    wrap.appendChild(askBtn);
+
+    var rstBtn = document.createElement('button');
+    rstBtn.type = 'button';
+    rstBtn.className = 'faqbot-chip faqbot-chip-action';
+    rstBtn.textContent = 'Restart';
+    rstBtn.addEventListener('click', restartConversation);
+    wrap.appendChild(rstBtn);
+
+    messages.appendChild(wrap);
+    scrollBottom();
+  }
+
+  /* ── HANDLE CHIP CLICK ─────────────────────────────────── */
+  function handleChip(faq) {
+    removeChips();
+    addUserBubble(faq.question);
+    if (askedIds.indexOf(faq.id) < 0) { askedIds.push(faq.id); }
+    addTypingIndicator();
+
+    setTimeout(function () {
+      removeTypingIndicator();
+      deliverAnswer(faq);
+    }, reducedMotion ? 0 : 600);
+  }
+
+  /* ── DELIVER ANSWER ────────────────────────────────────── */
+  function deliverAnswer(faq) {
+    if (faq.htmlAnswer) {
+      addBotBubble(faq.htmlAnswer, true);
+    } else {
+      addBotBubble(faq.answer, false);
+    }
+    // "View Admission Procedure" link for Q1, Q2, Q4
+    if (faq.showAdmissionsLink) {
+      addAdmissionsLink();
+    }
+    // If all 5 answered → closing message + contact
+    if (askedIds.length >= FAQS.length) {
+      addBotBubble('Is there anything else? You can also contact the school office.', false);
+      addContactActions();
+    } else {
+      showActionChips();
+    }
+  }
+
+  /* ── ADMISSIONS LINK ───────────────────────────────────── */
+  function addAdmissionsLink() {
+    var wrap = document.createElement('div');
+    wrap.className = 'faqbot-msg faqbot-msg-bot';
+    var btn  = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'faqbot-link-btn';
+    btn.textContent = 'View the Admission Procedure';
+    btn.addEventListener('click', function () {
+      closePanel();
+      location.hash = 'spg-admissions';
+    });
+    wrap.appendChild(btn);
+    messages.appendChild(wrap);
+    scrollBottom();
+  }
+
+  /* ── CONTACT ACTIONS ───────────────────────────────────── */
+  function addContactActions() {
+    var wrap    = document.createElement('div');
+    wrap.className = 'faqbot-msg faqbot-msg-bot';
+    var actions = document.createElement('div');
+    actions.className = 'faqbot-contact-actions';
+
+    var callA = document.createElement('a');
+    callA.className = 'faqbot-contact-btn';
+    callA.href      = 'tel:+917720043214';
+    callA.textContent = 'Call  +91 772 004 3214';
+
+    var emailA = document.createElement('a');
+    emailA.className = 'faqbot-contact-btn';
+    emailA.href      = 'mailto:dmtsquery@gmail.com';
+    emailA.textContent = 'Email dmtsquery@gmail.com';
+
+    var contactBtn = document.createElement('button');
+    contactBtn.type = 'button';
+    contactBtn.className = 'faqbot-contact-btn';
+    contactBtn.textContent = 'Contact page';
+    contactBtn.addEventListener('click', function () {
+      closePanel();
+      location.hash = 'spg-contact';
+    });
+
+    var note = document.createElement('p');
+    note.className = 'faqbot-contact-note';
+    note.textContent = 'Office help for the admission form: 10:00 a.m. to 12:00 noon.';
+
+    actions.appendChild(callA);
+    actions.appendChild(emailA);
+    actions.appendChild(contactBtn);
+    actions.appendChild(note);
+    wrap.appendChild(actions);
+    messages.appendChild(wrap);
+    scrollBottom();
+  }
+
+  /* ── FALLBACK ──────────────────────────────────────────── */
+  function showFallback() {
+    addBotBubble("I’m sorry, I only have answers to the questions listed here. For anything else, please contact the school office.", false);
+    addContactActions();
+    showActionChips();
+  }
+
+  /* ── KEYWORD MATCHING ──────────────────────────────────── */
+  function matchKeywords(text) {
+    var lower   = text.toLowerCase().trim();
+    var matched = [];
+    for (var i = 0; i < FAQS.length; i++) {
+      var faq = FAQS[i];
+      for (var j = 0; j < faq.keywords.length; j++) {
+        if (lower.indexOf(faq.keywords[j]) !== -1) {
+          matched.push(faq);
+          break;
+        }
+      }
+    }
+    return matched;
+  }
+
+  /* ── HANDLE TEXT INPUT ─────────────────────────────────── */
+  function handleSend() {
+    var raw = inputEl.value.trim();
+    if (!raw) { return; }
+    inputEl.value = '';
+    removeChips();
+    addUserBubble(raw); // textContent — safe
+
+    var matched = matchKeywords(raw);
+    addTypingIndicator();
+
+    setTimeout(function () {
+      removeTypingIndicator();
+      if (matched.length === 1) {
+        var faq = matched[0];
+        if (askedIds.indexOf(faq.id) < 0) { askedIds.push(faq.id); }
+        deliverAnswer(faq);
+      } else if (matched.length > 1) {
+        addBotBubble('I found a few questions that might help. Please choose one:', false);
+        showChips(matched, true);
+      } else {
+        showFallback();
+      }
+    }, reducedMotion ? 0 : 600);
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  inputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); handleSend(); }
+  });
+
+  /* ── RESTART ───────────────────────────────────────────── */
+  function restartConversation() {
+    askedIds = [];
+    while (messages.firstChild) { messages.removeChild(messages.firstChild); }
+    showGreeting();
+  }
+  restartBtn.addEventListener('click', restartConversation);
+
+  /* ── SCROLL TO BOTTOM ──────────────────────────────────── */
+  function scrollBottom() {
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  /* ── PULSE RING (first 6 s, then removed) ──────────────── */
+  if (!reducedMotion) {
+    launcher.classList.add('faqbot-pulse');
+    setTimeout(function () {
+      launcher.classList.remove('faqbot-pulse');
+    }, 6000);
+  }
+
+}());
+</script>
+
 </body></html>
