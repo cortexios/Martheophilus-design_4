@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 390" width="520" height="390" role="img" aria-label="Three children learning — a girl reading, a boy with alphabet blocks, and a child painting">
+  <defs>
+    <!-- Sun rays rotation -->
+    <style>
+      @media (prefers-reduced-motion: no-preference) {
+        .ppr-sun-rays { animation: ppr-spin-slow 18s linear infinite; transform-origin: 420px 72px; }
+        .ppr-cloud1  { animation: ppr-float1 7s ease-in-out infinite; }
+        .ppr-cloud2  { animation: ppr-float2 9s ease-in-out infinite; }
+        .ppr-block-a { animation: ppr-float1 6s ease-in-out infinite; }
+        .ppr-block-b { animation: ppr-float2 7.5s ease-in-out 0.8s infinite; }
+        .ppr-block-c { animation: ppr-float1 8.5s ease-in-out 1.6s infinite; }
+        .ppr-star1   { animation: ppr-twinkle 3s ease-in-out infinite; }
+        .ppr-star2   { animation: ppr-twinkle 4s ease-in-out 1s infinite; }
+        .ppr-star3   { animation: ppr-twinkle 3.5s ease-in-out 2s infinite; }
+        .ppr-balloon { animation: ppr-float2 6s ease-in-out 0.5s infinite; }
+        @keyframes ppr-spin-slow { to { transform: rotate(360deg); } }
+        @keyframes ppr-float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes ppr-float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+        @keyframes ppr-twinkle { 0%,100%{opacity:1} 50%{opacity:.3} }
+      }
+    </style>
+  </defs>
+
+  <!-- Ground / grass strip -->
+  <ellipse cx="260" cy="380" rx="230" ry="22" fill="#b8d87a" opacity=".45"/>
+  <rect x="30" y="358" width="460" height="18" rx="9" fill="#c9e87c" opacity=".35"/>
+
+  <!-- ── SUN ── -->
+  <g class="ppr-sun-rays">
+    <line x1="420" y1="52" x2="420" y2="38" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="420" y1="92" x2="420" y2="106" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="400" y1="72" x2="386" y2="72" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="440" y1="72" x2="454" y2="72" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="406" y1="58" x2="396" y2="48" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="434" y1="86" x2="444" y2="96" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="434" y1="58" x2="444" y2="48" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+    <line x1="406" y1="86" x2="396" y2="96" stroke="#FFD740" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <circle cx="420" cy="72" r="22" fill="#FFD740"/>
+  <circle cx="420" cy="72" r="22" fill="#FFE566" opacity=".5"/>
+  <!-- sun face -->
+  <circle cx="413" cy="68" r="2.5" fill="#c8860a"/>
+  <circle cx="427" cy="68" r="2.5" fill="#c8860a"/>
+  <path d="M414 76 Q420 81 426 76" stroke="#c8860a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- ── CLOUDS ── -->
+  <g class="ppr-cloud1" fill="white" opacity=".92">
+    <ellipse cx="80"  cy="55" rx="38" ry="20"/>
+    <ellipse cx="55"  cy="65" rx="22" ry="14"/>
+    <ellipse cx="108" cy="65" rx="22" ry="14"/>
+    <ellipse cx="80"  cy="70" rx="38" ry="12"/>
+  </g>
+  <g class="ppr-cloud2" fill="white" opacity=".8">
+    <ellipse cx="330" cy="38" rx="30" ry="16"/>
+    <ellipse cx="308" cy="46" rx="18" ry="12"/>
+    <ellipse cx="354" cy="46" rx="18" ry="12"/>
+    <ellipse cx="330" cy="50" rx="30" ry="10"/>
+  </g>
+
+  <!-- ── STARS ── -->
+  <polygon class="ppr-star1" points="160,30 162,36 168,36 163,40 165,46 160,42 155,46 157,40 152,36 158,36" fill="#FFE566" opacity=".9"/>
+  <polygon class="ppr-star2" points="488,120 490,126 496,126 491,130 493,136 488,132 483,136 485,130 480,126 486,126" fill="#FFE566" opacity=".8"/>
+  <polygon class="ppr-star3" points="30,140 32,146 38,146 33,150 35,156 30,152 25,156 27,150 22,146 28,146" fill="#FFE566" opacity=".75"/>
+  <circle cx="468" cy="40" r="3" fill="#FFE566" opacity=".7"/>
+  <circle cx="140" cy="80" r="2" fill="#FFE566" opacity=".6"/>
+  <circle cx="490" cy="85" r="2.5" fill="#FFE566" opacity=".8"/>
+
+  <!-- ── FLOATING ALPHABET BLOCKS ── -->
+  <!-- Block A -->
+  <g class="ppr-block-a">
+    <rect x="460" y="175" width="34" height="34" rx="7" fill="#E8534A"/>
+    <rect x="460" y="175" width="34" height="34" rx="7" fill="none" stroke="white" stroke-width="1.5" opacity=".4"/>
+    <text x="477" y="198" text-anchor="middle" fill="white" font-size="18" font-family="Georgia,serif" font-weight="700">A</text>
+  </g>
+  <!-- Block B -->
+  <g class="ppr-block-b">
+    <rect x="460" y="220" width="34" height="34" rx="7" fill="#4A8FD4"/>
+    <rect x="460" y="220" width="34" height="34" rx="7" fill="none" stroke="white" stroke-width="1.5" opacity=".4"/>
+    <text x="477" y="243" text-anchor="middle" fill="white" font-size="18" font-family="Georgia,serif" font-weight="700">B</text>
+  </g>
+  <!-- Block C -->
+  <g class="ppr-block-c">
+    <rect x="460" y="265" width="34" height="34" rx="7" fill="#5CB85C"/>
+    <rect x="460" y="265" width="34" height="34" rx="7" fill="none" stroke="white" stroke-width="1.5" opacity=".4"/>
+    <text x="477" y="288" text-anchor="middle" fill="white" font-size="18" font-family="Georgia,serif" font-weight="700">C</text>
+  </g>
+
+  <!-- ── BALLOON ── -->
+  <g class="ppr-balloon">
+    <ellipse cx="48" cy="210" rx="16" ry="20" fill="#FF8A65"/>
+    <path d="M48 230 Q46 238 48 245" stroke="#FF8A65" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M42 213 Q46 207 50 211" stroke="white" stroke-width="1.5" fill="none" opacity=".5" stroke-linecap="round"/>
+  </g>
+
+  <!-- ── CHARACTER 1: GIRL READING (left, sitting) ── -->
+  <!-- Skin: warm brown #C97E50 | Hair: dark #2D1200 | Dress: sky blue #5BAFD6 -->
+  <!-- Sitting position: legs out in front -->
+  <!-- Body -->
+  <rect x="82" y="258" width="38" height="50" rx="10" fill="#5BAFD6"/>
+  <!-- Legs (sitting) -->
+  <rect x="72" y="295" width="58" height="18" rx="9" fill="#5BAFD6"/>
+  <!-- Feet -->
+  <ellipse cx="75"  cy="313" rx="10" ry="6" fill="#C97E50"/>
+  <ellipse cx="127" cy="313" rx="10" ry="6" fill="#C97E50"/>
+  <!-- Arms holding book -->
+  <rect x="62"  y="265" width="20" height="12" rx="6" fill="#C97E50"/>
+  <rect x="120" y="265" width="20" height="12" rx="6" fill="#C97E50"/>
+  <!-- Book -->
+  <rect x="68" y="262" width="66" height="46" rx="5" fill="#fff" stroke="#ddd" stroke-width="1"/>
+  <rect x="68" y="262" width="33" height="46" rx="5" fill="#FFD54F"/>
+  <line x1="101" y1="262" x2="101" y2="308" stroke="#aaa" stroke-width="1"/>
+  <rect x="75"  y="272" width="20" height="3" rx="1" fill="#E8534A" opacity=".6"/>
+  <rect x="75"  y="278" width="16" height="3" rx="1" fill="#E8534A" opacity=".4"/>
+  <rect x="75"  y="284" width="18" height="3" rx="1" fill="#E8534A" opacity=".6"/>
+  <rect x="106" y="272" width="20" height="3" rx="1" fill="#5CB85C" opacity=".6"/>
+  <rect x="106" y="278" width="16" height="3" rx="1" fill="#5CB85C" opacity=".4"/>
+  <rect x="106" y="284" width="18" height="3" rx="1" fill="#5CB85C" opacity=".6"/>
+  <!-- Head -->
+  <circle cx="101" cy="232" r="30" fill="#C97E50"/>
+  <!-- Hair (two buns / pigtails style, dark brown) -->
+  <ellipse cx="101" cy="203" rx="30" ry="13" fill="#2D1200"/>
+  <circle cx="74"  cy="220" r="11" fill="#2D1200"/>
+  <circle cx="128" cy="220" r="11" fill="#2D1200"/>
+  <!-- Hair tie ribbons -->
+  <circle cx="74"  cy="220" r="6" fill="#E8534A"/>
+  <circle cx="128" cy="220" r="6" fill="#E8534A"/>
+  <!-- Eyes (closed/reading — curved lines) -->
+  <path d="M92 234 Q96 230 100 234" stroke="#2D1200" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M102 234 Q106 230 110 234" stroke="#2D1200" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Smile -->
+  <path d="M94 243 Q101 249 108 243" stroke="#2D1200" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Cheek blush -->
+  <ellipse cx="88"  cy="244" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+  <ellipse cx="114" cy="244" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+
+  <!-- ── CHARACTER 2: BOY WITH BLOCKS (centre) ── -->
+  <!-- Skin: peach #E8C49A | Hair: dark brown #3D2000 | Shirt: coral #E55B4A | Shorts: navy #2D4B8A -->
+  <g transform="translate(220,0)">
+    <!-- Legs -->
+    <rect x="-14" y="296" width="20" height="50" rx="8" fill="#2D4B8A"/>
+    <rect x="10"  y="296" width="20" height="50" rx="8" fill="#2D4B8A"/>
+    <!-- Shoes -->
+    <ellipse cx="-4" cy="348" rx="12" ry="7" fill="#2D1500"/>
+    <ellipse cx="20" cy="348" rx="12" ry="7" fill="#2D1500"/>
+    <!-- Body -->
+    <rect x="-18" y="230" width="52" height="70" rx="14" fill="#E55B4A"/>
+    <!-- Left arm (holding block) -->
+    <rect x="-38" y="250" width="24" height="14" rx="7" fill="#E8C49A"/>
+    <!-- Right arm -->
+    <rect x="30"  y="250" width="24" height="14" rx="7" fill="#E8C49A"/>
+    <!-- Stack of blocks on ground level -->
+    <rect x="-38" y="310" width="30" height="30" rx="6" fill="#FFD740"/>
+    <text x="-23" y="332" text-anchor="middle" fill="#8B6914" font-size="16" font-family="Georgia,serif" font-weight="700">1</text>
+    <rect x="-28" y="282" width="30" height="30" rx="6" fill="#E8534A"/>
+    <text x="-13" y="303" text-anchor="middle" fill="white" font-size="16" font-family="Georgia,serif" font-weight="700">A</text>
+    <rect x="-18" y="254" width="30" height="30" rx="6" fill="#5CB85C"/>
+    <text x="-3" y="275" text-anchor="middle" fill="white" font-size="16" font-family="Georgia,serif" font-weight="700">B</text>
+    <!-- Head -->
+    <circle cx="8" cy="204" r="32" fill="#E8C49A"/>
+    <!-- Hair -->
+    <ellipse cx="8" cy="174" rx="30" ry="14" fill="#3D2000"/>
+    <ellipse cx="-14" cy="186" rx="10" ry="12" fill="#3D2000"/>
+    <ellipse cx="30"  cy="186" rx="10" ry="12" fill="#3D2000"/>
+    <!-- Eyes -->
+    <circle cx="-2"  cy="204" r="5" fill="white"/>
+    <circle cx="18"  cy="204" r="5" fill="white"/>
+    <circle cx="-1"  cy="205" r="3" fill="#3D2000"/>
+    <circle cx="19"  cy="205" r="3" fill="#3D2000"/>
+    <circle cx="0"   cy="204" r="1" fill="white"/>
+    <circle cx="20"  cy="204" r="1" fill="white"/>
+    <!-- Smile -->
+    <path d="M0 215 Q8 222 16 215" stroke="#3D2000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Cheeks -->
+    <ellipse cx="-10" cy="216" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+    <ellipse cx="26"  cy="216" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+  </g>
+
+  <!-- ── CHARACTER 3: CHILD PAINTING (right) ── -->
+  <!-- Skin: warm caramel #C47F50 | Hair: dark #2D1500 | Smock: green #68B85A -->
+  <g transform="translate(360,0)">
+    <!-- Easel frame -->
+    <line x1="0"  y1="190" x2="-28" y2="358" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0"  y1="190" x2="28"  y2="358" stroke="#8B6914" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-20" y1="300" x2="20" y2="300" stroke="#8B6914" stroke-width="2" stroke-linecap="round"/>
+    <!-- Canvas on easel -->
+    <rect x="-40" y="195" width="80" height="65" rx="4" fill="white" stroke="#ddd" stroke-width="2"/>
+    <!-- Child's painting on canvas -->
+    <circle cx="0"   cy="218" r="12" fill="#FFD740"/><!-- sun -->
+    <ellipse cx="-22" cy="248" rx="12" ry="7" fill="#5CB85C"/><!-- grass -->
+    <ellipse cx="20"  cy="248" rx="12" ry="7" fill="#5CB85C"/>
+    <rect x="-10" y="225" width="20" height="20" rx="4" fill="#E8534A"/><!-- house -->
+    <polygon points="0,215 -15,228 15,228" fill="#FFD740"/><!-- roof -->
+    <!-- Legs -->
+    <rect x="52"  y="296" width="18" height="50" rx="8" fill="#68B85A"/>
+    <rect x="74"  y="296" width="18" height="50" rx="8" fill="#68B85A"/>
+    <!-- Shoes -->
+    <ellipse cx="61" cy="348" rx="12" ry="7" fill="#2D1500"/>
+    <ellipse cx="83" cy="348" rx="12" ry="7" fill="#2D1500"/>
+    <!-- Smock/body -->
+    <rect x="46"  y="230" width="52" height="70" rx="14" fill="#68B85A"/>
+    <!-- Left arm (reaching to canvas) -->
+    <rect x="20"  y="248" width="28" height="14" rx="7" fill="#C47F50"/>
+    <!-- Paintbrush in hand -->
+    <rect x="2"   y="244" width="22" height="6" rx="3" fill="#8B6914"/>
+    <ellipse cx="3" cy="247" rx="5" ry="6" fill="#E8534A"/>
+    <!-- Right arm -->
+    <rect x="94"  y="248" width="20" height="14" rx="7" fill="#C47F50"/>
+    <!-- Head -->
+    <circle cx="72" cy="204" r="30" fill="#C47F50"/>
+    <!-- Hair (wavy, dark, pulled back) -->
+    <ellipse cx="72" cy="176" rx="30" ry="13" fill="#2D1500"/>
+    <path d="M42 192 Q38 210 42 230" stroke="#2D1500" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M102 192 Q106 210 102 230" stroke="#2D1500" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Hair bow -->
+    <ellipse cx="72" cy="176" rx="14" ry="6" fill="#E8534A"/>
+    <circle  cx="72" cy="176" r="4" fill="#c0392b"/>
+    <!-- Eyes -->
+    <circle cx="62" cy="206" r="5" fill="white"/>
+    <circle cx="82" cy="206" r="5" fill="white"/>
+    <circle cx="63" cy="207" r="3" fill="#2D1500"/>
+    <circle cx="83" cy="207" r="3" fill="#2D1500"/>
+    <circle cx="64" cy="206" r="1" fill="white"/>
+    <circle cx="84" cy="206" r="1" fill="white"/>
+    <!-- Smile -->
+    <path d="M64 218 Q72 225 80 218" stroke="#2D1500" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Cheeks -->
+    <ellipse cx="54" cy="218" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+    <ellipse cx="90" cy="218" rx="6" ry="4" fill="#E8534A" opacity=".25"/>
+  </g>
+</svg>
