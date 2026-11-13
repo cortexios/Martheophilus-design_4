@@ -1450,7 +1450,7 @@ body{
 
 }
 
-.nav-container.sticky .nav-links li a{
+.nav-container.sticky .nav-links > li > a{
 
   color:var(--nav-maroon);
 
@@ -1460,7 +1460,7 @@ body{
 
 
 
-.nav-container.sticky .nav-links li a::after {
+.nav-container.sticky .nav-links > li > a::after {
 
   background-color: var(--nav-maroon);
 
@@ -1486,17 +1486,17 @@ body{
 
 .nav-container.scrolled .alumni-btn{
 
-  font-size:13px !important;
+  font-size:15px !important;
 
-  padding:7px 14px !important;
+  padding:10px 20px !important;
 
 }
 
 .nav-container.scrolled .lang-switcher-btn{
 
-  font-size:0.75rem !important;
+  font-size:0.85rem !important;
 
-  padding:6px 10px !important;
+  padding:8px 16px !important;
 
 }
 
@@ -1713,6 +1713,14 @@ body{
     border-left: 4px solid var(--color-secondary);
 
 }
+
+/* Keep dropdowns connected to their trigger and support click/touch opening. */
+.dropdown > .dropdown-menu {
+  top:100%;
+  margin-top:0;
+}
+.dropdown.nav-dropdown-open > .dropdown-menu { display:block; }
+.has-submenu.nav-dropdown-open > .submenu { display:block !important; }
 
 
 
@@ -19060,9 +19068,12 @@ font-size:1.8rem;
 
 /* Keep the original desktop menu available below the compact tablet header. */
 
-@media (min-width:769px) and (max-width:1200px) {
+@media (min-width:768px) and (max-width:1200px) {
 
   .nav-container #mobileMenuToggle { display:none !important; }
+
+  /* The tablet uses the dedicated second-row menu; hide the duplicate copy in the fixed bar. */
+  .nav-container .nav-menu-group { display:none !important; }
 
   .khopoli-tablet-menu {
 
@@ -19438,33 +19449,6 @@ font-size:1.8rem;
 
 
 
-  <!-- ICSE Achievers widget: isolated typography and Tailwind runtime (preflight disabled). -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    if (window.tailwind) window.tailwind.config = {
-      important: '#mts-achievers-root',
-      corePlugins: { preflight: false },
-      theme: {
-        extend: {
-          colors: {
-            primary: 'var(--color-primary)',
-            secondary: 'var(--color-secondary)',
-            cta: 'var(--color-cta)',
-            'bg-main': 'var(--color-bg-main)',
-            'bg-section': 'var(--color-bg-section)',
-            text: 'var(--color-text)'
-          },
-          fontFamily: {
-            heading: ['Playfair Display', 'serif'],
-            body: ['Inter', 'sans-serif']
-          }
-        }
-      }
-    };
-  </script>
 </head>
 
 <body><a class="skip-link" href="#main">Skip to content</a><div id="header"><!-- Header / Navbar -->
@@ -19583,7 +19567,7 @@ font-size:1.8rem;
 
     <!-- Mobile Toggle -->
 
-    <div id="menuToggle" class="menu-toggle">&#9776;</div>
+    <div id="menuToggle" class="menu-toggle" role="button" tabindex="0" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">&#9776;</div>
 
   </div>
 
@@ -19855,7 +19839,7 @@ font-size:1.8rem;
 
     <!-- Mobile Hamburger (inside nav bar so it shows on mobile fixed bar) -->
 
-    <button id="mobileMenuToggle" class="menu-toggle" aria-label="Open menu">&#9776;</button>
+    <button id="mobileMenuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">&#9776;</button>
 
   </nav>
 
@@ -20581,6 +20565,17 @@ font-size:1.8rem;
 
 }
 
+/* Active route feedback inside the mobile navigation drawer. */
+#mobileMenu .mob-dropdown-toggle.active,
+#mobileMenu .mobile-menu-scroll > a.active,
+#mobileMenu .mob-dropdown-panel a.active {
+  color:var(--color-secondary) !important;
+  background:rgba(var(--color-secondary-rgb),.12) !important;
+}
+#mobileMenu .mob-dropdown-panel a.active {
+  border-left:3px solid var(--color-secondary);
+}
+
 
 
 /* Mobile side-menu switcher */
@@ -20675,7 +20670,7 @@ font-size:1.8rem;
 
 
 
-<nav id="mobileMenu" class="mobile-menu" role="navigation" aria-label="Mobile Navigation">
+<nav id="mobileMenu" class="mobile-menu" role="navigation" aria-label="Mobile Navigation" aria-hidden="true">
 
 
 
@@ -20745,7 +20740,7 @@ font-size:1.8rem;
 
       <div class="mob-sub-group">
 
-        <div class="mob-sub-heading" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <div class="mob-sub-heading" role="button" tabindex="0" aria-expanded="false">
 
           <span><i class="fas fa-landmark" style="margin-right:8px;opacity:.7;"></i>Our School</span>
 
@@ -20773,7 +20768,7 @@ font-size:1.8rem;
 
       <div class="mob-sub-group">
 
-        <div class="mob-sub-heading" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <div class="mob-sub-heading" role="button" tabindex="0" aria-expanded="false">
 
           <span><i class="fas fa-shield-alt" style="margin-right:8px;opacity:.7;"></i>School Policies &amp; Info</span>
 
@@ -20823,7 +20818,7 @@ font-size:1.8rem;
 
       <div class="mob-sub-group">
 
-        <div class="mob-sub-heading" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <div class="mob-sub-heading" role="button" tabindex="0" aria-expanded="false">
 
           <span><i class="fas fa-star" style="margin-right:8px;opacity:.7;"></i>Beyond Academics</span>
 
@@ -20835,7 +20830,7 @@ font-size:1.8rem;
 
           <a href="#spg-scholastics"><i class="fas fa-graduation-cap" style="width:14px;margin-right:8px;opacity:.6;"></i>Scholastics</a>
 
-          <a href="#"><i class="fas fa-palette" style="width:14px;margin-right:8px;opacity:.6;"></i>Co-Scholastics</a>
+          <a href="#spg-coscholastics"><i class="fas fa-palette" style="width:14px;margin-right:8px;opacity:.6;"></i>Co-Scholastics</a>
 
           <a href="#spg-achievements"><i class="fas fa-trophy" style="width:14px;margin-right:8px;opacity:.6;"></i>Achievements</a>
 
@@ -20863,9 +20858,9 @@ font-size:1.8rem;
 
     <div class="mob-dropdown-panel">
 
-      <a href="#"><i class="fas fa-file-alt" style="width:16px;margin-right:8px;opacity:.6;"></i><span data-i18n="header.nav.admissions">Admissions</span></a>
+      <a href="#spg-admissions"><i class="fas fa-file-alt" style="width:16px;margin-right:8px;opacity:.6;"></i><span data-i18n="header.nav.admissions">Admissions</span></a>
 
-      <a href="#"><i class="fas fa-list-ol" style="width:16px;margin-right:8px;opacity:.6;"></i><span data-i18n="header.nav.admissionProcess">Admission Process</span></a>
+      <a href="#spg-admissions"><i class="fas fa-list-ol" style="width:16px;margin-right:8px;opacity:.6;"></i><span data-i18n="header.nav.admissionProcess">Admission Process</span></a>
 
       <a href="#spg-prospectus"><i class="fas fa-file-pdf" style="width:16px;margin-right:8px;opacity:.6;"></i>Prospectus</a>
 
@@ -21698,11 +21693,25 @@ const I18N = (() => {
 
 
 
+  function closeDropdown(dropdown) {
+
+    dropdown.classList.remove("open");
+
+    const wrapper = dropdown.closest(".lang-switcher");
+
+    const toggle = wrapper && wrapper.querySelector("[data-lang-toggle]");
+
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+
+  }
+
+
+
   function closeAllDropdowns(except) {
 
     document.querySelectorAll(".lang-dropdown.open").forEach(dd => {
 
-      if (dd !== except) dd.classList.remove("open");
+      if (dd !== except) closeDropdown(dd);
 
     });
 
@@ -21932,12 +21941,29 @@ document.addEventListener("click", e => {
 
       const dropdown = wrapper.querySelector(".lang-dropdown.open");
 
-      if (dropdown) dropdown.classList.remove("open");
+      if (dropdown) {
+        dropdown.classList.remove("open");
+        const toggle = wrapper.querySelector("[data-lang-toggle]");
+        if (toggle) toggle.setAttribute("aria-expanded", "false");
+      }
 
     }
 
   });
 
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  document.querySelectorAll(".lang-dropdown.open").forEach(dropdown => {
+    dropdown.classList.remove("open");
+    const wrapper = dropdown.closest(".lang-switcher");
+    const toggle = wrapper && wrapper.querySelector("[data-lang-toggle]");
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.focus();
+    }
+  });
 });
 
 
@@ -22811,6 +22837,76 @@ function initAlumniModal() {
 
 
 /* =========================================================
+   DESKTOP / TABLET DROPDOWNS — hover, touch and keyboard
+========================================================= */
+function initDesktopDropdowns() {
+  const dropdowns = Array.from(document.querySelectorAll('.nav-container .dropdown, .khopoli-tablet-menu .dropdown'));
+
+  function setOpen(item, open) {
+    item.classList.toggle('nav-dropdown-open', open);
+    const trigger = item.querySelector(':scope > a');
+    if (trigger) trigger.setAttribute('aria-expanded', String(open));
+    if (!open) {
+      item.querySelectorAll('.nav-dropdown-open').forEach(child => child.classList.remove('nav-dropdown-open'));
+      item.querySelectorAll('[aria-expanded="true"]').forEach(control => control.setAttribute('aria-expanded', 'false'));
+    }
+  }
+
+  function closeAll(except) {
+    dropdowns.forEach(item => { if (item !== except) setOpen(item, false); });
+  }
+
+  dropdowns.forEach(item => {
+    const trigger = item.querySelector(':scope > a');
+    if (!trigger) return;
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.addEventListener('click', event => {
+      if (trigger.getAttribute('href') === '#') event.preventDefault();
+      event.stopPropagation();
+      const willOpen = !item.classList.contains('nav-dropdown-open');
+      closeAll(willOpen ? item : null);
+      setOpen(item, willOpen);
+    });
+    item.addEventListener('mouseenter', () => trigger.setAttribute('aria-expanded', 'true'));
+    item.addEventListener('mouseleave', () => {
+      if (!item.classList.contains('nav-dropdown-open')) trigger.setAttribute('aria-expanded', 'false');
+    });
+    item.addEventListener('focusin', () => trigger.setAttribute('aria-expanded', 'true'));
+    item.addEventListener('focusout', event => {
+      if (!item.contains(event.relatedTarget) && !item.classList.contains('nav-dropdown-open')) trigger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  document.querySelectorAll('.nav-container .has-submenu, .khopoli-tablet-menu .has-submenu').forEach(item => {
+    const trigger = item.querySelector(':scope > a');
+    if (!trigger) return;
+    trigger.setAttribute('aria-haspopup', 'true');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.addEventListener('click', event => {
+      if (trigger.getAttribute('href') === '#') event.preventDefault();
+      event.stopPropagation();
+      const willOpen = !item.classList.contains('nav-dropdown-open');
+      item.parentElement.querySelectorAll(':scope > .has-submenu.nav-dropdown-open').forEach(sibling => {
+        if (sibling !== item) setOpen(sibling, false);
+      });
+      setOpen(item, willOpen);
+    });
+  });
+
+  document.addEventListener('click', () => closeAll(null));
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    const openItem = dropdowns.find(item => item.classList.contains('nav-dropdown-open'));
+    if (!openItem) return;
+    const trigger = openItem.querySelector(':scope > a');
+    closeAll(null);
+    if (trigger) trigger.focus();
+  });
+}
+
+
+/* =========================================================
 
    MOBILE MENU — slide-in drawer
 
@@ -22841,14 +22937,31 @@ function initMobileMenu() {
 
 
   let scrollY = 0;
+  let previousFocus = null;
+  let previousBodyStyles = null;
+  const focusableSelector = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+  function setMenuExpanded(expanded) {
+    toggleBtns.forEach(btn => {
+      btn.setAttribute('aria-expanded', String(expanded));
+      btn.setAttribute('aria-label', expanded ? 'Close menu' : 'Open menu');
+    });
+    mobileMenu.setAttribute('aria-hidden', String(!expanded));
+  }
 
 
 
   function openMenu() {
 
+    if (mobileMenu.classList.contains("active")) return;
+
+    previousFocus = document.activeElement;
+
     mobileMenu.classList.add("active");
 
     if (overlay) overlay.classList.add("active");
+
+    setMenuExpanded(true);
 
 
 
@@ -22862,6 +22975,15 @@ function initMobileMenu() {
 
     scrollY = window.scrollY || window.pageYOffset || 0;
 
+    previousBodyStyles = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow
+    };
+
     document.body.style.position = "fixed";
 
     document.body.style.top = `-${scrollY}px`;
@@ -22874,29 +22996,35 @@ function initMobileMenu() {
 
     document.body.style.overflow = "hidden";
 
+    requestAnimationFrame(() => { if (closeBtn) closeBtn.focus(); });
+
   }
 
 
 
-  function closeMenu() {
+  function closeMenu(restoreFocus = true) {
+
+    if (!mobileMenu.classList.contains("active")) return;
 
     mobileMenu.classList.remove("active");
 
     if (overlay) overlay.classList.remove("active");
 
+    setMenuExpanded(false);
 
 
-    document.body.style.position = "";
 
-    document.body.style.top = "";
+    document.body.style.position = previousBodyStyles ? previousBodyStyles.position : "";
 
-    document.body.style.left = "";
+    document.body.style.top = previousBodyStyles ? previousBodyStyles.top : "";
 
-    document.body.style.right = "";
+    document.body.style.left = previousBodyStyles ? previousBodyStyles.left : "";
 
-    document.body.style.width = "";
+    document.body.style.right = previousBodyStyles ? previousBodyStyles.right : "";
 
-    document.body.style.overflow = "";
+    document.body.style.width = previousBodyStyles ? previousBodyStyles.width : "";
+
+    document.body.style.overflow = previousBodyStyles ? previousBodyStyles.overflow : "";
 
     window.scrollTo(0, scrollY);
 
@@ -22911,6 +23039,14 @@ function initMobileMenu() {
       t.nextElementSibling.classList.remove("open");
 
     });
+
+    mobileMenu.querySelectorAll('.mob-sub-heading.open').forEach(heading => {
+      heading.classList.remove('open');
+      heading.setAttribute('aria-expanded', 'false');
+      if (heading.nextElementSibling) heading.nextElementSibling.classList.remove('open');
+    });
+
+    if (restoreFocus && previousFocus && previousFocus.isConnected) previousFocus.focus();
 
   }
 
@@ -22934,6 +23070,17 @@ function initMobileMenu() {
 
     });
 
+  });
+
+  /* The legacy header toggle is a div; make Enter and Space operate it like a button. */
+  toggleBtns.forEach(btn => {
+    if (btn.tagName === 'BUTTON') return;
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
   });
 
 
@@ -22992,13 +23139,56 @@ function initMobileMenu() {
 
   });
 
+  mobileMenu.querySelectorAll('.mob-sub-heading').forEach(heading => {
+    function toggleSubgroup() {
+      const willOpen = !heading.classList.contains('open');
+      heading.classList.toggle('open', willOpen);
+      heading.setAttribute('aria-expanded', String(willOpen));
+      if (heading.nextElementSibling) heading.nextElementSibling.classList.toggle('open', willOpen);
+    }
+    heading.addEventListener('click', toggleSubgroup);
+    heading.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleSubgroup();
+      }
+    });
+  });
+
 
 
   document.addEventListener("keydown", e => {
 
-    if (e.key === "Escape") closeMenu();
+    if (!mobileMenu.classList.contains('active')) return;
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      const focusable = Array.from(mobileMenu.querySelectorAll(focusableSelector)).filter(el =>
+        el.offsetParent !== null &&
+        !el.closest('.mob-dropdown-panel:not(.open), .mob-sub-links:not(.open), .lang-dropdown:not(.open)')
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
 
   });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1200 && mobileMenu.classList.contains('active')) closeMenu(false);
+  }, { passive:true });
 
 }
 
@@ -23295,7 +23485,7 @@ function prevSlide() {
 
 
 
-document.addEventListener("DOMContentLoaded",()=>{if(window.AOS)AOS.init({duration:900,once:true,offset:40});initMobileMenu();initAlumniModal();setActiveNav();initNoticeMarquee();});
+document.addEventListener("DOMContentLoaded",()=>{if(window.AOS)AOS.init({duration:900,once:true,offset:40});initDesktopDropdowns();initMobileMenu();initAlumniModal();setActiveNav();initNoticeMarquee();});
 
 const nav=document.querySelector(".nav-container"),topHeader=document.querySelector(".header-top");window.addEventListener("scroll",()=>{if(innerWidth>1200){nav.classList.toggle("sticky",scrollY>120);topHeader.classList.toggle("hide",scrollY>120);}});document.querySelectorAll(".arrow-full").forEach(a=>a.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();a.click();}}));let touchStart=0;const hero=document.querySelector(".hero-full");hero.addEventListener("touchstart",e=>touchStart=e.changedTouches[0].clientX,{passive:true});hero.addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-touchStart;if(Math.abs(d)>60)d>0?prevSlide():nextSlide();},{passive:true});
 
@@ -23743,7 +23933,7 @@ document.addEventListener('click', function(e) {
 
 @media(min-width:1201px){.nav-container.sticky .nav-actions{transform:translateX(18px)}}
 
-@media(min-width:1201px){.nav-container.sticky{display:grid!important;grid-template-columns:520px minmax(0,1fr) 400px!important;align-items:center!important;padding:0 22px!important}.nav-container.sticky .sticky-logo{position:static!important;margin:0!important;min-width:0!important}.nav-container.sticky>.nav-links{justify-content:flex-start!important;gap:10px!important;margin:0!important;transform:none!important;overflow:visible!important;flex-wrap:nowrap!important}.nav-container.sticky>.nav-links>li{flex:0 0 auto!important}.nav-container.sticky .nav-links li a{font-size:16px!important;white-space:nowrap!important}.nav-container.sticky .nav-actions{position:static!important;right:auto!important;justify-self:end!important;transform:none!important}body:has(.nav-container.sticky) #main{padding-top:0}}
+@media(min-width:1201px){.nav-container.sticky{display:grid!important;grid-template-columns:520px minmax(0,1fr) 400px!important;align-items:center!important;padding:0 22px!important}.nav-container.sticky .sticky-logo{position:static!important;margin:0!important;min-width:0!important}.nav-container.sticky>.nav-links{justify-content:flex-start!important;gap:10px!important;margin:0!important;transform:none!important;overflow:visible!important;flex-wrap:nowrap!important}.nav-container.sticky>.nav-links>li{flex:0 0 auto!important}.nav-container.sticky .nav-links>li>a{font-size:var(--nav-font-size)!important;white-space:nowrap!important}.nav-container.sticky .nav-actions{position:static!important;right:auto!important;justify-self:end!important;transform:none!important}body:has(.nav-container.sticky) #main{padding-top:0}}
 
 /* Nav brand lockup grid — higher specificity (.sticky.scrolled = 0,3,0) beats the .sticky override above (0,2,0) so the correct column widths apply when both classes are active */
 
@@ -23852,7 +24042,7 @@ document.addEventListener('click', function(e) {
 
   }
 
-  if(!document.getElementById('desktop-nav-action-compact')){const compactNavStyle=document.createElement('style');compactNavStyle.id='desktop-nav-action-compact';compactNavStyle.textContent='@media(min-width:1201px){.nav-container.sticky .nav-actions{justify-self:end!important;gap:8px!important;padding:0 10px!important;transform:none!important}.nav-container.sticky .lang-switcher-btn{min-width:142px!important;height:44px!important;padding:0 14px!important;font-size:16px!important}.nav-container.sticky .alumni-btn{min-width:100px!important;height:44px!important;padding:0 18px!important;font-size:17px!important}}';document.head.append(compactNavStyle);}
+  if(!document.getElementById('desktop-nav-action-compact')){const compactNavStyle=document.createElement('style');compactNavStyle.id='desktop-nav-action-compact';compactNavStyle.textContent='@media(min-width:1201px){.nav-container.sticky .nav-actions{justify-self:end!important;gap:8px!important;padding:0 8px!important;transform:none!important}.nav-container.sticky .lang-switcher-btn{min-width:95px!important;height:auto!important;padding:8px 16px!important;font-size:.85rem!important}.nav-container.sticky .alumni-btn{min-width:0!important;height:auto!important;padding:10px 20px!important;font-size:15px!important}}';document.head.append(compactNavStyle);}
 
 })();
 
@@ -24038,7 +24228,7 @@ document.addEventListener('click', function(e) {
 
 
 
-<style id="sticky-header-layout-fix">@media(min-width:1201px){.nav-container.sticky{display:grid!important;grid-template-columns:minmax(300px,340px) minmax(0,1fr) auto!important;justify-content:initial!important;padding:0 22px!important}.nav-container.sticky .sticky-logo{display:flex!important;position:static!important;left:auto!important;min-width:0!important;margin:0!important;z-index:auto!important}.nav-container.sticky>.nav-links{justify-content:center!important;gap:clamp(14px,1.4vw,24px)!important;margin:0!important;transform:none!important;overflow:visible!important}.nav-container.sticky .nav-actions{position:static!important;right:auto!important;justify-self:end!important;z-index:auto!important}.nav-container.sticky .nav-links li a{font-size:clamp(16px,1.25vw,20px)!important}}</style>
+<style id="sticky-header-layout-fix">@media(min-width:1201px){.nav-container.sticky{display:grid!important;grid-template-columns:minmax(300px,340px) minmax(0,1fr) auto!important;justify-content:initial!important;padding:0 22px!important}.nav-container.sticky .sticky-logo{display:flex!important;position:static!important;left:auto!important;min-width:0!important;margin:0!important;z-index:auto!important}.nav-container.sticky>.nav-links{justify-content:center!important;gap:clamp(14px,1.4vw,24px)!important;margin:0!important;transform:none!important;overflow:visible!important}.nav-container.sticky .nav-actions{position:static!important;right:auto!important;justify-self:end!important;z-index:auto!important}.nav-container.sticky .nav-links>li>a{font-size:var(--nav-font-size)!important}.nav-container.sticky .dropdown-menu li a{font-size:var(--nav-dropdown-font-size)!important}}</style>
 
 
 
@@ -34410,6 +34600,477 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
 <section id="spg-magazine" class="sub-page-section" hidden>
 
+<style id="magazine-reader-professional-css">
+  #spg-magazine { --mag-ink: var(--color-primary, #800000); --mag-gold: var(--color-secondary, #E0B648); --mag-paper: var(--color-bg-main, #FFF9F0); --mag-panel: var(--color-bg-section, #F1E7DC); color: var(--color-text, #343434); background: var(--mag-paper); }
+  #spg-magazine > .page-banner,
+  #spg-magazine > main { display: none !important; }
+  #spg-magazine .magazine-pro-page { min-height: 100vh; overflow: clip; }
+  #spg-magazine .mag-hero { position: relative; isolation: isolate; overflow: hidden; padding: clamp(70px, 9vw, 118px) 20px clamp(62px, 8vw, 100px); color: var(--mag-paper); background: linear-gradient(135deg, var(--mag-ink), color-mix(in srgb, var(--mag-ink) 68%, #000)); }
+  #spg-magazine .mag-hero::before { content: ""; position: absolute; inset: 0; z-index: -2; opacity: .22; background-image: radial-gradient(circle at 20% 30%, var(--mag-gold) 0 2px, transparent 3px), radial-gradient(circle at 82% 72%, var(--mag-gold) 0 1.5px, transparent 2.5px); background-size: 84px 84px, 112px 112px; }
+  #spg-magazine .mag-hero::after { content: ""; position: absolute; width: min(42vw, 520px); aspect-ratio: 1; right: -12%; bottom: -75%; z-index: -1; border: 1px solid color-mix(in srgb, var(--mag-gold) 40%, transparent); border-radius: 50%; box-shadow: 0 0 0 54px color-mix(in srgb, var(--mag-gold) 8%, transparent), 0 0 0 108px color-mix(in srgb, var(--mag-gold) 5%, transparent); }
+  #spg-magazine .mag-shell { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
+  #spg-magazine .mag-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; color: var(--mag-gold); font: 700 .78rem/1.2 Poppins, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+  #spg-magazine .mag-eyebrow::before { content: ""; width: 34px; height: 2px; background: currentColor; }
+  #spg-magazine .mag-hero h1 { max-width: 760px; margin: 0; color: var(--mag-paper); font: 700 clamp(2.3rem, 6vw, 5rem)/1.04 Georgia, "Times New Roman", serif; letter-spacing: -.03em; }
+  #spg-magazine .mag-hero h1 span { color: var(--mag-gold); }
+  #spg-magazine .mag-hero p { max-width: 680px; margin: 24px 0 0; color: color-mix(in srgb, var(--mag-paper) 86%, transparent); font: 400 clamp(1rem, 1.8vw, 1.15rem)/1.75 Poppins, sans-serif; }
+  #spg-magazine .mag-library { padding: clamp(58px, 8vw, 96px) 0 clamp(66px, 9vw, 110px); }
+  #spg-magazine .mag-section-head { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 32px; }
+  #spg-magazine .mag-section-head h2 { margin: 0; color: var(--mag-ink); font: 700 clamp(1.8rem, 4vw, 2.7rem)/1.15 Georgia, "Times New Roman", serif; }
+  #spg-magazine .mag-section-head p { max-width: 480px; margin: 0; color: color-mix(in srgb, var(--color-text, #343434) 76%, transparent); font: 400 .96rem/1.7 Poppins, sans-serif; }
+  #spg-magazine .mag-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 44px); }
+  #spg-magazine .mag-card { display: grid; grid-template-columns: minmax(150px, 42%) 1fr; min-height: 330px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--mag-ink) 12%, transparent); border-radius: 22px; background: color-mix(in srgb, var(--mag-paper) 92%, var(--mag-panel)); box-shadow: 0 20px 52px color-mix(in srgb, var(--mag-ink) 12%, transparent); transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+  #spg-magazine .mag-card:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--mag-gold) 72%, transparent); box-shadow: 0 28px 64px color-mix(in srgb, var(--mag-ink) 17%, transparent); }
+  #spg-magazine .mag-cover { position: relative; min-height: 330px; overflow: hidden; background: var(--mag-panel); }
+  #spg-magazine .mag-cover img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .55s ease; }
+  #spg-magazine .mag-card:hover .mag-cover img { transform: scale(1.035); }
+  #spg-magazine .mag-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 74%, color-mix(in srgb, #000 20%, transparent)); pointer-events: none; }
+  #spg-magazine .mag-card-copy { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(24px, 3vw, 34px); }
+  #spg-magazine .mag-issue { margin-bottom: 14px; color: var(--mag-gold); font: 700 .72rem/1 Poppins, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+  #spg-magazine .mag-card h3 { margin: 0; color: var(--mag-ink); font: 700 clamp(1.3rem, 2.2vw, 1.72rem)/1.22 Georgia, "Times New Roman", serif; }
+  #spg-magazine .mag-card p { margin: 14px 0 24px; color: color-mix(in srgb, var(--color-text, #343434) 78%, transparent); font: 400 .88rem/1.65 Poppins, sans-serif; }
+  #spg-magazine .mag-meta { display: flex; flex-wrap: wrap; gap: 8px 15px; margin-top: auto; margin-bottom: 20px; color: var(--color-text, #343434); font: 600 .76rem/1.4 Poppins, sans-serif; }
+  #spg-magazine .mag-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  #spg-magazine .mag-read-btn, #spg-magazine .mag-toolbar button, #spg-magazine .mag-toolbar select, #spg-magazine .mag-toolbar input { font-family: Poppins, sans-serif; }
+  #spg-magazine .mag-read-btn { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 11px 18px; border: 0; border-radius: 999px; color: var(--mag-paper); background: var(--mag-ink); font-size: .83rem; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px color-mix(in srgb, var(--mag-ink) 22%, transparent); transition: transform .2s ease, background .2s ease; }
+  #spg-magazine .mag-read-btn:hover { background: color-mix(in srgb, var(--mag-ink) 82%, #000); transform: translateY(-2px); }
+  #spg-magazine .mag-read-btn:focus-visible, #spg-magazine .mag-toolbar button:focus-visible, #spg-magazine .mag-toolbar select:focus-visible, #spg-magazine .mag-toolbar input:focus-visible { outline: 3px solid color-mix(in srgb, var(--mag-gold) 70%, transparent); outline-offset: 3px; }
+  #spg-magazine .mag-reader-wrap { padding: clamp(54px, 7vw, 84px) 0 clamp(70px, 9vw, 112px); background: var(--mag-panel); border-top: 1px solid color-mix(in srgb, var(--mag-ink) 10%, transparent); }
+  #spg-magazine .mag-reader { overflow: hidden; scroll-margin-top: 118px; border: 1px solid color-mix(in srgb, var(--mag-gold) 42%, transparent); border-radius: 24px; background: color-mix(in srgb, var(--mag-ink) 92%, #000); box-shadow: 0 28px 75px color-mix(in srgb, var(--mag-ink) 26%, transparent); }
+  #spg-magazine .mag-reader-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px clamp(20px, 4vw, 38px); border-bottom: 1px solid color-mix(in srgb, var(--mag-gold) 25%, transparent); }
+  #spg-magazine .mag-reader-title small { display: block; margin-bottom: 4px; color: var(--mag-gold); font: 700 .68rem/1.2 Poppins, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+  #spg-magazine .mag-reader-title h2 { margin: 0; color: var(--mag-paper); font: 700 clamp(1.15rem, 2.5vw, 1.65rem)/1.2 Georgia, "Times New Roman", serif; }
+  #spg-magazine .mag-toolbar { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; padding: 13px 18px; background: color-mix(in srgb, var(--mag-ink) 80%, #000); border-bottom: 1px solid color-mix(in srgb, var(--mag-gold) 18%, transparent); }
+  #spg-magazine .mag-toolbar button { width: 38px; height: 38px; display: inline-grid; place-items: center; padding: 0; border: 1px solid color-mix(in srgb, var(--mag-gold) 36%, transparent); border-radius: 10px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-paper) 7%, transparent); cursor: pointer; transition: transform .18s ease, background .18s ease; }
+  #spg-magazine .mag-toolbar button:hover:not(:disabled) { transform: translateY(-2px); background: color-mix(in srgb, var(--mag-gold) 20%, transparent); }
+  #spg-magazine .mag-toolbar button:disabled { opacity: .38; cursor: not-allowed; }
+  #spg-magazine .mag-toolbar select { max-width: 240px; height: 38px; padding: 0 34px 0 12px; border: 1px solid color-mix(in srgb, var(--mag-gold) 36%, transparent); border-radius: 10px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-ink) 84%, #000); font-size: .78rem; font-weight: 600; }
+  #spg-magazine .mag-page-control { display: inline-flex; align-items: center; gap: 7px; color: var(--mag-paper); font: 600 .76rem/1 Poppins, sans-serif; }
+  #spg-magazine .mag-page-control input { width: 54px; height: 38px; padding: 0 7px; border: 1px solid color-mix(in srgb, var(--mag-gold) 36%, transparent); border-radius: 10px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-paper) 7%, transparent); text-align: center; font-size: .78rem; }
+  #spg-magazine .mag-book-stage { position: relative; min-height: clamp(520px, 68vw, 850px); display: grid; place-items: center; overflow: auto; padding: clamp(24px, 4vw, 48px); perspective: 2200px; background: radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--mag-gold) 10%, transparent), transparent 45%), linear-gradient(145deg, color-mix(in srgb, var(--mag-ink) 75%, #000), color-mix(in srgb, var(--mag-ink) 48%, #000)); }
+  #spg-magazine .mag-book-stage::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 3.4%; height: 28px; border-radius: 50%; background: color-mix(in srgb, #000 46%, transparent); filter: blur(16px); pointer-events: none; }
+  #spg-magazine .mag-spread { position: relative; z-index: 1; width: min(100%, 980px); display: flex; align-items: center; justify-content: center; scale: var(--mag-zoom, 1); transform-style: preserve-3d; filter: drop-shadow(0 20px 25px color-mix(in srgb, #000 34%, transparent)); }
+  #spg-magazine .mag-sheet { position: relative; flex: 0 1 50%; max-width: 490px; overflow: hidden; background: var(--mag-paper); aspect-ratio: 595.5 / 842.25; backface-visibility: hidden; }
+  #spg-magazine .mag-sheet:first-child { border-radius: 7px 0 0 7px; box-shadow: inset -12px 0 20px color-mix(in srgb, #000 8%, transparent); }
+  #spg-magazine .mag-sheet:last-child { border-radius: 0 7px 7px 0; box-shadow: inset 12px 0 20px color-mix(in srgb, #000 8%, transparent); }
+  #spg-magazine .mag-sheet:only-child { flex-basis: 50%; border-radius: 7px; box-shadow: none; }
+  #spg-magazine .mag-sheet canvas, #spg-magazine .mag-sheet img { width: 100%; height: 100%; display: block; object-fit: contain; }
+  #spg-magazine .mag-page-number { position: absolute; right: 10px; bottom: 8px; min-width: 25px; padding: 4px 6px; border-radius: 999px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-ink) 78%, transparent); font: 700 .65rem/1 Poppins, sans-serif; text-align: center; }
+  #spg-magazine .mag-sheet:first-child:not(:only-child) .mag-page-number { right: auto; left: 10px; }
+  #spg-magazine .mag-spread.turn-out-next { animation: magTurnOutNext .46s cubic-bezier(.55,.05,.3,1) forwards; transform-origin: left center; }
+  #spg-magazine .mag-spread.turn-in-next { animation: magTurnInNext .46s cubic-bezier(.2,.72,.25,1) both; transform-origin: right center; }
+  #spg-magazine .mag-spread.turn-out-prev { animation: magTurnOutPrev .46s cubic-bezier(.55,.05,.3,1) forwards; transform-origin: right center; }
+  #spg-magazine .mag-spread.turn-in-prev { animation: magTurnInPrev .46s cubic-bezier(.2,.72,.25,1) both; transform-origin: left center; }
+  @keyframes magTurnOutNext { to { transform: rotateY(-82deg) translateX(-4%); opacity: 0; } }
+  @keyframes magTurnInNext { from { transform: rotateY(82deg) translateX(4%); opacity: 0; } }
+  @keyframes magTurnOutPrev { to { transform: rotateY(82deg) translateX(4%); opacity: 0; } }
+  @keyframes magTurnInPrev { from { transform: rotateY(-82deg) translateX(-4%); opacity: 0; } }
+  #spg-magazine .mag-reader-status { position: absolute; z-index: 4; inset: 0; display: grid; place-items: center; padding: 28px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-ink) 58%, transparent); backdrop-filter: blur(8px); text-align: center; font: 600 .9rem/1.6 Poppins, sans-serif; }
+  #spg-magazine .mag-reader-status[hidden] { display: none; }
+  #spg-magazine .mag-spinner { width: 42px; height: 42px; margin: 0 auto 16px; border: 3px solid color-mix(in srgb, var(--mag-paper) 22%, transparent); border-top-color: var(--mag-gold); border-radius: 50%; animation: magSpin .8s linear infinite; }
+  @keyframes magSpin { to { transform: rotate(1turn); } }
+  #spg-magazine .mag-fallback { position: relative; z-index: 2; width: min(760px, 100%); padding: clamp(28px, 5vw, 50px); border: 1px solid color-mix(in srgb, var(--mag-gold) 40%, transparent); border-radius: 18px; color: var(--mag-paper); background: color-mix(in srgb, var(--mag-ink) 84%, #000); text-align: center; }
+  #spg-magazine .mag-fallback i { display: block; margin-bottom: 16px; color: var(--mag-gold); font-size: 2.4rem; }
+  #spg-magazine .mag-fallback p { margin: 0 0 20px; font: 400 .9rem/1.7 Poppins, sans-serif; }
+  #spg-magazine .mag-fallback a { color: var(--mag-gold); font-weight: 700; }
+  #spg-magazine .mag-reader-note { margin: 13px 0 0; color: color-mix(in srgb, var(--mag-paper) 70%, transparent); font: 400 .7rem/1.5 Poppins, sans-serif; text-align: center; }
+  @media (max-width: 900px) {
+    #spg-magazine .mag-grid { grid-template-columns: 1fr; }
+    #spg-magazine .mag-card { min-height: 300px; }
+    #spg-magazine .mag-cover { min-height: 300px; }
+  }
+  @media (max-width: 700px) {
+    #spg-magazine .mag-shell { width: min(100% - 32px, 1160px); }
+    #spg-magazine .mag-section-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+    #spg-magazine .mag-card { grid-template-columns: 40% 1fr; }
+    #spg-magazine .mag-reader { scroll-margin-top: 88px; border-radius: 16px; }
+    #spg-magazine .mag-reader-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+    #spg-magazine .mag-book-stage { min-height: 590px; padding: 24px 16px; }
+    #spg-magazine .mag-spread { width: min(100%, 430px); }
+    #spg-magazine .mag-sheet { flex-basis: 100%; max-width: 430px; border-radius: 7px !important; box-shadow: none !important; }
+  }
+  @media (max-width: 520px) {
+    #spg-magazine .mag-hero { padding-inline: 0; }
+    #spg-magazine .mag-card { grid-template-columns: 1fr; }
+    #spg-magazine .mag-cover { min-height: auto; aspect-ratio: 595.5 / 842.25; max-height: 430px; }
+    #spg-magazine .mag-card-copy { padding: 24px; }
+    #spg-magazine .mag-toolbar { justify-content: flex-start; }
+    #spg-magazine .mag-toolbar select { order: -1; flex: 1 1 100%; max-width: none; }
+    #spg-magazine .mag-book-stage { min-height: 500px; }
+    #spg-magazine .mag-reader-note { padding-inline: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #spg-magazine *, #spg-magazine *::before, #spg-magazine *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+
+<div class="magazine-pro-page">
+  <header class="mag-hero">
+    <div class="mag-shell">
+      <div class="mag-eyebrow"><i class="fas fa-book-open" aria-hidden="true"></i> School Publications</div>
+      <h1>Stories that shape our <span>school community.</span></h1>
+      <p>Explore student voices, achievements and memorable moments from Dr. Mar Theophilus School. Choose an edition below and turn every page online.</p>
+    </div>
+  </header>
+
+  <section class="mag-library" aria-labelledby="mag-library-title">
+    <div class="mag-shell">
+      <div class="mag-section-head">
+        <h2 id="mag-library-title">Choose an edition</h2>
+        <p>Read each magazine in the interactive viewer, use the arrow keys to turn pages, or open the original PDF.</p>
+      </div>
+      <div class="mag-grid" id="magazineEditionGrid"></div>
+    </div>
+  </section>
+
+  <section class="mag-reader-wrap" aria-labelledby="mag-reader-title">
+    <div class="mag-shell">
+      <div class="mag-reader" id="magazineReader">
+        <div class="mag-reader-head">
+          <div class="mag-reader-title">
+            <small>Now reading</small>
+            <h2 id="mag-reader-title">Select a magazine to begin</h2>
+          </div>
+        </div>
+
+        <div class="mag-toolbar" aria-label="Magazine reader controls">
+          <select id="magazineSelect" aria-label="Choose magazine"></select>
+          <button type="button" id="magFirstPage" aria-label="First page" title="First page" disabled><i class="fas fa-step-backward" aria-hidden="true"></i></button>
+          <button type="button" id="magPrevPage" aria-label="Previous page" title="Previous page" disabled><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <label class="mag-page-control">Page <input id="magPageInput" type="number" min="1" value="1" inputmode="numeric" aria-label="Page number" disabled> <span id="magPageTotal">of 0</span></label>
+          <button type="button" id="magNextPage" aria-label="Next page" title="Next page" disabled><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+          <button type="button" id="magLastPage" aria-label="Last page" title="Last page" disabled><i class="fas fa-step-forward" aria-hidden="true"></i></button>
+          <button type="button" id="magZoomOut" aria-label="Zoom out" title="Zoom out" disabled><i class="fas fa-search-minus" aria-hidden="true"></i></button>
+          <button type="button" id="magZoomIn" aria-label="Zoom in" title="Zoom in" disabled><i class="fas fa-search-plus" aria-hidden="true"></i></button>
+          <button type="button" id="magFullscreen" aria-label="View full screen" title="Full screen"><i class="fas fa-expand" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="mag-book-stage" id="magBookStage" tabindex="0" aria-label="Interactive magazine reader. Use left and right arrow keys to turn pages.">
+          <div class="mag-fallback" id="magReaderWelcome">
+            <i class="fas fa-book-open" aria-hidden="true"></i>
+            <p>Select one of the magazine editions above, then use the page controls or keyboard arrows to read it live.</p>
+          </div>
+          <div class="mag-reader-status" id="magReaderStatus" role="status" aria-live="polite" hidden></div>
+        </div>
+        <p class="mag-reader-note">Tip: on desktop, pages open as a two-page spread. On phones, one page is shown at a time for easier reading.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script id="magazine-reader-script">
+(function () {
+  "use strict";
+
+  /*
+   * ADD MORE MAGAZINES HERE:
+   * 1. Copy the PDF and a cover image into the existing images/ folder.
+   * 2. Duplicate one object below and update title, issue, description, pdf, cover and pages.
+   * 3. For offline file:// page flipping, export pages as prefix-01.jpg, prefix-02.jpg, etc.
+   *    Then set pageImagePrefix to "images/prefix-". If omitted, the hosted site uses PDF.js.
+   * The selection card and live reader menu are generated automatically.
+   */
+  var MAGAZINES = [
+    {
+      title: "Theophilian Trailblazer",
+      issue: "Edition 06 - October 2026",
+      description: "Rising with renewed energy - stories, reflections and achievements from our senior school community.",
+      pdf: "images/theophilian-trailblazer-october-2026.pdf",
+      cover: "images/theophilian-trailblazer-cover.jpg",
+      pageImagePrefix: "images/theophilian-trailblazer-page-",
+      pages: 28
+    },
+    {
+      title: "Junior Trailblazers",
+      issue: "Issue 13 - October 2026",
+      description: "A vibrant collection of celebrations, classroom experiences and creative work from our junior learners.",
+      pdf: "images/junior-trailblazers-october-2026.pdf",
+      cover: "images/junior-trailblazers-cover.jpg",
+      pageImagePrefix: "images/junior-trailblazers-page-",
+      pages: 62
+    }
+  ];
+
+  var root = document.getElementById("spg-magazine");
+  if (!root) return;
+
+  var grid = root.querySelector("#magazineEditionGrid");
+  var select = root.querySelector("#magazineSelect");
+  var stage = root.querySelector("#magBookStage");
+  var reader = root.querySelector("#magazineReader");
+  var title = root.querySelector("#mag-reader-title");
+  var status = root.querySelector("#magReaderStatus");
+  var welcome = root.querySelector("#magReaderWelcome");
+  var firstBtn = root.querySelector("#magFirstPage");
+  var prevBtn = root.querySelector("#magPrevPage");
+  var nextBtn = root.querySelector("#magNextPage");
+  var lastBtn = root.querySelector("#magLastPage");
+  var zoomOutBtn = root.querySelector("#magZoomOut");
+  var zoomInBtn = root.querySelector("#magZoomIn");
+  var fullscreenBtn = root.querySelector("#magFullscreen");
+  var pageInput = root.querySelector("#magPageInput");
+  var pageTotal = root.querySelector("#magPageTotal");
+  var pdfDoc = null;
+  var activeIndex = -1;
+  var currentPage = 1;
+  var zoom = 1;
+  var renderTicket = 0;
+  var pdfJsPromise = null;
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[character];
+    });
+  }
+
+  function buildLibrary() {
+    grid.innerHTML = MAGAZINES.map(function (magazine, index) {
+      return '<article class="mag-card">' +
+        '<div class="mag-cover"><img src="' + escapeHtml(magazine.cover) + '" alt="Cover of ' + escapeHtml(magazine.title) + '" loading="lazy"></div>' +
+        '<div class="mag-card-copy">' +
+          '<div class="mag-issue">' + escapeHtml(magazine.issue) + '</div>' +
+          '<h3>' + escapeHtml(magazine.title) + '</h3>' +
+          '<p>' + escapeHtml(magazine.description) + '</p>' +
+          '<div class="mag-meta"><span><i class="far fa-file-pdf" aria-hidden="true"></i> PDF edition</span><span><i class="far fa-copy" aria-hidden="true"></i> ' + magazine.pages + ' pages</span></div>' +
+          '<button type="button" class="mag-read-btn" data-magazine-index="' + index + '"><i class="fas fa-book-reader" aria-hidden="true"></i> Read magazine</button>' +
+        '</div>' +
+      '</article>';
+    }).join("");
+
+    select.innerHTML = '<option value="" selected disabled>Choose a magazine</option>' + MAGAZINES.map(function (magazine, index) {
+      return '<option value="' + index + '">' + escapeHtml(magazine.title + " - " + magazine.issue) + '</option>';
+    }).join("");
+  }
+
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfJsPromise) return pdfJsPromise;
+    pdfJsPromise = new Promise(function (resolve, reject) {
+      var script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+      script.onload = function () {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = function () { reject(new Error("PDF reader library could not be loaded.")); };
+      document.head.appendChild(script);
+    });
+    return pdfJsPromise;
+  }
+
+  function setLoading(message) {
+    status.hidden = false;
+    status.innerHTML = '<div><div class="mag-spinner" aria-hidden="true"></div>' + escapeHtml(message) + '</div>';
+  }
+
+  function clearLoading() {
+    status.hidden = true;
+    status.innerHTML = "";
+  }
+
+  function isSinglePage() {
+    return window.matchMedia("(max-width: 700px)").matches;
+  }
+
+  function spreadStartFor(page) {
+    if (isSinglePage() || page === 1) return page;
+    return page % 2 === 0 ? page : page - 1;
+  }
+
+  function pagesFor(start) {
+    if (!pdfDoc) return [];
+    if (isSinglePage() || start === 1) return [start];
+    return [start, start + 1].filter(function (page) { return page <= pdfDoc.numPages; });
+  }
+
+  function makeSheet(pageNumber, pageMedia) {
+    var sheet = document.createElement("div");
+    sheet.className = "mag-sheet";
+    sheet.setAttribute("aria-label", "Page " + pageNumber);
+    sheet.appendChild(pageMedia);
+    var number = document.createElement("span");
+    number.className = "mag-page-number";
+    number.textContent = pageNumber;
+    sheet.appendChild(number);
+    return sheet;
+  }
+
+  function renderCanvas(pageNumber) {
+    var magazine = MAGAZINES[activeIndex];
+    if (magazine && magazine.pageImagePrefix) {
+      return new Promise(function (resolve, reject) {
+        var image = new Image();
+        image.alt = "";
+        image.decoding = "async";
+        image.onload = function () { resolve(image); };
+        image.onerror = function () { reject(new Error("Page image " + pageNumber + " could not be loaded.")); };
+        image.src = magazine.pageImagePrefix + String(pageNumber).padStart(2, "0") + ".jpg";
+      });
+    }
+    return pdfDoc.getPage(pageNumber).then(function (page) {
+      var viewport = page.getViewport({ scale: 1.45 });
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext("2d", { alpha: false });
+      var pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.floor(viewport.width * pixelRatio);
+      canvas.height = Math.floor(viewport.height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      return page.render({ canvasContext: context, viewport: viewport }).promise.then(function () { return canvas; });
+    });
+  }
+
+  function renderSpread(targetPage, direction, instant) {
+    if (!pdfDoc) return Promise.resolve();
+    var ticket = ++renderTicket;
+    var start = spreadStartFor(Math.max(1, Math.min(targetPage, pdfDoc.numPages)));
+    var pageNumbers = pagesFor(start);
+    if (!pageNumbers.length) return Promise.resolve();
+    setLoading("Preparing pages...");
+
+    return Promise.all(pageNumbers.map(renderCanvas)).then(function (canvases) {
+      if (ticket !== renderTicket) return;
+      var spread = document.createElement("div");
+      spread.className = "mag-spread";
+      spread.style.setProperty("--mag-zoom", zoom);
+      canvases.forEach(function (canvas, index) { spread.appendChild(makeSheet(pageNumbers[index], canvas)); });
+      var oldSpreads = Array.prototype.slice.call(stage.querySelectorAll(".mag-spread"));
+      Array.prototype.forEach.call(stage.querySelectorAll(".mag-fallback"), function (node) { node.remove(); });
+      stage.appendChild(spread);
+
+      if (oldSpreads.length && !instant && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var suffix = direction === "prev" ? "prev" : "next";
+        oldSpreads.forEach(function (oldSpread) { oldSpread.classList.add("turn-out-" + suffix); });
+        spread.classList.add("turn-in-" + suffix);
+        window.setTimeout(function () {
+          oldSpreads.forEach(function (oldSpread) { if (oldSpread.parentNode) oldSpread.remove(); });
+        }, 480);
+      } else if (oldSpreads.length) {
+        oldSpreads.forEach(function (oldSpread) { oldSpread.remove(); });
+      }
+
+      currentPage = start;
+      pageInput.value = currentPage;
+      updateControls();
+      clearLoading();
+    }).catch(function (error) {
+      if (ticket !== renderTicket) return;
+      showFallback(error);
+    });
+  }
+
+  function showFallback(error) {
+    clearLoading();
+    Array.prototype.forEach.call(stage.querySelectorAll(".mag-spread, .mag-fallback"), function (node) { node.remove(); });
+    var magazine = MAGAZINES[activeIndex];
+    var panel = document.createElement("div");
+    panel.className = "mag-fallback";
+    panel.innerHTML = '<i class="far fa-file-pdf" aria-hidden="true"></i><p>The interactive page renderer is unavailable in this browser. You can still read the complete magazine in the built-in PDF viewer.</p><a href="' + escapeHtml(magazine.pdf) + '" target="_blank" rel="noopener">Open ' + escapeHtml(magazine.title) + '</a>';
+    stage.appendChild(panel);
+    console.warn("Magazine reader fallback:", error);
+  }
+
+  function updateControls() {
+    var ready = !!pdfDoc;
+    var step = isSinglePage() ? 1 : 2;
+    var atStart = !ready || currentPage <= 1;
+    var atEnd = !ready || currentPage + (currentPage === 1 ? 0 : step - 1) >= pdfDoc.numPages;
+    [firstBtn, prevBtn].forEach(function (button) { button.disabled = atStart; });
+    [nextBtn, lastBtn].forEach(function (button) { button.disabled = atEnd; });
+    [zoomOutBtn, zoomInBtn, pageInput].forEach(function (control) { control.disabled = !ready; });
+    zoomOutBtn.disabled = !ready || zoom <= .75;
+    zoomInBtn.disabled = !ready || zoom >= 1.5;
+    pageTotal.textContent = "of " + (ready ? pdfDoc.numPages : 0);
+    pageInput.max = ready ? pdfDoc.numPages : 1;
+  }
+
+  function goNext() {
+    if (!pdfDoc) return;
+    var next = isSinglePage() ? currentPage + 1 : (currentPage === 1 ? 2 : currentPage + 2);
+    if (next <= pdfDoc.numPages) renderSpread(next, "next", false);
+  }
+
+  function goPrevious() {
+    if (!pdfDoc || currentPage <= 1) return;
+    var previous = isSinglePage() ? currentPage - 1 : (currentPage <= 2 ? 1 : currentPage - 2);
+    renderSpread(previous, "prev", false);
+  }
+
+  function changeZoom(amount) {
+    zoom = Math.max(.75, Math.min(1.5, Math.round((zoom + amount) * 100) / 100));
+    var spread = stage.querySelector(".mag-spread");
+    if (spread) spread.style.setProperty("--mag-zoom", zoom);
+    updateControls();
+  }
+
+  function selectMagazine(index, scrollToReader) {
+    var magazine = MAGAZINES[index];
+    if (!magazine) return;
+    activeIndex = index;
+    pdfDoc = null;
+    currentPage = 1;
+    zoom = 1;
+    select.value = String(index);
+    title.textContent = magazine.title + " - " + magazine.issue;
+    updateControls();
+    if (scrollToReader) reader.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    setLoading("Opening " + magazine.title + "...");
+
+    if (magazine.pageImagePrefix) {
+      pdfDoc = { numPages: magazine.pages };
+      pageTotal.textContent = "of " + pdfDoc.numPages;
+      renderSpread(1, "next", true);
+    } else {
+      loadPdfJs().then(function (pdfjsLib) {
+        return pdfjsLib.getDocument({ url: magazine.pdf }).promise;
+      }).then(function (loadedPdf) {
+        if (activeIndex !== index) return;
+        pdfDoc = loadedPdf;
+        pageTotal.textContent = "of " + pdfDoc.numPages;
+        return renderSpread(1, "next", true);
+      }).catch(showFallback);
+    }
+  }
+
+  grid.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-magazine-index]");
+    if (button) selectMagazine(Number(button.getAttribute("data-magazine-index")), true);
+  });
+  select.addEventListener("change", function () { selectMagazine(Number(select.value), false); });
+  firstBtn.addEventListener("click", function () { renderSpread(1, "prev", false); });
+  prevBtn.addEventListener("click", goPrevious);
+  nextBtn.addEventListener("click", goNext);
+  lastBtn.addEventListener("click", function () { renderSpread(pdfDoc ? pdfDoc.numPages : 1, "next", false); });
+  zoomOutBtn.addEventListener("click", function () { changeZoom(-.15); });
+  zoomInBtn.addEventListener("click", function () { changeZoom(.15); });
+  pageInput.addEventListener("change", function () {
+    if (!pdfDoc) return;
+    var requested = Math.max(1, Math.min(Number(pageInput.value) || 1, pdfDoc.numPages));
+    renderSpread(requested, requested < currentPage ? "prev" : "next", false);
+  });
+  fullscreenBtn.addEventListener("click", function () {
+    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    else if (reader.requestFullscreen) reader.requestFullscreen();
+  });
+  stage.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowRight" || event.key === "PageDown") { event.preventDefault(); goNext(); }
+    if (event.key === "ArrowLeft" || event.key === "PageUp") { event.preventDefault(); goPrevious(); }
+    if (event.key === "Home" && pdfDoc) { event.preventDefault(); renderSpread(1, "prev", false); }
+    if (event.key === "End" && pdfDoc) { event.preventDefault(); renderSpread(pdfDoc.numPages, "next", false); }
+  });
+
+  var resizeTimer = 0;
+  window.addEventListener("resize", function () {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(function () {
+      if (pdfDoc) renderSpread(currentPage, "next", true);
+    }, 180);
+  });
+
+  buildLibrary();
+  updateControls();
+})();
+</script>
+
 <section class="page-banner">
 
   <div class="banner-inner">
@@ -35143,7 +35804,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
 
 
-  <!-- 8-profile grid -->
+  <!-- 11-profile grid -->
 
   <div class="alm-grid">
 
@@ -35400,6 +36061,106 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
           <p>My years at Dr. Mar Theophilus School laid the groundwork for the person I am today. The curiosity, confidence and sense of responsibility I gained there have stayed with me through every stage of my journey.</p>
 
           <p>I am now an Electronics and Telecommunication Engineering student at Cummins College of Engineering, Pune, with a focus on AI, embedded systems and defence technology. I am grateful to my teachers for believing in me and encouraging me to dream big. As I continue to grow as an engineer and leader, I carry my school&#8217;s values with me and I hope to contribute to meaningful technological advancements</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- 9 — Avishkaar, 2020 Batch -->
+
+    <div class="alm-card coc-fade">
+
+      <div class="alm-photo"><img src="images/alumni9.png" alt="Avishkaar" loading="lazy"></div>
+
+      <div class="alm-header">
+
+        <div class="alm-name">Avishkaar</div>
+
+        <span class="alm-batch">2020 Batch</span>
+
+      </div>
+
+      <div class="alm-testi">
+
+        <div class="alm-qmark" aria-hidden="true"><svg viewBox="0 0 32 24" fill="currentColor"><path d="M0 24V14.4C0 6.72 4.48 1.92 13.44 0l1.92 3.36C10.56 4.56 8.16 7.2 7.68 11.52H14.4V24H0zm17.6 0V14.4C17.6 6.72 22.08 1.92 31.04 0l1.92 3.36c-4.8 1.2-7.2 3.84-7.68 8.16H32V24H17.6z"/></svg></div>
+
+        <div class="alm-testimonial">
+
+          <p>Science has always fascinated me and I feel fortunate to have turned that curiosity into my academic pursuit. I am currently pursuing my Master&#8217;s in Physics in Germany while working as a Research Assistant at the Max Planck Institute for Gravitational Physics (AEI). My research involves improving waveform models for LISA, a space-based gravitational wave mission by NASA and ESA.</p>
+
+          <p>Dr. Mar Theophilus School holds a special place in my life, as it was where my interest in academics and scientific exploration began to take shape. The foundation, values, and encouragement I received from my teachers continue to inspire me as I explore new frontiers in physics and research.</p>
+
+          <p>I remain deeply grateful to my alma mater for being an important part of my growth, both as a student and as an individual.</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- 10 — Kanishk, 2021 Batch -->
+
+    <div class="alm-card coc-fade">
+
+      <div class="alm-photo"><img src="images/alumni10.png" alt="Kanishk" loading="lazy"></div>
+
+      <div class="alm-header">
+
+        <div class="alm-name">Kanishk</div>
+
+        <span class="alm-batch">2021 Batch</span>
+
+      </div>
+
+      <div class="alm-testi">
+
+        <div class="alm-qmark" aria-hidden="true"><svg viewBox="0 0 32 24" fill="currentColor"><path d="M0 24V14.4C0 6.72 4.48 1.92 13.44 0l1.92 3.36C10.56 4.56 8.16 7.2 7.68 11.52H14.4V24H0zm17.6 0V14.4C17.6 6.72 22.08 1.92 31.04 0l1.92 3.36c-4.8 1.2-7.2 3.84-7.68 8.16H32V24H17.6z"/></svg></div>
+
+        <div class="alm-testimonial">
+
+          <p>My journey from Dr. Mar Theophilus School to NIT Surat (Computer Science) has been a roller coaster of challenges, perseverance, and achievements. From overcoming the struggles of Classes 11 and 12 to clearing JEE, working with Surat Police, and securing a full-time offer from IDFC FIRST Bank, every experience has taught me something valuable.</p>
+
+          <p>Dr. Mar Theophilus School has been the foundation of my journey, shaping not just my academic abilities but also my values, discipline, and determination. The guidance of my teachers and the memories I made here will always remain an integral part of who I am today.</p>
+
+          <p>My message to all students is simple: Never lose sight of your dreams, stay committed to your purpose, and no matter how far you go, never forget where you started.</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- 11 — Aarush Prasad Khisti, 2023 Batch -->
+
+    <div class="alm-card coc-fade">
+
+      <div class="alm-photo"><img src="images/alumni11.png" alt="Aarush Prasad Khisti" loading="lazy"></div>
+
+      <div class="alm-header">
+
+        <div class="alm-name">Aarush Prasad Khisti</div>
+
+        <span class="alm-batch">2023 Batch</span>
+
+      </div>
+
+      <div class="alm-testi">
+
+        <div class="alm-qmark" aria-hidden="true"><svg viewBox="0 0 32 24" fill="currentColor"><path d="M0 24V14.4C0 6.72 4.48 1.92 13.44 0l1.92 3.36C10.56 4.56 8.16 7.2 7.68 11.52H14.4V24H0zm17.6 0V14.4C17.6 6.72 22.08 1.92 31.04 0l1.92 3.36c-4.8 1.2-7.2 3.84-7.68 8.16H32V24H17.6z"/></svg></div>
+
+        <div class="alm-testimonial">
+
+          <p>My time at Dr. Mar Theophilus School, Dhanori, Pune, has been one of the most defining phases of my life. Completing Class X with 93.6% and serving as the School Head Boy, along with being honoured with the prestigious <strong>Master Theophilian title (2022&#8211;23)</strong>, are memories I will always cherish. The school provided me with opportunities to develop leadership skills, academic discipline, and confidence.</p>
+
+          <p>I am currently in my second year of B.E. in Electronics and Instrumentation Engineering at <strong>BITS Pilani, K. K. Birla Goa Campus</strong>. I have a keen interest in technology, electronics, and system architecture, along with a love for chess and travelling. I remain grateful to Dr. Mar Theophilus School for giving me the platform to discover my potential and develop into the person I am today.</p>
 
         </div>
 
@@ -38393,38 +39154,91 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
 
 
-  <!-- Closing band -->
+  <!-- Leadership legacy moved from the Vision page -->
+  <div class="vmm-section hist-fade" style="margin-top:56px;">
 
-  <div class="hist-closing-band hist-fade">
+    <span class="vmm-label">Our Leadership Legacy</span>
 
-    <blockquote>"Aspirations are Possibilities" — the founding belief that continues to guide every student, educator and decision at Dr. Mar Theophilus School.</blockquote>
+    <h2 class="vmm-heading">The Visionaries Behind Our Institution</h2>
 
-    <cite>— Dr. Mar Theophilus School, Est. 2007</cite>
+    <svg class="vmm-squiggle" width="80" height="12" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <p class="vmm-subtext">The journey of Dr. Mar Theophilus School has been shaped by the vision, dedication and leadership of individuals who believed in the transformative power of education.</p>
+
+    <div class="vmm-leaders">
+
+      <!-- Patron -->
+      <div class="vmm-leader-card hist-fade">
+        <div class="vmm-photo-wrap" aria-hidden="true">
+          <div class="vmm-monogram">
+            <span class="vmm-initials">PMT</span>
+            <span class="vmm-photo-label">Photo</span>
+          </div>
+        </div>
+        <div class="vmm-leader-body">
+          <p class="vmm-role">Our Patron</p>
+          <h3 class="vmm-leader-name">Late H.G. Dr. Philipose Mar Theophilus</h3>
+          <p class="vmm-leader-desc">Late His Grace Dr. Philipose Mar Theophilus was a guiding inspiration behind the establishment of Dr. Mar Theophilus School. His vision of promoting quality education and nurturing young minds through knowledge, discipline and strong moral values laid the foundation for the institution. His belief in education as a means of empowerment continues to inspire the school&#8217;s philosophy and commitment to holistic development. The school carries forward his vision with the aim of shaping confident, responsible and compassionate individuals.</p>
+        </div>
+      </div>
+
+      <!-- Founder Director -->
+      <div class="vmm-leader-card hist-fade">
+        <div class="vmm-photo-wrap" aria-hidden="true">
+          <div class="vmm-monogram">
+            <span class="vmm-initials">CJS</span>
+            <span class="vmm-photo-label">Photo</span>
+          </div>
+        </div>
+        <div class="vmm-leader-body">
+          <p class="vmm-role">Our Founder Director</p>
+          <h3 class="vmm-leader-name">Late Dr. C. J. Samuel</h3>
+          <p class="vmm-leader-desc">Late Dr. C. J. Samuel played a significant role in translating the vision of the institution into reality. As the Founder Director, he provided dedicated leadership and guidance during the formative years of the school. His commitment to academic excellence, systematic administration and the overall development of students helped establish a strong foundation for the institution. His contribution remains an integral part of the school&#8217;s journey and legacy.</p>
+        </div>
+      </div>
+
+      <!-- President -->
+      <div class="vmm-leader-card hist-fade">
+        <div class="vmm-photo-wrap" aria-hidden="true">
+          <div class="vmm-monogram">
+            <span class="vmm-initials">GMC</span>
+            <span class="vmm-photo-label">Photo</span>
+          </div>
+        </div>
+        <div class="vmm-leader-body">
+          <p class="vmm-role">Our President</p>
+          <h3 class="vmm-leader-name">H.G. Geevarghese Mar Coorilos</h3>
+          <p class="vmm-leader-desc">His Grace Geevarghese Mar Coorilos, Metropolitan of the Diocese of Bombay, serves as the President of Dr. Mar Theophilus School. With a deep commitment to education and the development of young minds, His Grace continues to provide guidance and leadership to the institution. His encouragement and vision strengthen the school&#8217;s pursuit of academic excellence, value-based education and holistic development, inspiring the school community to uphold its founding ideals.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="vmm-closing hist-fade">
+      <p class="vmm-body">Today, Dr. Mar Theophilus School continues to move forward with the vision and ideals of its founders. With an unwavering commitment to academic excellence, holistic development and value-based education, the school strives to empower every learner to discover their potential, pursue their aspirations and contribute meaningfully to society.</p>
+      <p class="vmm-body">Rooted in its vision, inspired by its legacy and driven by the possibilities of tomorrow, Dr. Mar Theophilus School continues its journey towards excellence.</p>
+    </div>
 
   </div>
 
-
+  <!-- Closing band -->
+  <div class="hist-closing-band hist-fade">
+    <blockquote>"Aspirations are Possibilities" — the founding belief that continues to guide every student, educator and decision at Dr. Mar Theophilus School.</blockquote>
+    <cite>— Dr. Mar Theophilus School, Est. 2007</cite>
+  </div>
 
   <!-- Link strip -->
-
   <div class="hist-strip hist-fade">
-
     <a href="#spg-vision" class="hist-btn-outline">
-
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
-
       Vision, Mission &amp; Motto
-
     </a>
-
     <a href="#spg-contact" class="hist-btn-solid">
-
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-
       Contact Us
-
     </a>
-
   </div>
 
 
@@ -39075,139 +39889,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
 
 
-  <!-- ══════════════════════════════════════════
-
-       SECTION 1: THE VISIONARIES
-
-  ══════════════════════════════════════════ -->
-
-  <div class="vmm-section vmm-fade">
-
-    <span class="vmm-label">Our Leadership Legacy</span>
-
-    <h2 class="vmm-heading">The Visionaries Behind Our Institution</h2>
-
-    <svg class="vmm-squiggle" width="80" height="12" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-
-      <path d="M4,8 Q16,2 28,8 Q40,14 52,8 Q64,2 76,8" stroke="#E5C16A" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-    </svg>
-
-    <p class="vmm-subtext">The journey of Dr. Mar Theophilus School has been shaped by the vision, dedication and leadership of individuals who believed in the transformative power of education.</p>
-
-
-
-    <div class="vmm-leaders">
-
-
-
-      <!-- Patron -->
-
-      <div class="vmm-leader-card vmm-fade">
-
-        <div class="vmm-photo-wrap" aria-hidden="true">
-
-          <div class="vmm-monogram">
-
-            <span class="vmm-initials">PMT</span>
-
-            <span class="vmm-photo-label">Photo</span>
-
-          </div>
-
-        </div>
-
-        <div class="vmm-leader-body">
-
-          <p class="vmm-role">Our Patron</p>
-
-          <h3 class="vmm-leader-name">Late H.G. Dr. Philipose Mar Theophilus</h3>
-
-          <p class="vmm-leader-desc">Late His Grace Dr. Philipose Mar Theophilus was a guiding inspiration behind the establishment of Dr. Mar Theophilus School. His vision of promoting quality education and nurturing young minds through knowledge, discipline and strong moral values laid the foundation for the institution. His belief in education as a means of empowerment continues to inspire the school&#8217;s philosophy and commitment to holistic development. The school carries forward his vision with the aim of shaping confident, responsible and compassionate individuals.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- Founder Director -->
-
-      <div class="vmm-leader-card vmm-fade">
-
-        <div class="vmm-photo-wrap" aria-hidden="true">
-
-          <div class="vmm-monogram">
-
-            <span class="vmm-initials">CJS</span>
-
-            <span class="vmm-photo-label">Photo</span>
-
-          </div>
-
-        </div>
-
-        <div class="vmm-leader-body">
-
-          <p class="vmm-role">Our Founder Director</p>
-
-          <h3 class="vmm-leader-name">Late Dr. C. J. Samuel</h3>
-
-          <p class="vmm-leader-desc">Late Dr. C. J. Samuel played a significant role in translating the vision of the institution into reality. As the Founder Director, he provided dedicated leadership and guidance during the formative years of the school. His commitment to academic excellence, systematic administration and the overall development of students helped establish a strong foundation for the institution. His contribution remains an integral part of the school&#8217;s journey and legacy.</p>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- President -->
-
-      <div class="vmm-leader-card vmm-fade">
-
-        <div class="vmm-photo-wrap" aria-hidden="true">
-
-          <div class="vmm-monogram">
-
-            <span class="vmm-initials">GMC</span>
-
-            <span class="vmm-photo-label">Photo</span>
-
-          </div>
-
-        </div>
-
-        <div class="vmm-leader-body">
-
-          <p class="vmm-role">Our President</p>
-
-          <h3 class="vmm-leader-name">H.G. Geevarghese Mar Coorilos</h3>
-
-          <p class="vmm-leader-desc">His Grace Geevarghese Mar Coorilos, Metropolitan of the Diocese of Bombay, serves as the President of Dr. Mar Theophilus School. With a deep commitment to education and the development of young minds, His Grace continues to provide guidance and leadership to the institution. His encouragement and vision strengthen the school&#8217;s pursuit of academic excellence, value-based education and holistic development, inspiring the school community to uphold its founding ideals.</p>
-
-        </div>
-
-      </div>
-
-
-
-    </div><!-- /vmm-leaders -->
-
-
-
-    <div class="vmm-closing vmm-fade">
-
-      <p class="vmm-body">Today, Dr. Mar Theophilus School continues to move forward with the vision and ideals of its founders. With an unwavering commitment to academic excellence, holistic development and value-based education, the school strives to empower every learner to discover their potential, pursue their aspirations and contribute meaningfully to society.</p>
-
-      <p class="vmm-body">Rooted in its vision, inspired by its legacy and driven by the possibilities of tomorrow, Dr. Mar Theophilus School continues its journey towards excellence.</p>
-
-    </div>
-
-  </div><!-- /visionaries -->
-
-
-
-  <hr class="vmm-divider">
+  <!-- Leadership legacy moved to the bottom of the History page. -->
 
 
 
@@ -41813,7 +42495,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     /* ── SPG IDs for hash-based SPA routing ── */
 
-    var SPG_IDS = ['spg-conduct','spg-discipline','spg-timings','spg-curriculum','spg-subjects','spg-exams','spg-scholastics','spg-coscholastics','spg-achievements','spg-admissions','spg-prospectus','spg-magazine','spg-gallery','spg-alumni','spg-careers','spg-contact','spg-history','spg-vision','spg-management','spg-principal','spg-campus','spg-spaces'];
+    var SPG_IDS = ['spg-conduct','spg-discipline','spg-timings','spg-curriculum','spg-subjects','spg-exams','spg-scholastics','spg-coscholastics','spg-achievements','spg-admissions','spg-prospectus','spg-magazine','spg-gallery','spg-alumni','spg-careers','spg-contact','spg-history','spg-vision','spg-management','spg-principal','spg-campus','spg-spaces','spg-preprimary','spg-primary','spg-middle','spg-high'];
 
 
 
@@ -41841,13 +42523,13 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
       { group:'About Us',        title:'Campus & Infrastructure',     subtitle:'Facilities & learning spaces',        icon:'fa-building',       href:'#spg-campus' },
 
-      { group:'Programmes',      title:'Pre-Primary',                 subtitle:'Nursery · LKG · UKG',                icon:'fa-child',          href:'#school-journey' },
+      { group:'Programmes',      title:'Pre-Primary',                 subtitle:'Nursery · LKG · UKG',                icon:'fa-child',          href:'#spg-preprimary' },
 
-      { group:'Programmes',      title:'Primary School',              subtitle:'Std I to Std V',                     icon:'fa-book-open',      href:'#school-journey' },
+      { group:'Programmes',      title:'Primary School',              subtitle:'Std I to Std V',                     icon:'fa-book-open',      href:'#spg-primary' },
 
-      { group:'Programmes',      title:'Middle School',               subtitle:'Std VI to Std VIII',                 icon:'fa-school',         href:'#school-journey' },
+      { group:'Programmes',      title:'Middle School',               subtitle:'Std VI to Std VIII',                 icon:'fa-school',         href:'#spg-middle' },
 
-      { group:'Programmes',      title:'High School',                 subtitle:'Std IX & Std X',                     icon:'fa-graduation-cap', href:'#school-journey' },
+      { group:'Programmes',      title:'High School',                 subtitle:'Std IX & Std X',                     icon:'fa-graduation-cap', href:'#spg-high' },
 
       { group:'Academics',       title:'Curriculum',                  subtitle:'Academic curriculum & syllabus',      icon:'fa-scroll',         href:'#spg-curriculum' },
 
@@ -41886,11 +42568,11 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     var POPULAR = [
 
-      { label:'Pre-Primary',        icon:'fa-child',          href:'#school-journey' },
+      { label:'Pre-Primary',        icon:'fa-child',          href:'#spg-preprimary' },
 
-      { label:'Primary',            icon:'fa-book-open',      href:'#school-journey' },
+      { label:'Primary',            icon:'fa-book-open',      href:'#spg-primary' },
 
-      { label:'High School',        icon:'fa-graduation-cap', href:'#school-journey' },
+      { label:'High School',        icon:'fa-graduation-cap', href:'#spg-high' },
 
       { label:'Admissions',         icon:'fa-clipboard-list', href:'#spg-admissions' },
 
@@ -41919,6 +42601,8 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     bd.setAttribute('role', 'dialog');
 
     bd.setAttribute('aria-modal', 'true');
+
+    bd.setAttribute('aria-label', 'Site search');
 
     bd.hidden = true;
 
@@ -41967,6 +42651,10 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     var currentItems = [];  /* flat ordered list matching rendered buttons */
 
     var activeIdx = -1;
+
+    var previousFocus = null;
+
+    var previousOverflow = '';
 
 
 
@@ -42194,7 +42882,15 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     function open() {
 
+      if (!bd.hidden) return;
+
+      previousFocus = document.activeElement;
+
+      previousOverflow = document.body.style.overflow;
+
       bd.hidden = false;
+
+      toggle.setAttribute('aria-expanded', 'true');
 
       inp.value = '';
 
@@ -42208,11 +42904,17 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     function close() {
 
+      if (bd.hidden) return;
+
       bd.hidden = true;
 
-      document.body.style.overflow = '';
+      toggle.setAttribute('aria-expanded', 'false');
+
+      document.body.style.overflow = previousOverflow;
 
       activeIdx = -1;
+
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
 
     }
 
@@ -42300,9 +43002,18 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     document.addEventListener('keydown', function(e) {
 
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape' && !bd.hidden) close();
 
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); bd.hidden ? open() : close(); }
+
+      if (e.key === 'Tab' && !bd.hidden) {
+        var focusable = Array.prototype.slice.call(bd.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])'))
+          .filter(function(el) { return el.offsetParent !== null; });
+        if (!focusable.length) return;
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
 
     });
 
@@ -46927,6 +47638,12 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
     'spg-preprimary':    'Academics',
 
+    'spg-primary':       'Academics',
+
+    'spg-middle':        'Academics',
+
+    'spg-high':          'Academics',
+
     'spg-admissions':    'Admissions',
 
     'spg-prospectus':    'Admissions',
@@ -46947,11 +47664,11 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
   function setActiveNav(hash) {
 
-    var navLists = document.querySelectorAll('.nav-links');
+    var navLists = document.querySelectorAll('.nav-links, #mobileMenu');
 
     navLists.forEach(function(ul) {
 
-      ul.querySelectorAll('a').forEach(function(a) { a.classList.remove('active'); });
+      ul.querySelectorAll('a, .mob-dropdown-toggle').forEach(function(item) { item.classList.remove('active'); });
 
       var id = hash ? hash.replace('#','') : null;
 
@@ -46967,11 +47684,19 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
       } else {
 
-        ul.querySelectorAll('> li > a').forEach(function(a) {
+        /* Highlight the exact submenu link as well as its top-level section. */
+        var exactLink = ul.querySelector('a[href="#' + id + '"]');
+        if (exactLink) exactLink.classList.add('active');
 
-          if (a.textContent.trim() === label) a.classList.add('active');
-
-        });
+        if (ul.id === 'mobileMenu') {
+          ul.querySelectorAll('.mob-dropdown-toggle, .mobile-menu-scroll > a').forEach(function(item) {
+            if (item.textContent.trim() === label) item.classList.add('active');
+          });
+        } else {
+          ul.querySelectorAll(':scope > li > a').forEach(function(a) {
+            if (a.textContent.trim() === label) a.classList.add('active');
+          });
+        }
 
       }
 
@@ -49669,6 +50394,20 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 #admpop-card .admpop-window-toys { position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; overflow:visible; opacity:.72; }
 #admpop-card .admpop-title-l1 { color:var(--admpop-heading); }
 #admpop-card .admpop-title-l2 { color:var(--admpop-heading-accent); }
+#admpop-school-logo {
+  position:absolute;
+  top:12px;
+  left:12px;
+  z-index:25;
+  /* ADMISSION POPUP LOGO SIZE: increase both width and height below equally. */
+  width:96px;
+  height:96px;
+  padding:4px;
+  object-fit:contain;
+  border-radius:50%;
+  background:#fffdf8;
+  box-shadow:0 4px 14px rgba(16,47,89,.16);
+}
 /* Popup typography: Georgia for the main admission heading, Poppins for supporting copy. */
 #admpop-card .admpop-title,
 #admpop-card .admpop-title-l1,
@@ -49693,7 +50432,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 @media(prefers-reduced-motion:reduce) {
   #admpop-card .admpop-illu img, #admpop-card .admpop-star-motion { animation:none!important; }
 }
-@media(max-width:700px) { #admpop-card { max-width:420px; } #admpop-card .admpop-body { padding:30px 20px 20px; } #admpop-card .admpop-title { font-size:25px; margin-right:16px; } }
+@media(max-width:700px) { #admpop-card { max-width:420px; } #admpop-card .admpop-body { padding:68px 20px 20px; } #admpop-card .admpop-title { font-size:25px; margin-right:16px; } #admpop-school-logo { /* MOBILE POPUP LOGO SIZE: increase width and height equally. */ width:46px; height:46px; top:10px; left:12px; } }
 @media(max-width:700px) { #admpop-card .admpop-window-toys { opacity:.42; } }
 </style>
 
@@ -49702,6 +50441,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 <div id="admpop-backdrop" role="dialog" aria-modal="true" aria-labelledby="admpop-title" hidden>
 
   <div id="admpop-card">
+    <img id="admpop-school-logo" src="images/logo.png" alt="Dr. Mar Theophilus School logo" width="56" height="56" decoding="async">
     <!-- FULL-WINDOW TOY POSITIONS: edit translate(x y). Higher x moves right, higher y moves down. -->
     <svg class="admpop-window-toys" viewBox="0 0 740 400" preserveAspectRatio="none" aria-hidden="true">
       <!-- RIGHT-SIDE BLOCKS POSITION: translate(682 135) -->
@@ -49729,8 +50469,8 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 <!-- ELEMENT POSITIONS: edit the x/y values in translate(x y) below.
      Higher x moves an element right. Higher y moves it down. -->
 <svg class="admpop-doodles" viewBox="0 0 240 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-<!-- ROCKET POSITION: translate(41 65) -->
-<g transform="translate(41 65) rotate(26)" stroke="#526e85" stroke-width="2" stroke-linejoin="round"><path d="M0-27Q23-7 12 25H-12Q-23-7 0-27" fill="#fff"/><path d="M0-27L-11-9H11Z" fill="#ed9681"/><circle cy="3" r="7" fill="#9dd6e7"/><path d="M-7 27Q0 51 7 27" fill="#f6c65f" stroke="none"/></g>
+<!-- ROCKET POSITION: translate(41 105). Increase the first number to move right; increase the second number to move down. -->
+<g transform="translate(41 105) rotate(26)" stroke="#526e85" stroke-width="2" stroke-linejoin="round"><path d="M0-27Q23-7 12 25H-12Q-23-7 0-27" fill="#fff"/><path d="M0-27L-11-9H11Z" fill="#ed9681"/><circle cy="3" r="7" fill="#9dd6e7"/><path d="M-7 27Q0 51 7 27" fill="#f6c65f" stroke="none"/></g>
 <!-- DOTTED TRAIL: adjust the M and Q coordinates in this path -->
 <path d="M25 120Q4 153 32 173" fill="none" stroke="#83b5b1" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
 <!-- PENCIL POSITION: translate(12 208) -->
@@ -49810,19 +50550,15 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
   var SHOW_AFTER_MS = 1500;
 
-  var HIDE_AFTER    = '2026-11-24T23:59:59+05:30';
-
 
 
   /* ── GUARDS ─────────────────────────────────────────────── */
 
-  if (new Date() > new Date(HIDE_AFTER)) return;
-
-  /* Auto-open only after a browser refresh while the home page is active. */
-  var navEntry = window.performance && window.performance.getEntriesByType ? window.performance.getEntriesByType('navigation')[0] : null;
-  var isRefresh = navEntry ? navEntry.type === 'reload' : (window.performance && window.performance.navigation && window.performance.navigation.type === 1);
-  var isHomePage = !window.location.hash || window.location.hash === '#' || window.location.hash === '#home';
-  if (!isRefresh || !isHomePage) return;
+  /* Auto-open on the first homepage visit and on every homepage refresh. */
+  var routeId = decodeURIComponent(window.location.hash.slice(1));
+  var routeTarget = routeId ? document.getElementById(routeId) : null;
+  var isHomePage = !routeId || routeId === 'home' || !(routeTarget && routeTarget.classList.contains('sub-page-section'));
+  if (!isHomePage) return;
 
 
 
@@ -49985,11 +50721,11 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
      This component is fully scoped under #mts-achievers-root.
      ============================================================ -->
 <style id="mts-achievers-styles">
-  :root {
-    --maroon-deep: color-mix(in srgb, var(--color-primary) 55%, #000);
+  #mts-achievers-root {
+    --maroon-deep: color-mix(in srgb, var(--color-primary) 78%, var(--color-text));
     --maroon-glass: color-mix(in srgb, var(--color-primary) 78%, transparent);
-    --gold-light: color-mix(in srgb, var(--color-secondary) 60%, #fff);
-    --gold-dark: color-mix(in srgb, var(--color-secondary) 70%, #000);
+    --gold-light: color-mix(in srgb, var(--color-secondary) 60%, var(--color-bg-main));
+    --gold-dark: color-mix(in srgb, var(--color-secondary) 70%, var(--color-text));
   }
 
   body.mts-achievers-open { overflow: hidden; }
@@ -50002,7 +50738,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     --mts-gold-border: color-mix(in srgb, var(--color-secondary) 70%, transparent);
     --mts-gold-soft: color-mix(in srgb, var(--color-secondary) 24%, transparent);
     --mts-cream-glass: color-mix(in srgb, var(--color-bg-main) 13%, transparent);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
 
   #mts-achievers-root button,
@@ -50015,6 +50751,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     outline-offset: 4px;
   }
 
+  #mts-achievers-root[hidden],
   #mts-achievers-root [hidden] { display: none !important; }
 
   .mts-achievers-widget {
@@ -50053,7 +50790,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   }
 
   .mts-widget-label {
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: .77rem;
     font-weight: 800;
     letter-spacing: .13em;
@@ -50162,7 +50899,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: clamp(2rem, 6vw, 3.7rem);
     line-height: 1.03;
     letter-spacing: -.035em;
@@ -50213,120 +50950,6 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   }
 
   .mts-ornament::after { transform: scaleX(-1); }
-
-  .mts-drawer-tools {
-    display: grid;
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-
-  .mts-search-wrap { position: relative; }
-
-  .mts-search-icon {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    width: 20px;
-    height: 20px;
-    color: var(--color-secondary);
-    pointer-events: none;
-    transform: translateY(-50%);
-  }
-
-  .mts-search-input {
-    width: 100%;
-    height: 50px;
-    padding: 0 48px;
-    border: 1px solid var(--mts-gold-border);
-    border-radius: 18px;
-    outline: 0;
-    color: var(--color-bg-main);
-    background: var(--mts-cream-glass);
-  }
-
-  .mts-search-input::placeholder {
-    color: color-mix(in srgb, var(--color-bg-main) 70%, transparent);
-  }
-
-  .mts-search-input:focus {
-    border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cta) 30%, transparent);
-  }
-
-  .mts-search-clear {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    display: grid;
-    place-items: center;
-    width: 34px;
-    aspect-ratio: 1;
-    border: 0;
-    border-radius: 50%;
-    color: var(--color-bg-main);
-    background: transparent;
-    cursor: pointer;
-    transform: translateY(-50%);
-  }
-
-  .mts-filter-row {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 2px 2px 8px;
-    scrollbar-width: none;
-  }
-
-  .mts-filter-row::-webkit-scrollbar { display: none; }
-
-  .mts-filter-tab {
-    position: relative;
-    flex: 0 0 auto;
-    min-height: 38px;
-    padding: 8px 14px;
-    overflow: hidden;
-    border: 1px solid var(--mts-gold-border);
-    border-radius: 999px;
-    color: var(--color-bg-main);
-    background: var(--mts-cream-glass);
-    cursor: pointer;
-    isolation: isolate;
-    transition: color .2s ease, border-color .2s ease, transform .2s ease;
-  }
-
-  .mts-filter-tab::before {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    content: '';
-    background: var(--color-cta);
-    transform: scaleX(0);
-    transition: transform .22s cubic-bezier(.2,.8,.2,1);
-  }
-
-  .mts-filter-tab:hover { transform: translateY(-2px); }
-
-  .mts-filter-tab.is-active {
-    border-color: var(--color-cta);
-    color: var(--maroon-deep);
-    font-weight: 800;
-  }
-
-  .mts-filter-tab.is-active::before { transform: scaleX(1); }
-
-  .mts-result-count {
-    min-height: 24px;
-    margin: 0;
-    color: var(--gold-light);
-    font-size: .85rem;
-    font-weight: 700;
-    transition: opacity .16s ease, transform .16s ease;
-  }
-
-  .mts-result-count.is-updating {
-    opacity: 0;
-    transform: translateY(5px);
-  }
 
   .mts-results-region { min-height: 300px; }
 
@@ -50457,7 +51080,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     place-items: center;
     color: var(--color-secondary);
     background: var(--color-primary);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.8rem;
     font-weight: 800;
   }
@@ -50468,7 +51091,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     min-height: 54px;
     margin: 0;
     color: var(--color-primary);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: clamp(1.05rem, 3vw, 1.35rem);
     line-height: 1.2;
   }
@@ -50529,7 +51152,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
 
   .mts-progress-number {
     color: var(--color-primary);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.28rem;
     font-weight: 800;
   }
@@ -50556,7 +51179,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   .mts-joint-header h3 {
     margin: 0;
     color: var(--color-primary);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: clamp(1.3rem, 4vw, 1.8rem);
   }
 
@@ -50566,7 +51189,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     border-radius: 999px;
     color: var(--color-bg-main);
     background: var(--color-primary);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-weight: 800;
   }
 
@@ -50611,7 +51234,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     align-items: center;
     gap: 8px;
     color: var(--gold-dark);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.35rem;
     font-weight: 800;
   }
@@ -50638,7 +51261,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   .mts-empty-state h3 {
     margin: 15px 0 6px;
     color: var(--gold-light);
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.65rem;
   }
 
@@ -50702,6 +51325,280 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     .mts-widget-label { font-size: .68rem; }
   }
 
+  /* Compact achievers drawer: sized to keep the complete result set in view. */
+  .mts-achievers-drawer {
+    top: 50%;
+    right: 14px;
+    width: min(700px, calc(100% - 28px));
+    height: auto;
+    max-height: min(680px, calc(100dvh - 36px));
+    border: 1px solid var(--mts-gold-border);
+    border-radius: 24px;
+    transform: translate(110%, -50%);
+  }
+
+  .mts-drawer-shell.is-open .mts-achievers-drawer {
+    transform: translate(0, -50%);
+  }
+
+  .mts-drawer-scroll {
+    height: auto;
+    max-height: min(680px, calc(100dvh - 36px));
+    overflow: hidden;
+    padding: 12px 14px 14px;
+  }
+
+  .mts-drawer-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 14px;
+    padding: 0 0 6px;
+  }
+
+  .mts-drawer-title {
+    grid-column: 1;
+    font-size: clamp(1.3rem, 3.2vw, 1.8rem);
+    line-height: 1.08;
+    letter-spacing: -.02em;
+  }
+
+  .mts-drawer-subtitle {
+    grid-column: 1;
+    margin: 3px 0 0;
+    font-size: .78rem;
+  }
+
+  .mts-drawer-close {
+    position: static;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 36px;
+  }
+
+  .mts-ornament { display: none; }
+
+  .mts-results-region { min-height: 0; }
+
+  .mts-podium-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .mts-achiever-card {
+    border-radius: 17px;
+    box-shadow: 0 8px 22px var(--mts-maroon-shadow);
+  }
+
+  .mts-podium-card,
+  .mts-podium-card.mts-rank-1 {
+    height: 100%;
+    box-sizing: border-box;
+    min-height: 0;
+    padding: 7px 6px 8px;
+    transform: none;
+  }
+
+  .mts-podium-card.mts-rank-1 { order: 1; }
+  .mts-podium-card.mts-rank-2 { order: 2; }
+  .mts-podium-card.mts-rank-3 { order: 3; }
+
+  .mts-podium-card.mts-rank-1,
+  .mts-podium-card.mts-rank-2,
+  .mts-podium-card.mts-rank-3 {
+    background: linear-gradient(145deg, var(--gold-light), var(--color-bg-section));
+  }
+
+  .mts-rank-1 .mts-crown-badge,
+  .mts-rank-2 .mts-crown-badge,
+  .mts-rank-3 .mts-crown-badge {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background: var(--gold-light);
+  }
+
+  /* Uniform seven-student layout: every achiever uses the same card. */
+  .mts-all-students-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+  }
+
+  .mts-all-students-grid .mts-podium-card {
+    order: 0 !important;
+    height: 100%;
+    background: linear-gradient(145deg, var(--gold-light), var(--color-bg-section));
+  }
+
+  .mts-all-students-grid .mts-student-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .mts-all-students-grid .mts-rank-ribbon { white-space: nowrap; }
+
+  .mts-all-students-grid .mts-crown-badge {
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    background: var(--gold-light);
+  }
+
+  .mts-podium-card.mts-rank-1:hover,
+  .mts-achiever-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .mts-crown-badge {
+    top: 8px;
+    right: 8px;
+    width: 29px;
+  }
+
+  .mts-crown-badge svg { width: 18px; height: 18px; }
+
+  .mts-avatar-wrap {
+    width: 74px;
+    margin: 1px auto 6px;
+    padding: 3px;
+    box-shadow: 0 6px 14px var(--mts-maroon-shadow);
+  }
+
+  .mts-avatar-inner { border-width: 2px; }
+  .mts-initials-fallback { font-size: 1.35rem; }
+
+  .mts-student-name {
+    min-height: 36px;
+    font-size: .82rem;
+    line-height: 1.12;
+  }
+
+  .mts-rank-ribbon {
+    min-height: 21px;
+    margin-top: 3px;
+    padding: 3px 7px;
+    font-size: .54rem;
+    letter-spacing: .03em;
+  }
+
+  .mts-progress-wrap {
+    width: 52px;
+    margin: 4px auto 0;
+  }
+
+  .mts-progress-track,
+  .mts-progress-value { stroke-width: 8; }
+  .mts-progress-number { font-size: .66rem; }
+
+  .mts-joint-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .mts-joint-card { padding: 10px; }
+
+  .mts-joint-header {
+    gap: 8px;
+    padding-bottom: 7px;
+  }
+
+  .mts-joint-header h3 { font-size: 1rem; }
+
+  .mts-score-badge {
+    padding: 4px 8px;
+    font-size: .7rem;
+  }
+
+  .mts-joint-students {
+    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 5px;
+    padding-top: 8px;
+  }
+
+  .mts-joint-student .mts-avatar-wrap {
+    width: 68px;
+    margin: 0 auto 7px;
+  }
+
+  .mts-joint-student .mts-student-name {
+    min-height: 34px;
+    font-size: .8rem;
+  }
+
+  .mts-rank-chip {
+    margin-top: 4px;
+    padding: 3px 5px;
+    font-size: .53rem;
+  }
+
+  .mts-joint-divider {
+    flex-direction: column;
+    align-self: stretch;
+    gap: 4px;
+    font-size: .85rem;
+  }
+
+  .mts-joint-divider::before,
+  .mts-joint-divider::after {
+    width: 1px;
+    height: auto;
+  }
+
+  @media (max-width: 620px) {
+    .mts-achievers-drawer {
+      right: 6px;
+      width: calc(100% - 12px);
+      max-height: calc(100dvh - 12px);
+      border-radius: 18px;
+    }
+
+    .mts-drawer-scroll {
+      max-height: calc(100dvh - 12px);
+      padding: 12px 10px;
+    }
+
+    .mts-drawer-header { padding-bottom: 8px; }
+    .mts-drawer-title { font-size: 1.32rem; }
+    .mts-drawer-subtitle { font-size: .68rem; }
+    .mts-drawer-close { width: 32px; }
+
+    .mts-podium-grid, .mts-joint-list { gap: 6px; }
+    .mts-all-students-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mts-podium-card, .mts-podium-card.mts-rank-1 { padding: 8px 4px; }
+    .mts-crown-badge { top: 5px; right: 5px; width: 23px; }
+    .mts-crown-badge svg { width: 14px; height: 14px; }
+    .mts-avatar-wrap { width: 60px; margin-bottom: 6px; }
+    .mts-student-name { min-height: 33px; font-size: .7rem; }
+    .mts-rank-ribbon { padding: 3px 5px; font-size: .48rem; }
+    .mts-progress-wrap { width: 48px; margin-top: 4px; }
+    .mts-progress-number { font-size: .6rem; }
+    .mts-joint-list { margin-top: 6px; }
+    .mts-joint-card { padding: 7px 5px; }
+    .mts-joint-header { padding-bottom: 5px; }
+    .mts-joint-header h3 { font-size: .77rem; }
+    .mts-score-badge { padding: 3px 5px; font-size: .58rem; }
+    .mts-joint-students { grid-template-columns: 1fr; gap: 3px; padding-top: 5px; }
+    .mts-joint-student { grid-template-columns: 36px minmax(0, 1fr); align-items: center; column-gap: 5px; text-align: left; }
+    .mts-joint-student .mts-avatar-wrap { grid-row: 1 / span 2; width: 42px; margin: 0; }
+    .mts-joint-student .mts-student-name { min-height: 0; font-size: .62rem; }
+    .mts-rank-chip { justify-self: start; margin-top: 1px; padding: 2px 4px; font-size: .43rem; }
+    .mts-joint-divider { flex-direction: row; align-self: auto; font-size: .6rem; }
+    .mts-joint-divider::before, .mts-joint-divider::after { width: auto; height: 1px; }
+  }
+
+  @media (max-height: 660px) and (min-width: 621px) {
+    .mts-drawer-header { padding-bottom: 7px; }
+    .mts-avatar-wrap { width: 66px; }
+    .mts-progress-wrap { width: 47px; }
+    .mts-joint-student .mts-avatar-wrap { width: 46px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     #mts-achievers-root *,
     #mts-achievers-root *::before,
@@ -50714,7 +51611,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   }
 </style>
 
-<div id="mts-achievers-root">
+<div id="mts-achievers-root" hidden>
   <!-- FLOATING WIDGET -->
   <button
     id="mts-achievers-widget"
@@ -50735,7 +51632,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   </button>
 
   <!-- GLASSMORPHISM DRAWER -->
-  <div id="mts-drawer-shell" class="mts-drawer-shell">
+  <div id="mts-drawer-shell" class="mts-drawer-shell" aria-hidden="true">
     <button id="mts-drawer-backdrop" class="mts-drawer-backdrop" type="button" aria-label="Close achievers drawer" tabindex="-1"></button>
 
     <aside
@@ -50768,32 +51665,6 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
           </div>
         </header>
 
-        <section class="mts-drawer-tools" aria-label="Search and filter achievers">
-          <div class="mts-search-wrap">
-            <svg class="mts-search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="2"/>
-              <path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <label class="sr-only" for="mts-achiever-search">Search achievers by name</label>
-            <input id="mts-achiever-search" class="mts-search-input" type="search" placeholder="Search achievers by name..." autocomplete="off">
-            <button id="mts-search-clear" class="mts-search-clear" type="button" aria-label="Clear search" hidden>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-                <path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-
-          <div id="mts-filter-tabs" class="mts-filter-row" role="tablist" aria-label="Filter achievers">
-            <button class="mts-filter-tab is-active" type="button" role="tab" aria-selected="true" data-mts-filter="all">All</button>
-            <button class="mts-filter-tab" type="button" role="tab" aria-selected="false" data-mts-filter="top3">Top 3</button>
-            <button class="mts-filter-tab" type="button" role="tab" aria-selected="false" data-mts-filter="joint">Joint Ranks</button>
-            <button class="mts-filter-tab" type="button" role="tab" aria-selected="false" data-mts-filter="96">96%+</button>
-            <button class="mts-filter-tab" type="button" role="tab" aria-selected="false" data-mts-filter="97">97%+</button>
-          </div>
-
-          <p id="mts-result-count" class="mts-result-count" role="status" aria-live="polite">Showing 7 students</p>
-        </section>
-
         <section id="mts-achiever-results" class="mts-results-region" aria-label="Achiever results"></section>
       </div>
     </aside>
@@ -50809,13 +51680,13 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
      Update these seven paths to replace the student photographs.
      ========================================================== */
   var PHOTO_PATHS = Object.freeze({
-    anvay: 'images/anvay-ashtekar.jpg',
-    shantanu: 'images/shantanu-shinde.jpg',
-    namish: 'images/namish-kamble.jpg',
-    priya: 'images/priya-mourya.jpg',
-    aarohi: 'images/aarohi-sule.jpg',
-    arnav: 'images/arnav-dessai.jpg',
-    aarav: 'images/aarav-dhande.jpg'
+    anvay: 'images/anvay.png',
+    shantanu: 'images/shantanu.png',
+    namish: 'images/namish.png',
+    priya: 'images/priya.png',
+    aarohi: 'images/aarohi.png',
+    arnav: 'images/arnav.png',
+    aarav: 'images/aarav.png'
   });
 
   /* DATA */
@@ -50836,14 +51707,9 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   var closeButton = document.getElementById('mts-drawer-close');
   var backdrop = document.getElementById('mts-drawer-backdrop');
   var results = document.getElementById('mts-achiever-results');
-  var searchInput = document.getElementById('mts-achiever-search');
-  var searchClear = document.getElementById('mts-search-clear');
-  var resultCount = document.getElementById('mts-result-count');
-  var filterTabs = document.getElementById('mts-filter-tabs');
   var canvas = document.getElementById('mts-sparkle-canvas');
   var canvasContext = canvas.getContext('2d');
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var activeFilter = 'all';
   var lastFocusedElement = null;
   var drawerOpen = false;
   var sparkleFrame = 0;
@@ -50860,25 +51726,25 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   function photoMarkup(student) {
     switch (student.id) {
       case 'anvay':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Anvay Aniruddha Ashtekar → change the src below to your image path (e.g., images/anvay.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Anvay Aniruddha Ashtekar → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.anvay + '" alt="Photo of Anvay Aniruddha Ashtekar" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'shantanu':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Shantanu Santosh Shinde → change the src below to your image path (e.g., images/shantanu.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Shantanu Santosh Shinde → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.shantanu + '" alt="Photo of Shantanu Santosh Shinde" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'namish':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Namish Mahesh Kamble → change the src below to your image path (e.g., images/namish.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Namish Mahesh Kamble → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.namish + '" alt="Photo of Namish Mahesh Kamble" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'priya':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Priya Kevalaprasad Mourya → change the src below to your image path (e.g., images/priya.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Priya Kevalaprasad Mourya → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.priya + '" alt="Photo of Priya Kevalaprasad Mourya" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'aarohi':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Aarohi Kalpak Sule → change the src below to your image path (e.g., images/aarohi.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Aarohi Kalpak Sule → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.aarohi + '" alt="Photo of Aarohi Kalpak Sule" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'arnav':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Arnav Viraj Dessai → change the src below to your image path (e.g., images/arnav.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Arnav Viraj Dessai → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.arnav + '" alt="Photo of Arnav Viraj Dessai" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       case 'aarav':
-        return '<!-- ADD/REPLACE STUDENT PHOTO: Aarav Amit Dhande → change the src below to your image path (e.g., images/aarav.jpg), or delete this <img> to show the initials fallback -->' +
+        return '<!-- ADD/REPLACE STUDENT PHOTO: Aarav Amit Dhande → change the src below to your image path, or delete this <img> -->' +
           '<img src="' + PHOTO_PATHS.aarav + '" alt="Photo of Aarav Amit Dhande" class="mts-student-photo" loading="lazy" onerror="this.hidden=true">';
       default:
         return '';
@@ -50949,58 +51815,17 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     ].join('');
   }
 
-  function matchesFilter(student) {
-    if (activeFilter === 'top3') return student.rank <= 3;
-    if (activeFilter === 'joint') return student.joint;
-    if (activeFilter === '96') return student.score >= 96;
-    if (activeFilter === '97') return student.score >= 97;
-    return true;
-  }
-
-  function filteredStudents() {
-    var query = searchInput.value.trim().toLocaleLowerCase();
-    return ACHIEVERS.filter(function (student) {
-      return student.name.toLocaleLowerCase().indexOf(query) !== -1 && matchesFilter(student);
-    });
-  }
-
-  function updateCount(count) {
-    resultCount.classList.add('is-updating');
-    window.setTimeout(function () {
-      resultCount.textContent = 'Showing ' + count + ' ' + (count === 1 ? 'student' : 'students');
-      resultCount.classList.remove('is-updating');
-    }, reducedMotion.matches ? 0 : 120);
-  }
-
   function renderAchievers() {
-    var filtered = filteredStudents();
-    var topThree = filtered.filter(function (student) { return student.rank <= 3; });
-    var jointStudents = filtered.filter(function (student) { return student.joint; });
-    var jointGroups = [4, 5].map(function (rank) {
-      return {
-        rank: rank,
-        students: jointStudents.filter(function (student) { return student.rank === rank; })
-      };
-    }).filter(function (group) { return group.students.length; });
+    var filtered = ACHIEVERS.slice();
 
     if (!filtered.length) {
       results.innerHTML = emptyStateMarkup();
-      updateCount(0);
       return;
     }
 
-    var podiumMarkup = topThree.length
-      ? '<div class="mts-podium-grid">' + topThree.map(podiumCardMarkup).join('') + '</div>'
-      : '';
-
-    var jointMarkup = jointGroups.length
-      ? '<div class="mts-joint-list">' + jointGroups.map(function (group, index) {
-          return jointCardMarkup(group.rank, group.students, index);
-        }).join('') + '</div>'
-      : '';
-
-    results.innerHTML = podiumMarkup + jointMarkup;
-    updateCount(filtered.length);
+    results.innerHTML = '<div class="mts-podium-grid mts-all-students-grid">' +
+      filtered.map(podiumCardMarkup).join('') +
+      '</div>';
     if (drawerOpen) requestAnimationFrame(animateProgressRings);
   }
 
@@ -51049,7 +51874,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     if (reducedMotion.matches) return;
     resizeCanvas();
 
-    var styles = getComputedStyle(document.documentElement);
+    var styles = getComputedStyle(root);
     var colors = [
       styles.getPropertyValue('--color-secondary').trim(),
       styles.getPropertyValue('--gold-light').trim(),
@@ -51120,11 +51945,12 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   }
 
   function openDrawer() {
-    if (drawerOpen) return;
+    if (drawerOpen || root.hidden) return;
     drawerOpen = true;
     lastFocusedElement = document.activeElement;
     document.body.classList.add('mts-achievers-open');
     shell.classList.add('is-open');
+    shell.setAttribute('aria-hidden', 'false');
     widget.setAttribute('aria-expanded', 'true');
     requestAnimationFrame(function () {
       closeButton.focus();
@@ -51133,14 +51959,29 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     });
   }
 
-  function closeDrawer() {
+  function closeDrawer(restoreFocus) {
     if (!drawerOpen) return;
     drawerOpen = false;
     shell.classList.remove('is-open');
+    shell.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('mts-achievers-open');
     widget.setAttribute('aria-expanded', 'false');
     cancelAnimationFrame(sparkleFrame);
-    if (lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
+    if (restoreFocus !== false && lastFocusedElement && lastFocusedElement.focus) lastFocusedElement.focus();
+  }
+
+  /* Keep the entire achievers experience on the homepage only. */
+  function isHomePageActive() {
+    var routeId = decodeURIComponent(window.location.hash.slice(1));
+    if (!routeId || routeId === 'home') return true;
+    var routeTarget = document.getElementById(routeId);
+    return !(routeTarget && routeTarget.classList.contains('sub-page-section'));
+  }
+
+  function syncHomepageVisibility() {
+    var isHome = isHomePageActive();
+    if (!isHome && drawerOpen) closeDrawer(false);
+    root.hidden = !isHome;
   }
 
   widget.addEventListener('click', openDrawer);
@@ -51155,33 +51996,12 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
     trapFocus(event);
   });
 
-  searchInput.addEventListener('input', function () {
-    searchClear.hidden = !searchInput.value;
-    renderAchievers();
-  });
-
-  searchClear.addEventListener('click', function () {
-    searchInput.value = '';
-    searchClear.hidden = true;
-    searchInput.focus();
-    renderAchievers();
-  });
-
-  filterTabs.addEventListener('click', function (event) {
-    var button = event.target.closest('[data-mts-filter]');
-    if (!button) return;
-    activeFilter = button.dataset.mtsFilter;
-    filterTabs.querySelectorAll('[data-mts-filter]').forEach(function (tab) {
-      var active = tab === button;
-      tab.classList.toggle('is-active', active);
-      tab.setAttribute('aria-selected', String(active));
-    });
-    renderAchievers();
-  });
-
   window.addEventListener('resize', function () {
     if (drawerOpen) resizeCanvas();
   });
+
+  window.addEventListener('hashchange', syncHomepageVisibility);
+  window.addEventListener('popstate', syncHomepageVisibility);
 
   if (reducedMotion.addEventListener) {
     reducedMotion.addEventListener('change', function () {
@@ -51190,6 +52010,7 @@ details.coc-details[open] > summary.coc-summary .coc-chevron { transform: rotate
   }
 
   renderAchievers();
+  syncHomepageVisibility();
 }());
 </script>
 
