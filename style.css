@@ -1,5 +1,11 @@
 /* Existing style blocks in original source order. Shared across all pages. */
 
+/* Google Translate widget chrome; keep the existing school layout in place. */
+.goog-te-banner-frame, iframe.skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+.goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+body { top: 0 !important; }
+#google_translate_element { display: block !important; position: absolute !important; left: -9999px !important; top: 0 !important; }
+
 /* <style data-inlined-source="style.css"> (original line 77) */
 
 
