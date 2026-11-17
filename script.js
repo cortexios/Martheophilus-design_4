@@ -124,25 +124,59 @@ function initNoticeMarquee() {
 
 
 
-  // This scrolling notice bar should only ever show on the home page
-
-  // (index.html). On every other page, remove it from the header entirely.
-
-  const isHomePage = SCHOOL_PAGE !== "home" || normalizePagePath(window.location.pathname) === "index";
-
-  if (!isHomePage) {
-
-    bar.remove();
-
-    return;
-
-  }
-
-
-
   if (bar.dataset.bound) return;
 
   bar.dataset.bound = "true";
+
+  const viewport = bar.querySelector(".notice-marquee-viewport");
+  const track = bar.querySelector(".notice-marquee-track");
+  const messages = [
+    "Admissions Open for 2027–28",
+    "Annual Day – Pre-Primary: 9 December 2026",
+    "Annual Day – Primary: 10 December 2026",
+    "Annual Day – Secondary: 11 December 2026"
+  ];
+
+  if (viewport && track) {
+
+    const group = document.createElement("div");
+
+    group.className = "notice-marquee-group";
+    track.replaceChildren(group);
+
+    let noticeCount = 0;
+
+    const appendNotice = (message) => {
+
+      const item = document.createElement("span");
+      const separator = document.createElement("span");
+
+      item.className = "notice-marquee-item";
+      item.textContent = message;
+      if (noticeCount > 0) item.setAttribute("aria-hidden", "true");
+
+      separator.className = "notice-marquee-sep";
+      separator.setAttribute("aria-hidden", "true");
+      separator.textContent = "•";
+
+      group.append(item, separator);
+      noticeCount += 1;
+
+    };
+
+    const appendNoticeSet = () => messages.forEach(appendNotice);
+
+    appendNoticeSet();
+
+    // Keep each half wider than the viewport so the next copy is always
+    // visible before the first half completes its animation cycle.
+    while (group.scrollWidth < viewport.clientWidth * 2) appendNoticeSet();
+
+    const duplicate = group.cloneNode(true);
+    duplicate.setAttribute("aria-hidden", "true");
+    track.append(duplicate);
+
+  }
 
 
 
@@ -293,7 +327,10 @@ function updateNav() {
 
     navbarEl.classList.toggle("scrolled", window.scrollY >= headerH);
 
-    navbarEl.classList.toggle("sticky", window.scrollY > 10);
+    // Preserve the established desktop threshold while handling the
+    // header and navbar in this single passive scroll listener.
+    navbarEl.classList.toggle("sticky", window.scrollY > 120);
+    headerTopEl.classList.toggle("hide", window.scrollY > 120);
 
   } else {
 
@@ -319,11 +356,25 @@ function updateNav() {
 
 
 
-window.addEventListener("scroll", updateNav, { passive: true });
+let navUpdateFrame = 0;
+let navLayoutPending = false;
 
-window.addEventListener("resize", () => { setupDesktopLayout(); updateNav(); }, { passive: true });
+function scheduleNavUpdate(includeLayout) {
+  navLayoutPending = navLayoutPending || !!includeLayout;
+  if (navUpdateFrame) return;
+  navUpdateFrame = requestAnimationFrame(() => {
+    navUpdateFrame = 0;
+    if (navLayoutPending) setupDesktopLayout();
+    navLayoutPending = false;
+    updateNav();
+  });
+}
 
-requestAnimationFrame(() => { setupDesktopLayout(); updateNav(); });
+window.addEventListener("scroll", () => scheduleNavUpdate(false), { passive: true });
+
+window.addEventListener("resize", () => scheduleNavUpdate(true), { passive: true });
+
+scheduleNavUpdate(true);
 
 
 
@@ -1022,158 +1073,9 @@ function prevSlide() {
 
 document.addEventListener("DOMContentLoaded",()=>{if(window.AOS)AOS.init({duration:900,once:true,offset:40});initDesktopDropdowns();initMobileMenu();initAlumniModal();setActiveNav();initNoticeMarquee();});
 
-const nav=document.querySelector(".nav-container"),topHeader=document.querySelector(".header-top");window.addEventListener("scroll",()=>{if(innerWidth>1200){nav.classList.toggle("sticky",scrollY>120);topHeader.classList.toggle("hide",scrollY>120);}});document.querySelectorAll(".arrow-full").forEach(a=>a.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();a.click();}}));let touchStart=0;const hero=document.querySelector(".hero-full");if(hero){hero.addEventListener("touchstart",e=>touchStart=e.changedTouches[0].clientX,{passive:true});hero.addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-touchStart;if(Math.abs(d)>60)d>0?prevSlide():nextSlide();},{passive:true});}
+document.querySelectorAll(".arrow-full").forEach(a=>a.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();a.click();}}));let touchStart=0;const hero=document.querySelector(".hero-full");if(hero){hero.addEventListener("touchstart",e=>touchStart=e.changedTouches[0].clientX,{passive:true});hero.addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-touchStart;if(Math.abs(d)>60)d>0?prevSlide():nextSlide();},{passive:true});}
 
 
-
-/* <script data-inlined-source="journey.js"> (original line 23662) */
-if (SCHOOL_PAGE === "home") {
-
-
-(() => {
-
-  const root = document.querySelector('.journey');
-
-  const result = document.querySelector('#journey-result');
-
-  if (!root || !result) return;
-
-
-
-  const stages = {
-
-    'Pre-Primary': { years: 'Nursery, LKG & UKG', title: 'Pre-Primary', text: 'A warm start where play, language, movement and discovery build confidence for every new school day.' },
-
-    Primary: { years: 'Classes 1 to 4', title: 'Primary School', text: 'Strong foundations in literacy, numeracy, science and creative learning, with care for each child’s growing confidence.' },
-
-    Middle: { years: 'Classes 5 to 7', title: 'Middle School', text: 'A time to deepen curiosity, discover strengths and build study habits through academics, activities and collaboration.' },
-
-    High: { years: 'Classes 8 to 10', title: 'High School', text: 'Focused academic preparation, independent thinking and guidance for confident progression into the next stage.' }
-
-  };
-
-  let grade = localStorage.getItem('stmarysJourneyGrade') || 'Pre-Primary';
-
-  const interests = new Set(JSON.parse(localStorage.getItem('stmarysJourneyInterests') || '[]'));
-
-  const gradeButtons = [...root.querySelectorAll('[data-grade]')];
-
-  const interestButtons = [...root.querySelectorAll('.journey-interests .journey-choice')];
-
-  function sync() {
-
-    gradeButtons.forEach(button => {
-
-      const selected = button.dataset.grade === grade;
-
-      button.classList.toggle('is-selected', selected);
-
-      button.setAttribute('aria-pressed', String(selected));
-
-    });
-
-    interestButtons.forEach(button => {
-
-      const selected = interests.has(button.textContent.trim());
-
-      button.classList.toggle('is-selected', selected);
-
-      button.setAttribute('aria-pressed', String(selected));
-
-    });
-
-  }
-
-  gradeButtons.forEach(button => button.addEventListener('click', () => {
-
-    grade = button.dataset.grade;
-
-    localStorage.setItem('stmarysJourneyGrade', grade);
-
-    root.querySelector('#journey-error').hidden = true;
-
-    sync();
-
-  }));
-
-  interestButtons.forEach(button => button.addEventListener('click', () => {
-
-    const interest = button.textContent.trim();
-
-    interests.has(interest) ? interests.delete(interest) : interests.add(interest);
-
-    localStorage.setItem('stmarysJourneyInterests', JSON.stringify([...interests]));
-
-    sync();
-
-  }));
-
-  root.querySelector('#journey-form').addEventListener('submit', event => {
-
-    event.preventDefault();
-
-    if (!grade) { root.querySelector('#journey-error').hidden = false; return; }
-
-    const child = 'Your child';
-
-    const stage = stages[grade];
-
-    const selectedInterests = [...interests];
-
-    const interestText = selectedInterests.length ? `Interests: ${selectedInterests.join(', ')}` : 'Interests can be added anytime.';
-
-    result.dataset.grade = grade;
-
-    result.innerHTML = `<div class="journey-plan-top"><span>Their plan</span><h2>${child}'s journey</h2><button type="button" class="journey-restart">Start over</button></div><div class="journey-plan-grid"><article class="journey-plan-card"><small>${stage.years}</small><h3>${stage.title}</h3><p>${stage.text}</p><p class="journey-plan-interest">${interestText}</p></article><article class="journey-plan-card"><h3>Next steps</h3><ul><li>Explore the learning experiences they will enjoy</li><li>Book a campus visit</li><li>Start the admission process</li><li>Share this plan with family</li></ul></article></div>`;
-
-    result.hidden = false;
-
-    const stageBgs={'Pre-Primary':'images/journey-preprimary-bg.png','Primary':'images/journey-primary-bg.png','Middle':'images/journey-middle-bg.png','High':'images/journey-high-bg.png'};
-
-    if(stageBgs[grade]){result.style.backgroundImage='url('+stageBgs[grade]+')';result.style.backgroundSize='cover';result.style.backgroundPosition='center';}
-
-    result.querySelector('.journey-restart').addEventListener('click', () => {
-
-      result.hidden = true;
-
-      root.querySelector('#journey-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    });
-
-    result.focus();
-
-    result.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-
-  });
-
-  root.addEventListener('pointermove', event => {
-
-    const bounds = root.getBoundingClientRect();
-
-    root.style.setProperty('--mx', `${event.clientX - bounds.left}px`);
-
-    root.style.setProperty('--my', `${event.clientY - bounds.top}px`);
-
-  });
-
-  root.querySelector('.journey-browse').addEventListener('click', event => {
-
-    event.preventDefault();
-
-    document.querySelector('#main').scrollIntoView({ behavior: 'smooth' });
-
-  });
-
-  sync();
-
-})();
-
-
-
-
-
-
-}
 
 /* <script data-inlined-source="school-road.js"> (original line 23806) */
 if (SCHOOL_PAGE === "home") {
@@ -1223,7 +1125,7 @@ if (SCHOOL_PAGE === "home") {
 
     const photos = [[galleryPhotos[0],'School campus'],[galleryPhotos[1],'School gathering'],[galleryPhotos[2],'School community']];
 
-    row.innerHTML=`<article class="school-road-card${stageArt[stage] ? ' has-grade-art' : ''}">${stageArt[stage] ? `<div class="school-road-art"><img src="${stageArt[stage]}" alt="${stage} learning activities"></div>` : ''}<span class="school-road-start" hidden>Starts here</span><div class="school-road-gallery" role="region" aria-label="${stage} school photographs"><div class="school-road-slides">${[...photos,photos[0]].map(([src,alt])=>`<img src="${src}" alt="${alt}" loading="lazy" draggable="false">`).join('')}</div><button type="button" class="school-road-arrow prev" aria-label="Previous ${stage} photograph">&#8249;</button><button type="button" class="school-road-arrow next" aria-label="Next ${stage} photograph">&#8250;</button></div><div class="school-road-card-content"><small>${range}</small><h3>${stage}</h3><p>${description}</p><button type="button" class="school-road-explore" data-stage="${stage}" aria-label="Explore ${stage} plan">Explore &rarr;</button></div></article><span class="school-road-number" aria-hidden="true">${i+1}</span>`;
+    row.innerHTML=`<article class="school-road-card${stageArt[stage] ? ' has-grade-art' : ''}">${stageArt[stage] ? `<div class="school-road-art"><img src="${stageArt[stage]}" alt="${stage} learning activities"></div>` : ''}<div class="school-road-gallery" role="region" aria-label="${stage} school photographs"><div class="school-road-slides">${[...photos,photos[0]].map(([src,alt])=>`<img src="${src}" alt="${alt}" loading="lazy" draggable="false">`).join('')}</div><button type="button" class="school-road-arrow prev" aria-label="Previous ${stage} photograph">&#8249;</button><button type="button" class="school-road-arrow next" aria-label="Next ${stage} photograph">&#8250;</button></div><div class="school-road-card-content"><small>${range}</small><h3>${stage}</h3><p>${description}</p><button type="button" class="school-road-explore" data-stage="${stage}" aria-label="Explore ${stage}">Explore &rarr;</button></div></article><span class="school-road-number" aria-hidden="true">${i+1}</span>`;
 
     host.append(row);
 
@@ -1337,10 +1239,6 @@ if (SCHOOL_PAGE === "home") {
   window.addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update)}},{passive:true});new ResizeObserver(()=>{geometry();decorateRoad()}).observe(body);geometry();decorateRoad();
   body.querySelectorAll('img').forEach(img=>img.addEventListener('load',decorateRoad,{once:true}));
 
-  const markStart=()=>{let selected;try{selected=localStorage.getItem('stmarysJourneyGrade')}catch{}rows.forEach(row=>row.querySelector('.school-road-start').hidden=row.dataset.stage!==selected)};
-
-  document.querySelector('#journey-form')?.addEventListener('submit',markStart);
-
 })();
 
 
@@ -1389,32 +1287,6 @@ document.addEventListener('click', function(e) {
 
   if (stage === 'High') { window.location.href = 'high.html'; return; }
 
-  // Select the matching grade button in the journey form
-
-  var gradeBtn = document.querySelector('[data-grade="' + stage + '"]');
-
-  if (gradeBtn) gradeBtn.click();
-
-  // Submit the journey form
-
-  var form = document.getElementById('journey-form');
-
-  if (form) form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
-
-  // Scroll to the result
-
-  setTimeout(function() {
-
-    var result = document.getElementById('journey-result');
-
-    if (result && !result.hidden) {
-
-      result.scrollIntoView({behavior: 'smooth', block: 'start'});
-
-    }
-
-  }, 150);
-
 });
 
 
@@ -1440,8 +1312,8 @@ if (SCHOOL_PAGE === "home") {
 
     (founderSection||spacesSection).insertAdjacentElement('afterend',eventsSection);
 
-    // Every dated 2027 Pre-Primary planner item. The PDF leaves Pre-Board I/II,
-    // Geography Awareness Week and Annual Day without dates, so those cannot be marked.
+    // Every dated planner item. Pre-Board I/II and Geography Awareness Week
+    // remain unmarked because their source dates are not available.
     const prePrimaryEvents=[
       ['2027-01-04','Reopening','academics'],['2027-01-15','Makar Sankranti','holiday'],['2027-01-26','Republic Day','holiday'],['2027-02-08','Term III Examination','academics','2027-02-12'],['2027-02-15','Term III Examination','academics','2027-02-20'],
       ['2027-03-04','Holi','holiday'],['2027-03-19','Gudi Padwa','holiday'],['2027-03-21','Id-ul-Fitr','holiday'],['2027-03-21','World Poetry Day','special'],['2027-03-23','Reopening (LKG - X)','academics'],['2027-03-23','Shaheed Diwas','special'],['2027-03-26','Ram Navami','holiday'],['2027-03-27','World Theatre Day','special'],['2027-03-30','First Day (Nursery)','academics'],['2027-03-31','Mahavir Jayanti','holiday'],
@@ -1492,7 +1364,7 @@ if (SCHOOL_PAGE === "home") {
     const inVisibleMonth=item=>{const monthStart=keyForDate(calendarYear,calendarMonth,1),monthEnd=keyForDate(calendarYear,calendarMonth+1,0);return item.date<=monthEnd&&item.end>=monthStart;};
     const formatDate=date=>new Intl.DateTimeFormat('en',{month:'short',day:'numeric'}).format(new Date(`${date}T00:00:00`));
     const sectionLabel=section=>({preprimary:'Pre-Primary',primary:'Primary',secondary:'Secondary'})[section]||'Pre-Primary';
-    const renderEvents=()=>{let visible=events.filter(item=>selectedEventDate?occursOn(item,selectedEventDate):inVisibleMonth(item));if(activeEventFilter!=='all')visible=visible.filter(item=>item.type===activeEventFilter);visible.sort((a,b)=>a.date.localeCompare(b.date));listTitle.textContent=selectedEventDate?`Events on ${formatDate(selectedEventDate)}`:`Events in ${new Intl.DateTimeFormat('en',{month:'long'}).format(new Date(calendarYear,calendarMonth))}`;listItems.innerHTML=visible.length?visible.map(item=>{const date=new Date(`${item.date}T00:00:00`),month=new Intl.DateTimeFormat('en',{month:'short'}).format(date).toUpperCase(),end=item.end!==item.date?` - ${formatDate(item.end)}`:'',typeLabel=item.type==='academics'?'Academics':item.type==='holiday'?'Holiday':item.type==='activity'?'Activity':'Special day';return `<article class="event-row" data-event-type="${item.type}"><div class="event-date"><small>${month}</small><strong>${date.getDate()}</strong></div><div><h4 class="event-title">${item.title}</h4><p class="event-meta">${typeLabel}${end}</p></div></article>`;}).join(''):`<p class="events-empty">No matching ${sectionLabel(activeSection)} events are scheduled for this selection.</p>`;};
+    const renderEvents=()=>{let visible=events.filter(item=>selectedEventDate?occursOn(item,selectedEventDate):inVisibleMonth(item));if(activeEventFilter!=='all')visible=visible.filter(item=>item.type===activeEventFilter);visible.sort((a,b)=>a.date.localeCompare(b.date));listTitle.textContent=selectedEventDate?`Events on ${formatDate(selectedEventDate)}`:`Events in ${new Intl.DateTimeFormat('en',{month:'long'}).format(new Date(calendarYear,calendarMonth))}`;listItems.innerHTML=visible.length?visible.map(item=>{const date=new Date(`${item.date}T00:00:00`),month=new Intl.DateTimeFormat('en',{month:'short'}).format(date).toUpperCase(),end=item.end!==item.date?` - ${formatDate(item.end)}`:'',typeLabel=item.type==='academics'?'Academics':item.type==='holiday'?'Holiday':item.type==='activity'?'Activity':'Special day';return `<article class="event-row" data-event-type="${item.type}"><div class="event-date"><small>${month}</small><strong>${date.getDate()}</strong></div><div><h4 class="event-title">${item.title}</h4><p class="event-meta">${typeLabel}${end}</p></div></article>`;}).join(''):`<p class="events-empty">No matching ${sectionLabel(activeSection)} events are scheduled for this selection.</p>`;listItems.scrollTop=0;};
     const renderCalendar=()=>{const firstDay=new Date(calendarYear,calendarMonth,1).getDay(),daysInMonth=new Date(calendarYear,calendarMonth+1,0).getDate(),monthName=new Intl.DateTimeFormat('en',{month:'long'}).format(new Date(calendarYear,calendarMonth));calendarTitle.textContent=`${monthName} ${calendarYear}`;calendar.setAttribute('aria-label',`${monthName} ${calendarYear} calendar`);calendarDays.innerHTML='';for(let i=0;i<firstDay;i++)calendarDays.insertAdjacentHTML('beforeend','<span aria-hidden="true"></span>');for(let day=1;day<=daysInMonth;day++){const dateKey=keyForDate(calendarYear,calendarMonth,day),hasEvent=events.some(item=>occursOn(item,dateKey)),selected=dateKey===selectedEventDate;calendarDays.insertAdjacentHTML('beforeend',`<button type="button" class="calendar-date${hasEvent?' event-day':''}${selected?' is-selected':''}" data-date="${dateKey}" aria-label="Select ${monthName} ${day}, ${calendarYear}">${day}</button>`);}renderEvents();};
     eventsSection.querySelectorAll('.event-section-choice').forEach(button=>button.addEventListener('click',()=>{activeSection=button.dataset.eventSection;events=activeSection==='primary'?primaryEvents:activeSection==='secondary'?secondaryEvents:prePrimaryEvents;const label=sectionLabel(activeSection);mainTitle.textContent=`${label} calendar.`;intro.textContent=`Official dated events from the ${label} monthly planner.`;calendar.setAttribute('aria-label',`${label} calendar`);selectedEventDate=null;activeEventFilter='all';eventsSection.querySelectorAll('.event-section-choice').forEach(item=>item.classList.toggle('is-active',item===button));eventsSection.querySelectorAll('.event-filter').forEach(item=>item.classList.toggle('is-active',item.dataset.eventFilter==='all'));renderCalendar();}));
     eventsSection.querySelectorAll('.event-filter').forEach(button=>button.addEventListener('click',()=>{activeEventFilter=button.dataset.eventFilter;eventsSection.querySelectorAll('.event-filter').forEach(item=>item.classList.toggle('is-active',item===button));renderEvents();}));
@@ -1568,7 +1440,7 @@ if (SCHOOL_PAGE === "spg-spaces") {
     },
     {
       key: 'arts',
-      name: 'Stage and Arts',
+      name: 'Performing Arts',
       cat: 'Art · Singing · Performances',
       desc: 'Art and music are integral to school life. Students participate in art classes, singing, and are part of the school\'s annual performances and cultural programmes held on stage.',
       features: [
@@ -1576,9 +1448,27 @@ if (SCHOOL_PAGE === "spg-spaces") {
         'Singing and music activities',
         'Annual Day and cultural stage performances'
       ],
-      // Stage and Arts: main image and gallery thumbnails
+      // Performing Arts: main image and gallery thumbnails
       photo: 'images/sa2.jpg',
       thumbs: ['images/sa1.jpg','images/sa2.jpg']
+    },
+    {
+      key: 'visualarts',
+      name: 'Visual Arts',
+      cat: 'Drawing · Painting · Craft',
+      desc: 'Visual Arts gives students opportunities to explore drawing, painting, craft and creative expression while developing observation, imagination and practical artistic skills.',
+      features: [
+        'Drawing and painting activities',
+        'Creative art and craft projects',
+        'Opportunities to display student artwork'
+      ],
+      /*
+        VISUAL ARTS IMAGES — EDIT HERE.
+        Replace `photo` for the large image and edit `thumbs` for gallery images.
+        Keep the replacement files inside the images/ folder.
+      */
+      photo: 'images/va1.jpg',
+      thumbs: ['images/va1.jpg', 'images/va2.jpg']
     },
     {
       key: 'sports',
@@ -2938,14 +2828,35 @@ if (SCHOOL_PAGE === "spg-management") {
     if(Math.abs(maxScroll-targets[targets.length-1])>2)targets.push(maxScroll);
     return targets;
   }
+  var teamButtonFrame=0, teamSettleTimer=0;
+  function updateTeamButtons(){
+    if(!track)return;
+    var maxScroll=Math.max(0,track.scrollWidth-track.clientWidth), edgeTolerance=4;
+    if(teamPrev)teamPrev.disabled=track.scrollLeft<=edgeTolerance;
+    if(teamNext)teamNext.disabled=track.scrollLeft>=maxScroll-edgeTolerance;
+  }
+  function scheduleTeamButtonUpdate(){
+    if(teamButtonFrame)return;
+    teamButtonFrame=requestAnimationFrame(function(){teamButtonFrame=0;updateTeamButtons()});
+  }
   function moveTeam(dir){
     if(!track)return;
     var targets=teamTargets();
     if(targets.length<2)return;
-    var current=0, smallest=Infinity;
-    targets.forEach(function(target,index){var distance=Math.abs(track.scrollLeft-target);if(distance<smallest){smallest=distance;current=index}});
-    var next=(current+dir+targets.length)%targets.length;
-    track.scrollTo({left:targets[next],behavior:reduce?.matches?'auto':'smooth'});
+    var current=track.scrollLeft, tolerance=4, destination;
+    if(dir>0){
+      destination=targets.find(function(target){return target>current+tolerance});
+      if(destination===undefined)destination=targets[targets.length-1];
+    }else{
+      for(var index=targets.length-1;index>=0;index--){
+        if(targets[index]<current-tolerance){destination=targets[index];break;}
+      }
+      if(destination===undefined)destination=targets[0];
+    }
+    track.scrollTo({left:destination,behavior:reduce?.matches?'auto':'smooth'});
+    scheduleTeamButtonUpdate();
+    clearTimeout(teamSettleTimer);
+    teamSettleTimer=setTimeout(updateTeamButtons,reduce?.matches?0:450);
   }
   teamPrev?.addEventListener('click',function(){moveTeam(-1)});
   teamNext?.addEventListener('click',function(){moveTeam(1)});
@@ -2956,6 +2867,9 @@ if (SCHOOL_PAGE === "spg-management") {
     track.setAttribute('tabindex','0');
     track.setAttribute('aria-label','School leadership team');
     track.addEventListener('keydown',function(event){if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();moveTeam(event.key==='ArrowRight'?1:-1)}});
+    track.addEventListener('scroll',scheduleTeamButtonUpdate,{passive:true});
+    window.addEventListener('resize',scheduleTeamButtonUpdate,{passive:true});
+    scheduleTeamButtonUpdate();
   }
   var heritageTrack=document.getElementById('mgmt2HeritageTrack'), heritageCards=heritageTrack?heritageTrack.querySelectorAll('.mgmt2-heritage-card'):[], heritageIndex=0, heritageTimer;
   function heritageStep(dir){
@@ -3572,289 +3486,6 @@ if (SCHOOL_PAGE === "spg-preprimary") {
 
 
 }
-
-/* <script> (original line 45978) */
-
-
-(function(){
-
-  function priFileLabel(inp, dispId){
-
-    inp.addEventListener('change',function(){
-
-      var d=document.getElementById(dispId);
-
-      if(d) d.textContent = this.files[0] ? this.files[0].name : '';
-
-    });
-
-  }
-
-  var ph=document.querySelector('#pri-admission-form [name="student_photo"]');
-
-  var bc=document.querySelector('#pri-admission-form [name="birth_cert"]');
-
-  if(ph) priFileLabel(ph,'pri-photo-name');
-
-  if(bc) priFileLabel(bc,'pri-cert-name');
-
-
-
-  var form=document.getElementById('pri-admission-form');
-
-  if(!form) return;
-
-  form.addEventListener('submit',function(e){
-
-    e.preventDefault();
-
-    var errors=[];
-
-    var fields=form.querySelectorAll('[required]');
-
-    fields.forEach(function(f){ f.classList.remove('pri-error'); });
-
-    fields.forEach(function(f){
-
-      var val=f.value.trim();
-
-      if(!val){ f.classList.add('pri-error'); errors.push(f.closest('.pri-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); return; }
-
-      if(f.type==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){ f.classList.add('pri-error'); errors.push('Please enter a valid email address.'); }
-
-      if(f.name==='mobile'&&!/^[6-9][0-9]{9}$/.test(val.replace(/\s/g,''))){ f.classList.add('pri-error'); errors.push('Please enter a valid 10-digit mobile number.'); }
-
-      if(f.type==='file'&&!f.files.length){ f.closest('.pri-field').querySelector('.pri-upload-label').style.borderColor='var(--color-primary)'; errors.push(f.closest('.pri-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); }
-
-    });
-
-    var dob=form.querySelector('[name="dob"]');
-
-    if(dob&&dob.value){
-
-      var age=(new Date()-new Date(dob.value))/31557600000;
-
-      if(age<5||age>12){ dob.classList.add('pri-error'); errors.push('Child age must be between 6 and 10 years for Primary admission.'); }
-
-    }
-
-    var errDiv=document.getElementById('pri-form-errors');
-
-    if(errors.length){
-
-      errDiv.innerHTML=errors.map(function(m){return '<div>• '+m+'</div>';}).join('');
-
-      errDiv.style.display='block';
-
-      errDiv.scrollIntoView({behavior:'smooth',block:'center'});
-
-      return;
-
-    }
-
-    errDiv.style.display='none';
-
-    form.style.display='none';
-
-    document.getElementById('pri-success').classList.add('show');
-
-    document.getElementById('pri-success').scrollIntoView({behavior:'smooth',block:'center'});
-
-  });
-
-}());
-
-
-
-/* <script> (original line 46864) */
-
-
-(function(){
-
-  function midFileLabel(inp, dispId){
-
-    inp.addEventListener('change',function(){
-
-      var d=document.getElementById(dispId);
-
-      if(d) d.textContent = this.files[0] ? this.files[0].name : '';
-
-    });
-
-  }
-
-  var ph=document.querySelector('#mid-admission-form [name="student_photo"]');
-
-  var bc=document.querySelector('#mid-admission-form [name="birth_cert"]');
-
-  if(ph) midFileLabel(ph,'mid-photo-name');
-
-  if(bc) midFileLabel(bc,'mid-cert-name');
-
-
-
-  var form=document.getElementById('mid-admission-form');
-
-  if(!form) return;
-
-  form.addEventListener('submit',function(e){
-
-    e.preventDefault();
-
-    var errors=[];
-
-    var fields=form.querySelectorAll('[required]');
-
-    fields.forEach(function(f){ f.classList.remove('mid-error'); });
-
-    fields.forEach(function(f){
-
-      var val=f.value.trim();
-
-      if(!val){ f.classList.add('mid-error'); errors.push(f.closest('.mid-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); return; }
-
-      if(f.type==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){ f.classList.add('mid-error'); errors.push('Please enter a valid email address.'); }
-
-      if(f.name==='mobile'&&!/^[6-9][0-9]{9}$/.test(val.replace(/\s/g,''))){ f.classList.add('mid-error'); errors.push('Please enter a valid 10-digit mobile number.'); }
-
-      if(f.type==='file'&&!f.files.length){ f.closest('.mid-field').querySelector('.mid-upload-label').style.borderColor='var(--color-primary)'; errors.push(f.closest('.mid-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); }
-
-    });
-
-    var dob=form.querySelector('[name="dob"]');
-
-    if(dob&&dob.value){
-
-      var age=(new Date()-new Date(dob.value))/31557600000;
-
-      if(age<9||age>15){ dob.classList.add('mid-error'); errors.push('Child age must be between 10 and 13 years for Middle School admission.'); }
-
-    }
-
-    var errDiv=document.getElementById('mid-form-errors');
-
-    if(errors.length){
-
-      errDiv.innerHTML=errors.map(function(m){return '<div>• '+m+'</div>';}).join('');
-
-      errDiv.style.display='block';
-
-      errDiv.scrollIntoView({behavior:'smooth',block:'center'});
-
-      return;
-
-    }
-
-    errDiv.style.display='none';
-
-    form.style.display='none';
-
-    document.getElementById('mid-success').classList.add('show');
-
-    document.getElementById('mid-success').scrollIntoView({behavior:'smooth',block:'center'});
-
-  });
-
-}());
-
-
-
-/* <script> (original line 47822) */
-
-
-(function(){
-
-  function hiFileLabel(inp, dispId){
-
-    inp.addEventListener('change',function(){
-
-      var d=document.getElementById(dispId);
-
-      if(d) d.textContent = this.files[0] ? this.files[0].name : '';
-
-    });
-
-  }
-
-  var ph=document.querySelector('#hi-admission-form [name="student_photo"]');
-
-  var bc=document.querySelector('#hi-admission-form [name="birth_cert"]');
-
-  var ar=document.querySelector('#hi-admission-form [name="academic_records"]');
-
-  if(ph) hiFileLabel(ph,'hi-photo-name');
-
-  if(bc) hiFileLabel(bc,'hi-cert-name');
-
-  if(ar) hiFileLabel(ar,'hi-rec-name');
-
-
-
-  var form=document.getElementById('hi-admission-form');
-
-  if(!form) return;
-
-  form.addEventListener('submit',function(e){
-
-    e.preventDefault();
-
-    var errors=[];
-
-    var fields=form.querySelectorAll('[required]');
-
-    fields.forEach(function(f){ f.classList.remove('hi-error'); });
-
-    fields.forEach(function(f){
-
-      var val=f.value.trim();
-
-      if(!val){ f.classList.add('hi-error'); errors.push(f.closest('.hi-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); return; }
-
-      if(f.type==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){ f.classList.add('hi-error'); errors.push('Please enter a valid email address.'); }
-
-      if(f.name==='mobile'&&!/^[6-9][0-9]{9}$/.test(val.replace(/\s/g,''))){ f.classList.add('hi-error'); errors.push('Please enter a valid 10-digit mobile number.'); }
-
-      if(f.type==='file'&&!f.files.length){ f.closest('.hi-field').querySelector('.hi-upload-label').style.borderColor='var(--color-primary)'; errors.push(f.closest('.hi-field').querySelector('label').textContent.replace('*','').trim()+' is required.'); }
-
-    });
-
-    var dob=form.querySelector('[name="dob"]');
-
-    if(dob&&dob.value){
-
-      var age=(new Date()-new Date(dob.value))/31557600000;
-
-      if(age<12||age>18){ dob.classList.add('hi-error'); errors.push('Student age must be between 13 and 16 years for High School admission.'); }
-
-    }
-
-    var errDiv=document.getElementById('hi-form-errors');
-
-    if(errors.length){
-
-      errDiv.innerHTML=errors.map(function(m){return '<div>• '+m+'</div>';}).join('');
-
-      errDiv.style.display='block';
-
-      errDiv.scrollIntoView({behavior:'smooth',block:'center'});
-
-      return;
-
-    }
-
-    errDiv.style.display='none';
-
-    form.style.display='none';
-
-    document.getElementById('hi-success').classList.add('show');
-
-    document.getElementById('hi-success').scrollIntoView({behavior:'smooth',block:'center'});
-
-  });
-
-}());
-
-
 
 /* <script> (original line 48168) */
 
