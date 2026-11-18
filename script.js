@@ -1093,11 +1093,11 @@ if (SCHOOL_PAGE === "home") {
 
     ['Pre-Primary','Nursery, LKG & UKG','Where our youngest learners begin: stories, songs and play in a safe, caring classroom.'],
 
-    ['Primary','Classes 1 to 4','Building strong foundations through reading, numbers, discovery and creative expression.'],
+    ['Primary','Classes 1 to 5','Building strong foundations through reading, numbers, discovery and creative expression.'],
 
-    ['Middle','Classes 5 to 7','Growing curiosity, confidence and independence through learning and collaboration.'],
+    ['Middle','Classes 6 to 8','Growing curiosity, confidence and independence through learning and collaboration.'],
 
-    ['High','Classes 8 to 10','Developing deeper understanding, purposeful study habits and confidence for the next chapter.']
+    ['Secondary','Classes 9 and 10','Developing deeper understanding, purposeful study habits and confidence for the next chapter.']
 
   ];
 
@@ -1113,7 +1113,7 @@ if (SCHOOL_PAGE === "home") {
 
     "Middle":"images/middle-collaboration-uniform.png",
 
-    "High":"images/high-achiever-uniform.png"
+    "Secondary":"images/high-achiever-uniform.png"
 
   };
 
@@ -1285,7 +1285,7 @@ document.addEventListener('click', function(e) {
 
   if (stage === 'Middle') { window.location.href = 'middle.html'; return; }
 
-  if (stage === 'High') { window.location.href = 'high.html'; return; }
+  if (stage === 'Secondary') { window.location.href = 'high.html'; return; }
 
 });
 
