@@ -1107,13 +1107,13 @@ if (SCHOOL_PAGE === "home") {
 
   const stageArt={
 
-    "Pre-Primary":"images/preprimary-globe.png",
+    "Pre-Primary":"images/preprimary-globe-red-uniform.png",
 
-    "Primary":"images/ChatGPT Image Oct 31, 2026, 02_34_35 PM.png",
+    "Primary":"images/ChatGPT Image Oct 31, 2026, 02_34_35 PM-uniform.png",
 
-    "Middle":"images/middle-collaboration.png",
+    "Middle":"images/middle-collaboration-uniform.png",
 
-    "High":"images/high-achiever.png"
+    "High":"images/high-achiever-uniform.png"
 
   };
 
@@ -4469,7 +4469,7 @@ if (SCHOOL_PAGE === "spg-preprimary") {
 
 /* <script> (original line 50904) */
 if (SCHOOL_PAGE === "home") {
-window.admissionImageSchedule = { start: '2026-11-14', end: '2026-11-18' };
+window.admissionImageSchedule = { start: '2026-11-14', end: '2026-11-30' };
 }
 
 /* <script> (original line 50924) */

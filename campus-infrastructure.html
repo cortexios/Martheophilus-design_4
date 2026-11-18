@@ -147,6 +147,47 @@
 
 
 <link rel="stylesheet" href="style.css">
+<style>
+  /* Learning & Growth only: three cards, then two equal-width cards centred below. */
+  .camp-feature-grid.camp-feature-grid--learning {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .camp-feature-grid--learning > .camp-feature-card {
+    grid-column: span 2;
+  }
+  .camp-feature-grid--learning > .camp-feature-card:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+  .camp-feature-grid--learning > .camp-feature-card:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+  @media (max-width: 860px) {
+    .camp-feature-grid.camp-feature-grid--learning {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .camp-feature-grid--learning > .camp-feature-card,
+    .camp-feature-grid--learning > .camp-feature-card:nth-child(4) {
+      grid-column: auto;
+    }
+    .camp-feature-grid--learning > .camp-feature-card:nth-child(5) {
+      grid-column: 1 / -1;
+      width: calc(50% - 9px);
+      justify-self: center;
+    }
+  }
+  @media (max-width: 540px) {
+    .camp-feature-grid.camp-feature-grid--learning {
+      grid-template-columns: 1fr;
+    }
+    .camp-feature-grid--learning > .camp-feature-card,
+    .camp-feature-grid--learning > .camp-feature-card:nth-child(4),
+    .camp-feature-grid--learning > .camp-feature-card:nth-child(5) {
+      grid-column: auto;
+      width: auto;
+      justify-self: stretch;
+    }
+  }
+</style>
 </head>
 <body data-page="spg-campus">
 <a class="skip-link" href="#spg-campus">Skip to content</a><div id="header"><!-- Header / Navbar -->
@@ -1044,9 +1085,7 @@
 
   <!-- ── Section 1: Introduction ── -->
 
-  <h2 class="section-title" style="font-family:Georgia,'Times New Roman',serif;">Our Campus &amp; Infrastructure</h2>
 
-  <div class="gold-rule"></div>
 
 
 
@@ -1097,21 +1136,49 @@
 
     <div class="camp-body" style="margin-bottom:32px;">
 
-      <p>The school is equipped with separate toilet facilities for boys and girls on every floor, along with purified drinking water facilities. Every classroom is supported by electronic learning resources provided by Next Education, enriching classroom instruction through technology-enabled teaching and learning.</p>
+      <p>The school is equipped with separate toilet facilities for boys and girls on every floor, along with purified drinking water facilities. Every classroom is supported by electronic learning resources, enriching classroom instruction through technology-enabled teaching and learning.</p>
 
     </div>
 
-    <div class="camp-feature-grid">
+    <div class="camp-feature-grid camp-feature-grid--learning">
 
       <div class="camp-feature-card">
 
-        <div class="ci"><i class="fas fa-restroom"></i></div>
+        <div class="ci"><i class="fas fa-layer-group"></i></div>
 
         <div>
 
-          <h4>Separate Toilet Facilities</h4>
+          <h4>Five-Storey Academic Building</h4>
 
-          <p>Dedicated facilities for boys and girls maintained on every floor of the building.</p>
+          <p>Each floor houses dedicated spaces supporting teaching, practical learning and student well-being.</p>
+
+        </div>
+
+      </div>
+
+      <div class="camp-feature-card">
+
+        <div class="ci"><i class="fas fa-chalkboard"></i></div>
+
+        <div>
+
+          <h4>Digitally Enabled Smart Classroom</h4>
+
+          <p>All classrooms are supported by Next Education's technology-enabled teaching and learning resources.</p>
+
+        </div>
+
+      </div>
+
+      <div class="camp-feature-card">
+
+        <div class="ci"><i class="fas fa-snowflake"></i></div>
+
+        <div>
+
+          <h4>Two Air Conditioned Multi Purpose Hall</h4>
+
+          <p>Each hall is spacious and comfortably accommodates up to 300 people.</p>
 
         </div>
 
@@ -1133,27 +1200,13 @@
 
       <div class="camp-feature-card">
 
-        <div class="ci"><i class="fas fa-chalkboard"></i></div>
+        <div class="ci"><i class="fas fa-restroom"></i></div>
 
         <div>
 
-          <h4>Electronic Learning Resources</h4>
+          <h4>Separate Toilet Facilities</h4>
 
-          <p>All classrooms are supported by Next Education's technology-enabled teaching and learning resources.</p>
-
-        </div>
-
-      </div>
-
-      <div class="camp-feature-card">
-
-        <div class="ci"><i class="fas fa-layer-group"></i></div>
-
-        <div>
-
-          <h4>Five-Storey Academic Building</h4>
-
-          <p>Each floor houses dedicated spaces supporting teaching, practical learning and student well-being.</p>
+          <p>Dedicated facilities for boys and girls maintained on every floor of the building.</p>
 
         </div>
 
@@ -1187,7 +1240,7 @@
 
         <p>A significant highlight of the campus is its expansive two-acre playground, which provides ample space for outdoor sports and physical activities. The playground features a basketball court and facilities for games such as football, cricket and badminton. Dedicated play areas for younger children further ensure age-appropriate opportunities for physical activity and recreation.</p>
 
-        <p>The school also features an open auditorium and a multipurpose hall with seating capacity for approximately 350 people, providing excellent venues for assemblies, cultural programmes, celebrations, seminars and other school events. A spacious lobby adds to the campus's multipurpose facilities.</p>
+        <p>The school also features an open auditorium, providing excellent venues for assemblies, cultural programmes, celebrations, seminars and other school events. A spacious lobby adds to the campus's multipurpose facilities.</p>
 
       </div>
 
@@ -1245,9 +1298,9 @@
 
         <div>
 
-          <h4>Open Auditorium &amp; Multipurpose Hall</h4>
+          <h4>Open Auditorium</h4>
 
-          <p>Seating approximately 350 people — ideal for assemblies, cultural programmes, seminars and school events, with a spacious lobby.</p>
+          <p>Ideal for assemblies, cultural programmes, seminars and school events, with a spacious lobby.</p>
 
         </div>
 

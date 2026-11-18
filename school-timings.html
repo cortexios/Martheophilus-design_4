@@ -147,6 +147,17 @@
 
 
 <link rel="stylesheet" href="style.css">
+<style>
+  /* Regular School Timings only: two equal columns, stacked on tablet/mobile. */
+  .tim-grid.tim-grid--regular {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (max-width: 768px) {
+    .tim-grid.tim-grid--regular {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 </head>
 <body data-page="spg-timings">
 <a class="skip-link" href="#spg-timings">Skip to content</a><div id="header"><!-- Header / Navbar -->
@@ -1094,7 +1105,7 @@
 
     <div class="coc-section-body">
 
-      <div class="tim-grid">
+      <div class="tim-grid tim-grid--regular">
 
         <!-- Pre-Primary -->
 
@@ -1104,31 +1115,19 @@
 
           <div class="tim-card-days">Monday to Friday</div>
 
-          <div class="tim-card-time">8:30 a.m.<br>to<br>12:50 p.m.</div>
+          <div class="tim-card-time">8:30 a.m.<br>to<br>12:30 p.m.</div>
 
         </div>
 
-        <!-- Standards I and II -->
+        <!-- Standards I to X -->
 
         <div class="tim-card">
 
-          <div class="tim-card-label">Standards I and II</div>
+          <div class="tim-card-label"><span class="notranslate" translate="no" data-en="Standards I to X" data-mr="इयत्ता I ते X">Standards I to X</span></div>
 
           <div class="tim-card-days">Monday to Friday</div>
 
-          <div class="tim-card-time">7:30 a.m.<br>to<br>2:20 p.m.</div>
-
-        </div>
-
-        <!-- Standards III to X -->
-
-        <div class="tim-card">
-
-          <div class="tim-card-label">Standards III to X</div>
-
-          <div class="tim-card-days">Monday to Friday</div>
-
-          <div class="tim-card-time">7:30 a.m.<br>to<br>2:20 p.m.</div>
+          <div class="tim-card-time">7:30 a.m.<br>to<br>1:50 p.m.</div>
 
         </div>
 
@@ -1140,7 +1139,7 @@
 
             <div class="tim-card-label">Alternate Saturdays — First and Third Saturdays</div>
 
-            <div class="tim-card-days">Working Saturdays only &mdash; not every Saturday</div>
+            
 
             <div class="tim-card-time">7:30 a.m. to 11:00 a.m.</div>
 
