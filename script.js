@@ -1250,7 +1250,24 @@ if (SCHOOL_PAGE === "home") {
 if (SCHOOL_PAGE === "home") {
 /* Focus & Dim filter — all cards stay visible; clicking spotlights the matching card */
 
-document.querySelectorAll('.space-filter').forEach(button=>{button.setAttribute('aria-pressed','false');button.addEventListener('click',()=>{const grid=document.querySelector('.spaces-grid');const wasActive=button.classList.contains('is-active');document.querySelectorAll('.space-filter').forEach(b=>{b.classList.remove('is-active');b.setAttribute('aria-pressed','false');});grid.classList.remove('has-focus');document.querySelectorAll('.space-card').forEach(card=>card.classList.remove('is-focused'));if(!wasActive){button.classList.add('is-active');button.setAttribute('aria-pressed','true');const key=button.dataset.interest;const focused=grid.querySelector(`.space-card[data-tags~="${key}"]`);if(focused){grid.classList.add('has-focus');focused.classList.add('is-focused');}}});});document.querySelectorAll('[data-login-close]').forEach(button=>button.addEventListener('click',()=>{document.querySelector('#demo-login').hidden=true;document.body.classList.remove('login-open')}));document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelector('#demo-login').hidden=true;document.body.classList.remove('login-open')}});document.querySelector('.demo-login-submit')?.addEventListener('click',event=>{event.preventDefault();document.querySelector('.demo-login-note').textContent='Demo preview only. No account is connected.'});
+document.querySelectorAll('.space-filter').forEach(button=>{
+  button.setAttribute('aria-pressed','false');
+  button.addEventListener('click',()=>{
+    const grid=document.querySelector('.spaces-grid');
+    const wasActive=button.classList.contains('is-active');
+    document.querySelectorAll('.space-filter').forEach(b=>{b.classList.remove('is-active');b.setAttribute('aria-pressed','false')});
+    grid.classList.remove('has-focus');
+    grid.querySelectorAll('.space-card').forEach(card=>card.classList.remove('is-focused'));
+    if(!wasActive){
+      button.classList.add('is-active');
+      button.setAttribute('aria-pressed','true');
+      const key=button.dataset.interest;
+      const focused=[...grid.querySelectorAll('.space-card')].filter(card=>card.dataset.tags.split(/\s+/).includes(key));
+      if(focused.length){grid.classList.add('has-focus');focused.forEach(card=>card.classList.add('is-focused'))}
+    }
+  });
+});
+document.querySelectorAll('[data-login-close]').forEach(button=>button.addEventListener('click',()=>{document.querySelector('#demo-login').hidden=true;document.body.classList.remove('login-open')}));document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelector('#demo-login').hidden=true;document.body.classList.remove('login-open')}});document.querySelector('.demo-login-submit')?.addEventListener('click',event=>{event.preventDefault();document.querySelector('.demo-login-note').textContent='Demo preview only. No account is connected.'});
 }
 
 /* <script> (original line 23976) */
@@ -2871,7 +2888,7 @@ if (SCHOOL_PAGE === "spg-management") {
     window.addEventListener('resize',scheduleTeamButtonUpdate,{passive:true});
     scheduleTeamButtonUpdate();
   }
-  var heritageTrack=document.getElementById('mgmt2HeritageTrack'), heritageCards=heritageTrack?heritageTrack.querySelectorAll('.mgmt2-heritage-card'):[], heritageIndex=0, heritageTimer;
+  var heritageTrack=document.getElementById('mgmt2HeritageTrack'), heritageCards=heritageTrack?heritageTrack.querySelectorAll('.mgmt2-heritage-card'):[], heritageIndex=0, heritageTimer, heritagePauseUntil=0;
   function heritageStep(dir){
     if(!heritageTrack||!heritageCards.length)return;
     heritageIndex=(heritageIndex+dir+heritageCards.length)%heritageCards.length;
@@ -2889,22 +2906,23 @@ if (SCHOOL_PAGE === "spg-management") {
       card.setAttribute('aria-hidden',String(!visible));
     });
   }
-  document.getElementById('mgmt2HeritagePrev')?.addEventListener('click',function(){heritageStep(-1);restartHeritage()});
-  document.getElementById('mgmt2HeritageNext')?.addEventListener('click',function(){heritageStep(1);restartHeritage()});
+  function navigateHeritage(dir){heritageStep(dir);heritagePauseUntil=Date.now()+6000;restartHeritage()}
+  document.getElementById('mgmt2HeritagePrev')?.addEventListener('click',function(){navigateHeritage(-1)});
+  document.getElementById('mgmt2HeritageNext')?.addEventListener('click',function(){navigateHeritage(1)});
   // AUTOPLAY SPEED: 2800 milliseconds between cards; hover/focus pauses movement.
-  function restartHeritage(){clearInterval(heritageTimer);if(!reduce.matches)heritageTimer=setInterval(function(){var viewport=heritageTrack.parentElement;if(!document.hidden&&!document.getElementById('spg-management').hidden&&!viewport.matches(':hover')&&!viewport.contains(document.activeElement))heritageStep(1)},2800)}
+  function restartHeritage(){clearInterval(heritageTimer);if(!reduce.matches)heritageTimer=setInterval(function(){var viewport=heritageTrack.parentElement;if(Date.now()>=heritagePauseUntil&&!document.hidden&&!document.getElementById('spg-management').hidden&&!viewport.matches(':hover')&&!viewport.contains(document.activeElement))heritageStep(1)},2800)}
   if(heritageTrack){
     var carousel=heritageTrack.parentElement;
     carousel.setAttribute('role','region');carousel.setAttribute('aria-roledescription','carousel');carousel.setAttribute('aria-label','Our institutions');carousel.tabIndex=0;
-    carousel.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();heritageStep(e.key==='ArrowRight'?1:-1);restartHeritage()}});
+    carousel.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();navigateHeritage(e.key==='ArrowRight'?1:-1)}});
     heritageCards.forEach(function(card,i){
       var label=card.querySelector('small'),badge=document.createElement('span');badge.className='mgmt2-heritage-board';badge.textContent=label.textContent.split('·')[0].trim();badge.setAttribute('aria-hidden','true');card.appendChild(badge);
-      card.addEventListener('click',function(){heritageStep(i-heritageIndex);restartHeritage()});
+      card.addEventListener('click',function(){navigateHeritage(i-heritageIndex)});
     });
     heritageStep(0);
     if('ResizeObserver' in window)new ResizeObserver(function(){heritageStep(0)}).observe(carousel);
   }
-  if(heritageCards.length>1){var heritageViewport=document.querySelector('#spg-management .mgmt2-heritage-viewport'), touchStartX=0;heritageViewport?.addEventListener('mouseenter',function(){clearInterval(heritageTimer)});heritageViewport?.addEventListener('mouseleave',restartHeritage);heritageViewport?.addEventListener('focusin',function(){clearInterval(heritageTimer)});heritageViewport?.addEventListener('focusout',restartHeritage);heritageViewport?.addEventListener('touchstart',function(e){touchStartX=e.changedTouches[0].clientX},{passive:true});heritageViewport?.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>40){heritageStep(dx<0?1:-1);restartHeritage()}},{passive:true});window.addEventListener('resize',function(){heritageStep(0)});restartHeritage();}
+  if(heritageCards.length>1){var heritageViewport=document.querySelector('#spg-management .mgmt2-heritage-viewport'), touchStartX=0;heritageViewport?.addEventListener('mouseenter',function(){clearInterval(heritageTimer)});heritageViewport?.addEventListener('mouseleave',restartHeritage);heritageViewport?.addEventListener('focusin',function(){clearInterval(heritageTimer)});heritageViewport?.addEventListener('focusout',restartHeritage);heritageViewport?.addEventListener('touchstart',function(e){touchStartX=e.changedTouches[0].clientX},{passive:true});heritageViewport?.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>40)navigateHeritage(dx<0?1:-1)},{passive:true});window.addEventListener('resize',function(){heritageStep(0)});restartHeritage();}
 })();
 
 }
